@@ -1,0 +1,258 @@
+{
+  "en": {
+    "nav": {
+      "home": "Home",
+      "forJobSeekers": "For Job Seekers",
+      "forBusinesses": "For Businesses",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "hero": {
+      "title": "Close Your <span>Skill Gap</span>. Unlock Local Opportunities.",
+      "description": "Connecting local talent with businesses by identifying and bridging skill gaps.",
+      "jobSeekerBtn": "I am a Job Seeker",
+      "businessBtn": "I am a Business"
+    },
+    "features": {
+      "title": "How <span>JobGati</span> Works",
+      "step1": "Skill Analysis",
+      "step2": "Gap Identification",
+      "step3": "Training Bridge",
+      "step4": "Job Matching"
+    },
+    "interactive": {
+      "skillAnalysis": {
+        "title": "AI Skill Analysis",
+        "description": "Our AI analyzes required skills for local jobs and compares them with your profile",
+        "analyzeBtn": "Analyze My Skills",
+        "resultTitle": "Skill Analysis Results",
+        "requiredSkills": "Required Skills for Local Jobs",
+        "yourSkills": "Your Current Skills"
+      },
+      "gapIdentification": {
+        "title": "Skill Gap Identification",
+        "description": "Identify specific skill gaps and generate your Skill Gap Score",
+        "identifyBtn": "Identify Skill Gaps",
+        "resultTitle": "Skill Gap Analysis",
+        "gapScore": "Your Skill Gap Score",
+        "missingSkills": "Skills You Need to Develop"
+      },
+      "trainingBridge": {
+        "title": "Training Bridge",
+        "description": "Get personalized training suggestions to close your skill gaps",
+        "findTrainingBtn": "Find Training",
+        "resultTitle": "Recommended Training",
+        "microCourses": "Micro-Courses",
+        "trainingCenters": "Nearby Training Centers"
+      },
+      "jobMatching": {
+        "title": "Job Matching",
+        "description": "Find local job opportunities that match your skills",
+        "findJobsBtn": "Find Jobs",
+        "resultTitle": "Job Matches",
+        "matchScore": "Match Score"
+      }
+    },
+    "dashboard": {
+      "welcome": "Hello, Abhishek Jaiswal!",
+      "profile": {
+        "name": "Abhishek Jaiswal",
+        "title": "ITI Diploma Holder"
+      },
+      "skillGap": "Skill Gap Heatmap",
+      "progress": "Progress",
+      "ready": "You are 80% ready for Solar Technician role.",
+      "unlocked": "Job Unlocked!",
+      "askAI": "Ask Karma AI",
+      "aiDesc": "Your personalized assistant.",
+      "topMatches": "Top Matches",
+      "match1": {
+        "percent": "70%",
+        "title": "Solar Technician job at XYZ Industry.",
+        "desc": "Requires L3 Welding, L2 Solar Install."
+      },
+      "match2": {
+        "percent": "85%",
+        "title": "Lathe Machine Operator at Precision Tools.",
+        "desc": "Requires L3 Lathe Operation."
+      },
+      "closeGap": "Close Gap (Suggest Training)",
+      "viewDetails": "View Details",
+      "applyNow": "Apply Now"
+    },
+    "forms": {
+      "join": "Join JobGati",
+      "fullName": "Full Name",
+      "age": "Age",
+      "education": "Highest Education Level",
+      "educationOptions": [
+        "Primary School",
+        "High School / 10th",
+        "ITI / Diploma",
+        "Graduate / Degree"
+      ],
+      "skills": "Skills (Type and Select)",
+      "skillsPlaceholder": "e.g., Welding, Digital Literacy",
+      "certifications": "Certifications (Upload)",
+      "uploadText": "Upload Certificates (PDF, JPEG)",
+      "maxSize": "Max 5MB file size",
+      "accessibility": "Accessibility Feature",
+      "voiceInput": "Voice Input (helpful for rural users)",
+      "register": "Register",
+      "login": "Login",
+      "forgotPassword": "Forgot Password?",
+      "businessReg": "Register Your Business",
+      "businessName": "Business Name",
+      "industry": "Industry",
+      "industryOptions": [
+        "Manufacturing",
+        "Construction",
+        "Retail",
+        "Services",
+        "Technology",
+        "Other"
+      ],
+      "location": "Location",
+      "contactPerson": "Contact Person",
+      "jobPositions": "Job Positions Needed",
+      "jobPositionsPlaceholder": "List the positions you need to fill...",
+      "requiredSkills": "Required Skills",
+      "requiredSkillsPlaceholder": "e.g., Welding, Digital Literacy",
+      "registerBusiness": "Register Business",
+      "loginTitle": "Login to JobGati",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    }
+  },
+  "hi": {
+    "nav": {
+      "home": "होम",
+      "forJobSeekers": "नौकरी चाहने वालों के लिए",
+      "forBusinesses": "व्यवसायों के लिए",
+      "about": "हमारे बारे में",
+      "contact": "संपर्क करें"
+    },
+    "hero": {
+      "title": "अपने <span>स्किल गैप</span> को बंद करें। स्थानीय अवसरों को अनलॉक करें।",
+      "description": "स्थानीय प्रतिभा को व्यवसायों से जोड़कर कौशल अंतराल की पहचान करना और उन्हें पाटना।",
+      "jobSeekerBtn": "मैं एक नौकरी चाहने वाला हूं",
+      "businessBtn": "मैं एक व्यवसाय हूं"
+    },
+    "features": {
+      "title": "<span>JobGati</span> कैसे काम करता है",
+      "step1": "कौशल विश्लेषण",
+      "step2": "अंतराल पहचान",
+      "step3": "प्रशिक्षण पुल",
+      "step4": "नौकरी मिलान"
+    },
+    "interactive": {
+      "skillAnalysis": {
+        "title": "AI कौशल विश्लेषण",
+        "description": "हमारी AI स्थानीय नौकरियों के लिए आवश्यक कौशल का विश्लेषण करती है और उनकी तुलना आपकी प्रोफाइल से करती है",
+        "analyzeBtn": "मेरे कौशल का विश्लेषण करें",
+        "resultTitle": "कौशल विश्लेषण परिणाम",
+        "requiredSkills": "स्थानीय नौकरियों के लिए आवश्यक कौशल",
+        "yourSkills": "आपके वर्तमान कौशल"
+      },
+      "gapIdentification": {
+        "title": "कौशल अंतराल पहचान",
+        "description": "विशिष्ट कौशल अंतराल की पहचान करें और अपना स्किल गैप स्कोर जनरेट करें",
+        "identifyBtn": "कौशल अंतराल पहचानें",
+        "resultTitle": "कौशल अंतराल विश्लेषण",
+        "gapScore": "आपका स्किल गैप स्कोर",
+        "missingSkills": "विकसित करने के लिए आवश्यक कौशल"
+      },
+      "trainingBridge": {
+        "title": "प्रशिक्षण पुल",
+        "description": "अपने कौशल अंतराल को पाटने के लिए व्यक्तिगत प्रशिक्षण सुझाव प्राप्त करें",
+        "findTrainingBtn": "प्रशिक्षण ढूंढें",
+        "resultTitle": "अनुशंसित प्रशिक्षण",
+        "microCourses": "माइक्रो-कोर्स",
+        "trainingCenters": "नजदीकी प्रशिक्षण केंद्र"
+      },
+      "jobMatching": {
+        "title": "नौकरी मिलान",
+        "description": "आपके कौशल से मेल खाने वाली स्थानीय नौकरी के अवसर ढूंढें",
+        "findJobsBtn": "नौकरियां ढूंढें",
+        "resultTitle": "नौकरी मैच",
+        "matchScore": "मैच स्कोर"
+      }
+    },
+    "dashboard": {
+      "welcome": "नमस्ते, अभिषेक जायसवाल!",
+      "profile": {
+        "name": "अभिषेक जायसवाल",
+        "title": "आईटीआई डिप्लोमा धारक"
+      },
+      "skillGap": "स्किल गैप हीटमैप",
+      "progress": "प्रगति",
+      "ready": "आप सोलर टेक्निशियन की भूमिका के लिए 80% तैयार हैं।",
+      "unlocked": "नौकरी अनलॉक!",
+      "askAI": "कर्मा AI से पूछें",
+      "aiDesc": "आपका व्यक्तिगत सहायक।",
+      "topMatches": "शीर्ष मैच",
+      "match1": {
+        "percent": "70%",
+        "title": "XYZ इंडस्ट्री में सोलर टेक्निशियन की नौकरी।",
+        "desc": "L3 वेल्डिंग, L2 सोलर इंस्टॉल की आवश्यकता है।"
+      },
+      "match2": {
+        "percent": "85%",
+        "title": "प्रिसिजन टूल्स में लेथ मशीन ऑपरेटर।",
+        "desc": "L3 लेथ ऑपरेशन की आवश्यकता है।"
+      },
+      "closeGap": "गैप बंद करें (प्रशिक्षण सुझाव)",
+      "viewDetails": "विवरण देखें",
+      "applyNow": "अभी आवेदन करें"
+    },
+    "forms": {
+      "join": "JobGati से जुड़ें",
+      "fullName": "पूरा नाम",
+      "age": "उम्र",
+      "education": "उच्चतम शिक्षा स्तर",
+      "educationOptions": [
+        "प्राथमिक विद्यालय",
+        "हाई स्कूल / 10वीं",
+        "आईटीआई / डिप्लोमा",
+        "स्नातक / डिग्री"
+      ],
+      "skills": "कौशल (टाइप करें और चुनें)",
+      "skillsPlaceholder": "उदाहरण: वेल्डिंग, डिजिटल साक्षरता",
+      "certifications": "प्रमाणपत्र (अपलोड करें)",
+      "uploadText": "प्रमाणपत्र अपलोड करें (PDF, JPEG)",
+      "maxSize": "अधिकतम 5MB फाइल साइज",
+      "accessibility": "एक्सेसिबिलिटी फीचर",
+      "voiceInput": "वॉइस इनपुट (ग्रामीण उपयोगकर्ताओं के लिए सहायक)",
+      "register": "रजिस्टर करें",
+      "login": "लॉगिन",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "businessReg": "अपने व्यवसाय को पंजीकृत करें",
+      "businessName": "व्यवसाय का नाम",
+      "industry": "उद्योग",
+      "industryOptions": [
+        "विनिर्माण",
+        "निर्माण",
+        "खुदरा",
+        "सेवाएं",
+        "प्रौद्योगिकी",
+        "अन्य"
+      ],
+      "location": "स्थान",
+      "contactPerson": "संपर्क व्यक्ति",
+      "jobPositions": "आवश्यक नौकरी के पद",
+      "jobPositionsPlaceholder": "भरने के लिए आवश्यक पदों की सूची बनाएं...",
+      "requiredSkills": "आवश्यक कौशल",
+      "requiredSkillsPlaceholder": "उदाहरण: वेल्डिंग, डिजिटल साक्षरता",
+      "registerBusiness": "व्यवसाय पंजीकृत करें",
+      "loginTitle": "JobGati में लॉगिन करें",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "rememberMe": "मुझे याद रखें",
+      "noAccount": "खाता नहीं है?",
+      "signUp": "साइन अप करें"
+    }
+  }
+}
