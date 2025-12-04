@@ -1,148 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Hero from './components/Hero';
-import SkillAnalysis from './components/SkillAnalysis';
-import GapIdentification from './components/GapIdentification';
-import TrainingBridge from './components/TrainingBridge';
-import JobMatching from './components/JobMatching';
+/**
+ * App Component - Root Component for JobGati Application
+ * 
+ * This is the main component that sets up routing and initializes core features
+ * like internationalization (i18n) and theme management. It wraps all application
+ * pages and handles global state initialization.
+ */
+
+// Import React and useEffect hook for side effects (initialization tasks)
+import React, { useEffect } from 'react';
+
+// Import routing components from React Router for client-side navigation
+import { Routes, Route } from 'react-router-dom';
+
+// Import Redux hooks for dispatching actions and accessing state
+import { useDispatch, useSelector } from 'react-redux';
+
+// Import action to fetch translation data from API for internationalization
+import { fetchTranslations } from './store/slices/languageSlice';
+
+// Import action to initialize theme (dark/light mode) from localStorage or system preference
+import { initializeTheme } from './store/slices/themeSlice';
+
+// Import Layout component which provides Header and Footer wrapper for all pages
+import Layout from './components/Layout';
+
+// Import HomePage component - landing page with Hero section and features
+import HomePage from './components/HomePage';
+
+// Import registration component for job seekers (individuals looking for jobs)
 import JobSeekerRegistration from './components/JobSeekerRegistration';
+
+// Import registration component for businesses (employers posting jobs)
 import BusinessRegistration from './components/BusinessRegistration';
-import LoginModal from './components/LoginModal';
+
+// Import SignUpPage component - allows users to choose registration type
+import SignUpPage from './components/SignUpPage';
+
+// Import LoginPage component - handles user authentication
 import LoginPage from './components/LoginPage';
+
+// Import Dashboard component - user-specific dashboard after login
 import Dashboard from './components/Dashboard';
-import KarmaAI from './components/KarmaAI';
 
-
+/**
+ * App functional component
+ * Manages application-wide initialization and routing
+ */
 function App() {
-  const [language, setLanguage] = useState("en");
-  const [activePage, setActivePage] = useState("home");
-  const [activeSection, setActiveSection] = useState(null);
-  const [showLogin, setShowLogin] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [userSkills, setUserSkills] = useState([
-    "Welding L2",
-    "Digital Literacy L1",
-    "Solar Panel Installation L1",
-  ]);
-  const [requiredSkills, setRequiredSkills] = useState([
-    "Welding L3",
-    "Solar Installation L2",
-  ]);
-  const [translations, setTranslations] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Get dispatch function to trigger Redux actions
+  const dispatch = useDispatch();
+  
+  // Extract loading state from language slice to show loading indicator while fetching translations
+  const { loading } = useSelector((state) => state.language);
+  
+  // Extract current theme mode (dark or light) from theme slice
+  const { mode } = useSelector((state) => state.theme);
 
+  // Effect: Fetch translations and initialize theme when app first loads
+  // This runs once when the component mounts (empty dependency array means "on mount only")
   useEffect(() => {
-    fetch('/translation.json')
-      .then(response => response.json())
-      .then(data => {
-        setTranslations(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching translations:", error);
-        setLoading(false);
-      });
-  }, []);
+    // Dispatch action to fetch translation data from API for the selected language
+    dispatch(fetchTranslations());
+    
+    // Dispatch action to initialize theme from localStorage or system preference
+    dispatch(initializeTheme()); // Initialize theme on mount
+  }, [dispatch]); // Re-run only if dispatch changes (which it never does, so effectively runs once)
 
+  // Effect: Apply dark mode class to HTML document when theme changes
+  // This enables Tailwind's dark mode by adding/removing 'dark' class on <html> element
+  useEffect(() => {
+    // If theme mode is 'dark', add 'dark' class to enable dark mode styles
+    if (mode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      // If theme mode is 'light', remove 'dark' class to use light mode styles
+      document.documentElement.classList.remove('dark');
+    }
+  }, [mode]); // Re-run whenever mode changes (user toggles dark/light mode)
+
+  // Show loading screen while translations are being fetched from API
+  // This prevents rendering the app with missing translation text
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
-  const t = translations ? translations[language] : {};
-
-  const handleSectionClick = (section) => {
-    setActiveSection(section);
-    // Scroll to the section
-    setTimeout(() => {
-      const element = document.getElementById(section);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 100);
-  };
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    setShowLogin(false);
-    setActivePage("dashboard");
-  };
-
+  // Return the main application JSX structure
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-dark font-sans">
-      <Header
-        activePage={activePage}
-        setActivePage={setActivePage}
-        language={language}
-        setLanguage={setLanguage}
-        isLoggedIn={isLoggedIn}
-        setIsLoggedIn={setIsLoggedIn}
-        setShowLogin={setShowLogin}
-        t={t}
-      />
-
-      <main className="grow">
-        {activePage === "home" && (
-          <div>
-            <Hero t={t} setActivePage={setActivePage} handleSectionClick={handleSectionClick} />
-            
-            <div id="skill-analysis">
-              <SkillAnalysis t={t.interactive.skillAnalysis} userSkills={userSkills} />
-            </div>
-
-            <div id="gap-identification">
-              <GapIdentification t={t.interactive.gapIdentification} userSkills={userSkills} />
-            </div>
-
-            <div id="training-bridge">
-              <TrainingBridge t={t.interactive.trainingBridge} />
-            </div>
-
-            <div id="job-matching">
-              <JobMatching t={t.interactive.jobMatching} userSkills={userSkills} />
-            </div>
-          </div>
-        )}
-
-        {activePage === "jobSeekerRegistration" && (
-          <JobSeekerRegistration
-            t={t}
-            userSkills={userSkills}
-            setUserSkills={setUserSkills}
-            setActivePage={setActivePage}
-          />
-        )}
-
-        {activePage === "businessRegistration" && (
-          <BusinessRegistration
-            t={t}
-            requiredSkills={requiredSkills}
-            setRequiredSkills={setRequiredSkills}
-          />
-        )}
-
-        {activePage === "login" && (
-          <LoginPage setActivePage={setActivePage} />
-        )}
-
-        {activePage === "dashboard" && isLoggedIn && (
-          <Dashboard t={t.dashboard} />
-        )}
-      </main>
-
-      <Footer setActivePage={setActivePage} />
-
-      <KarmaAI />
-
-      {showLogin && (
-        <LoginModal
-          t={t.forms}
-          onClose={() => setShowLogin(false)}
-          onLogin={handleLogin}
-        />
-      )}
-    </div>
+    // Routes component - container for all route definitions
+    <Routes>
+      {/* Parent route with Layout wrapper - provides Header and Footer for all child routes */}
+      <Route path="/" element={<Layout />}>
+        {/* Index route - renders HomePage at the root path "/" */}
+        <Route index element={<HomePage />} />
+        
+        {/* Job seeker registration route - form for individuals seeking jobs */}
+        <Route path="register-seeker" element={<JobSeekerRegistration />} />
+        
+        {/* Business registration route - form for companies/employers */}
+        <Route path="register-business" element={<BusinessRegistration />} />
+        
+        {/* Sign up page route - user type selection (seeker vs business) */}
+        <Route path="signup" element={<SignUpPage />} />
+        
+        {/* Login page route - authentication form */}
+        <Route path="login" element={<LoginPage />} />
+        
+        {/* Dashboard route - protected user dashboard (requires login) */}
+        <Route path="dashboard" element={<Dashboard />} />
+      </Route>
+    </Routes>
   );
 }
 
+// Export App component as default export for use in main.jsx
 export default App;
+

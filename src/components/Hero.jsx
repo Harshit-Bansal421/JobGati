@@ -1,38 +1,92 @@
+/**
+ * Hero Component - Landing Page Banner
+ * 
+ * This is the main hero section of the landing page that greets visitors.
+ * Features a title, description, CTA buttons, and 4 feature icons representing
+ * the JobGati journey: Skill Analysis, Gap Identification, Training, and Job Matching.
+ */
+
+// Import React library
 import React from 'react';
 
-const Hero = ({ t, setActivePage, handleSectionClick }) => {
+// Import useNavigate for programmatic navigation
+import { useNavigate } from 'react-router-dom';
+
+// Import useSelector to access Redux state
+import { useSelector } from 'react-redux';
+
+/**
+ * Hero functional component
+ * @param {Function} handleSectionClick - Callback to scroll to specific sections
+ */
+const Hero = ({ handleSectionClick }) => {
+  // Get navigate function for route navigation
+  const navigate = useNavigate();
+  
+  // Access translations and current language from Redux store
+  const { currentLanguage, translations } = useSelector((state) => state.language);
+  
+  // Extract translations for current language with fallback to empty object
+  const t = translations[currentLanguage] || {};
+
+  // Guard clause: Return null if hero translations aren't loaded yet
+  // HomePage handles loading, so this should rarely execute
+  if (!t.hero) return null;
+
+  // Render the hero section
   return (
-    <section className="py-20 bg-gradient-to-br from-[#f0f9ff] to-[#e1f5fe]">
+    // Hero section - full-width banner with gradient background
+    // Gradient from light blue to lighter blue in light mode
+    // Gradient from dark gray to darker gray in dark mode
+    <section className="py-20 bg-gradient-to-br from-[#f0f9ff] to-[#e1f5fe] dark:from-gray-800 dark:to-gray-900 transition-colors">
+      {/* Content wrapper - max width container with horizontal padding */}
       <div className="container mx-auto px-5">
+        {/* Two-column layout - stacks vertically on mobile, side-by-side on desktop */}
         <div className="flex flex-col md:flex-row items-center gap-12 text-center md:text-left">
+          {/* Left column - text content and CTA buttons */}
           <div className="flex-1">
+            {/* Main heading - dangerouslySetInnerHTML allows HTML in translation (e.g., <span> for styling) */}
             <h1
-              className="text-5xl font-extrabold leading-tight mb-5 text-dark"
+              className="text-5xl font-extrabold leading-tight mb-5 text-dark dark:text-white"
               dangerouslySetInnerHTML={{ __html: t.hero.title }}
             ></h1>
-            <p className="text-lg text-gray-500 mb-8">{t.hero.description}</p>
+            
+            {/* Hero description - gray text for contrast */}
+            <p className="text-lg text-gray-500 dark:text-gray-300 mb-8">{t.hero.description}</p>
+            
+            {/* CTA buttons container - centered on mobile, left-aligned on desktop */}
             <div className="flex gap-4 justify-center md:justify-start">
+              {/* Job Seeker CTA button - orange/secondary color */}
               <button
                 className="bg-secondary text-white hover:bg-orange-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
-                onClick={() => setActivePage("jobSeekerRegistration")}
+                onClick={() => navigate("/register-seeker")}  // Navigate to job seeker registration
               >
-                {t.hero.jobSeekerBtn}
+                {t.hero.jobSeekerBtn}  {/* Button text from translations */}
               </button>
+              
+              {/* Business CTA button - blue/primary color */}
               <button
                 className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
-                onClick={() => setActivePage("businessRegistration")}
+                onClick={() => navigate("/register-business")}  // Navigate to business registration
               >
-                {t.hero.businessBtn}
+                {t.hero.businessBtn}  {/* Button text from translations */}
               </button>
             </div>
           </div>
+          
+          {/* Right column - feature icons grid */}
           <div className="flex-1 flex justify-center items-center w-full">
-            <div className="flex items-center justify-between max-w-[600px] w-full mx-auto flex-wrap md:flex-nowrap gap-5 md:gap-0 justify-center">
-              <div className="flex flex-col items-center text-center w-[120px]">
+            {/* Responsive grid - 2 columns on mobile, 4 columns on medium+ screens */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 lg:gap-6 w-full mx-auto justify-items-center">
+              
+              {/* Feature 1: Skill Analysis */}
+              <div className="flex flex-col items-center text-center max-w-[120px]">
+                {/* Circular icon container - clickable, scrolls to skill-analysis section */}
                 <div
-                  className="w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#3B82F6]"
+                  className="w-[70px] h-[70px] rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#3B82F6] dark:text-blue-400"
                   onClick={() => handleSectionClick("skill-analysis")}
                 >
+                  {/* Bar chart SVG icon representing skill analysis */}
                   <svg
                     className="w-[30px] h-[30px]"
                     fill="none"
@@ -48,14 +102,18 @@ const Hero = ({ t, setActivePage, handleSectionClick }) => {
                     ></path>
                   </svg>
                 </div>
-                <div className="text-sm font-medium">{t.features.step1}</div>
+                {/* Feature label - step 1 text from translations */}
+                <div className="text-sm font-medium dark:text-gray-200">{t.features.step1}</div>
               </div>
-              <div className="text-gray-500 text-xl mx-2.5 hidden md:block">→</div>
-              <div className="flex flex-col items-center text-center w-[120px]">
+              
+              {/* Feature 2: Gap Identification */}
+              <div className="flex flex-col items-center text-center max-w-[120px]">
+                {/* Circular icon container - orange color, scrolls to gap-identification section */}
                 <div
-                  className="w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#F97316]"
+                  className="w-[70px] h-[70px] rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#F97316] dark:text-orange-400"
                   onClick={() => handleSectionClick("gap-identification")}
                 >
+                  {/* Shield with checkmark SVG icon representing verification/gap analysis */}
                   <svg
                     className="w-[30px] h-[30px]"
                     fill="none"
@@ -71,14 +129,18 @@ const Hero = ({ t, setActivePage, handleSectionClick }) => {
                     ></path>
                   </svg>
                 </div>
-                <div className="text-sm font-medium">{t.features.step2}</div>
+                {/* Feature label - step 2 text from translations */}
+                <div className="text-sm font-medium dark:text-gray-200">{t.features.step2}</div>
               </div>
-              <div className="text-gray-500 text-xl mx-2.5 hidden md:block">→</div>
-              <div className="flex flex-col items-center text-center w-[120px]">
+              
+              {/* Feature 3: Training Bridge */}
+              <div className="flex flex-col items-center text-center max-w-[120px]">
+                {/* Circular icon container - green color, scrolls to training-bridge section */}
                 <div
-                  className="w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#10B981]"
+                  className="w-[70px] h-[70px] rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#10B981] dark:text-green-400"
                   onClick={() => handleSectionClick("training-bridge")}
                 >
+                  {/* Open book SVG icon representing training/education */}
                   <svg
                     className="w-[30px] h-[30px]"
                     fill="none"
@@ -94,14 +156,18 @@ const Hero = ({ t, setActivePage, handleSectionClick }) => {
                     ></path>
                   </svg>
                 </div>
-                <div className="text-sm font-medium">{t.features.step3}</div>
+                {/* Feature label - step 3 text from translations */}
+                <div className="text-sm font-medium dark:text-gray-200">{t.features.step3}</div>
               </div>
-              <div className="text-gray-500 text-xl mx-2.5 hidden md:block">→</div>
-              <div className="flex flex-col items-center text-center w-[120px]">
+              
+              {/* Feature 4: Job Matching */}
+              <div className="flex flex-col items-center text-center max-w-[120px]">
+                {/* Circular icon container - purple color, scrolls to job-matching section */}
                 <div
-                  className="w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#8B5CF6]"
+                  className="w-[70px] h-[70px] rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-lg mb-2.5 cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl text-[#8B5CF6] dark:text-purple-400"
                   onClick={() => handleSectionClick("job-matching")}
                 >
+                  {/* Briefcase SVG icon representing job opportunities */}
                   <svg
                     className="w-[30px] h-[30px]"
                     fill="none"
@@ -117,7 +183,8 @@ const Hero = ({ t, setActivePage, handleSectionClick }) => {
                     ></path>
                   </svg>
                 </div>
-                <div className="text-sm font-medium">{t.features.step4}</div>
+                {/* Feature label - step 4 text from translations */}
+                <div className="text-sm font-medium dark:text-gray-200">{t.features.step4}</div>
               </div>
             </div>
           </div>
@@ -127,4 +194,5 @@ const Hero = ({ t, setActivePage, handleSectionClick }) => {
   );
 };
 
+// Export Hero component as default export
 export default Hero;

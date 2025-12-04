@@ -1,24 +1,89 @@
+/**
+ * Global Stylesheet for JobGati Application
+ * 
+ * This file imports Tailwind CSS and defines custom theme variables,
+ * dark mode configuration, and base styles for the entire application.
+ */
+
+/* Import Tailwind CSS - modern utility-first CSS framework */
+/* This includes all Tailwind's base styles, components, and utilities */
 @import "tailwindcss";
 
+/* 
+ * Theme Configuration Block
+ * Define CSS custom properties (CSS variables) for consistent theming
+ * These variables can be used throughout the application
+ */
 @theme {
+  /* Primary brand color - Blue (used for main CTAs, links, active states) */
   --color-primary: #3b82f6;
+
+  /* Secondary brand color - Orange (used for accents, highlights) */
   --color-secondary: #f97316;
+
+  /* Success color - Green (used for success messages, positive actions) */
   --color-success: #10b981;
+
+  /* Warning color - Amber (used for warnings, caution messages) */
   --color-warning: #f59e0b;
+
+  /* Danger/Error color - Red (used for errors, destructive actions) */
   --color-danger: #ef4444;
+
+  /* Light background color - Very light gray (used for light mode backgrounds) */
   --color-light: #f9fafb;
+
+  /* Dark text/background color - Dark gray (used for text in light mode) */
   --color-dark: #1f2937;
+
+  /* Gray color - Medium gray (used for secondary text, borders) */
   --color-gray: #6b7280;
+
+  /* White color - Pure white (used for cards, containers in light mode) */
   --color-white: #ffffff;
 
+  /* Font family - Sans-serif font stack for readable, modern typography */
   --font-sans: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/*
+ * Dark Mode Variant Configuration
+ * Define when dark mode styles should be applied
+ * This applies dark mode when 'dark' class is on element or any ancestor
+ */
+@variant dark (&:where(.dark, .dark *));
+
+/*
+ * Base Layer - Fundamental styles applied globally
+ * These styles form the foundation of the application's appearance
+ */
 @layer base {
+
+  /* Body element - the main container for all page content */
   body {
+    /* Set background color to light gray in light mode */
     background-color: var(--color-light);
+
+    /* Set text color to dark gray for readability */
     color: var(--color-dark);
+
+    /* Set line height to 1.6 for better readability */
     line-height: 1.6;
+
+    /* Use custom sans-serif font family */
     font-family: var(--font-sans);
+
+    /* Smooth transition when switching between light and dark modes */
+    /* Transition applies to background-color and color changes over 0.3 seconds */
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  /* Dark mode body styles - applied when 'dark' class is present */
+  :where(.dark) body {
+    /* Set dark background color (very dark gray/black) for dark mode */
+    background-color: #111827;
+
+    /* Set light text color (off-white) for readability in dark mode */
+    color: #f3f4f6;
   }
 }

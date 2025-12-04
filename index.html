@@ -1,13 +1,35 @@
+<!-- HTML5 Document Type Declaration - tells browser this is an HTML5 document -->
 <!doctype html>
+
+<!-- Root HTML element with language attribute set to English for accessibility and SEO -->
 <html lang="en">
+  <!-- Head section - contains metadata and document information not visible to users -->
   <head>
+    <!-- Character encoding declaration - UTF-8 supports all international characters -->
     <meta charset="UTF-8" />
+    
+    <!-- Favicon link - displays icon in browser tab (Vite's default SVG icon) -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    
+    <!-- Viewport meta tag - ensures responsive design on mobile devices -->
+    <!-- width=device-width sets page width to device screen width -->
+    <!-- initial-scale=1.0 sets initial zoom level to 100% -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Page title - displays in browser tab and search results -->
     <title>jobgati</title>
   </head>
+  
+  <!-- Body section - contains all visible page content -->
   <body>
+    <!-- Root div - React application will be mounted/rendered inside this element -->
+    <!-- The id="root" is used by React's createRoot() in main.jsx -->
     <div id="root"></div>
+    
+    <!-- Script tag - loads the main JavaScript entry point for the React application -->
+    <!-- type="module" indicates this is an ES module (allows import/export) -->
+    <!-- src="/src/main.jsx" points to the React application entry file -->
+    <!-- Vite processes this during development and build -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
