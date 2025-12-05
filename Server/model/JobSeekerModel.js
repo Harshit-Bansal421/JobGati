@@ -1,30 +1,60 @@
-
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const jobSeekerSchema = new mongoose.Schema(
   {
-    // phone: {
-    //   type: String,
-    // },
     name: {
       type: String,
       required: true,
     },
+
+    phone: {
+      type: String,      // Store as string → aage leading 0 remove na ho
+      required: true,
+    },
+
     age: {
       type: Number,
       required: true,
     },
-    Highest_Education_Level: {
+
+    education: {
       type: String,
       required: true,
-    },  
+    },
+
+    location: {
+      type: String,
+      required: true,
+    },
+
+    aadhar: {
+      type: String,      // Store as string (to avoid number size issues)
+      required: true,
+    },
+
     skills: {
-      type: [String], // Array of skills
+      type: [String],
+      default: [],
+    },
+
+    experience: [
+  {
+    role: String,
+    company: String,
+    duration: String
+  }
+]
+,
+    resume: {
+      type: String,       // File URL or Base64 string
+    },
+
+    certificates: {
+      type: [String],     // URLs or filenames
       default: [],
     },
   },
   { timestamps: true }
 );
 
-const JobSeekerModel = mongoose.models.JobSeekers || mongoose.model("JobSeekers", userSchema)
-export default JobSeekerModel;
+export default mongoose.models.JobSeeker || mongoose.model("JobSeeker", jobSeekerSchema);
