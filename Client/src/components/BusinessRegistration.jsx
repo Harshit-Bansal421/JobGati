@@ -54,7 +54,7 @@ const BusinessRegistration = () => {
     (state) => state.language
   );
 
-  const isLoggedIn=useSelector(state=> state.auth.isLoggedIn)
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
 
   // Get the translation object for the current language
   // Falls back to empty object if translations not available
@@ -95,27 +95,27 @@ const BusinessRegistration = () => {
   };
 
   const handleAddRequiredSkill = (e) => {
-  if (e.key === "Enter" && newRequiredSkill.trim()) {
-    setFormData((prev) => ({
-      ...prev,
-      requiredSkills: [...prev.requiredSkills, newRequiredSkill.trim()],
-    }));
-    setNewRequiredSkill("");
-    e.preventDefault();
-  }
-};
+    if (e.key === "Enter" && newRequiredSkill.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        requiredSkills: [...prev.requiredSkills, newRequiredSkill.trim()],
+      }));
+      setNewRequiredSkill("");
+      e.preventDefault();
+    }
+  };
 
   /**
    * Handles removing a skill from the required skills list
    * @param {number} index - The index of the skill to remove
    */
   const handleRemoveRequiredSkill = (index) => {
-  setFormData((prev) => {
-    const arr = [...prev.requiredSkills];
-    arr.splice(index, 1);
-    return { ...prev, requiredSkills: arr };
-  });
-};
+    setFormData((prev) => {
+      const arr = [...prev.requiredSkills];
+      arr.splice(index, 1);
+      return { ...prev, requiredSkills: arr };
+    });
+  };
 
   if (!t.forms) return null;
 
@@ -124,32 +124,32 @@ const BusinessRegistration = () => {
   // ============================================
 
   const finalRegisterBusiness = () => {
-  if (
-    !formData.businessName ||
-    !formData.industry ||
-    !formData.location ||
-    formData.contactPerson.length !== 10
-  ) {
-    setError("Please fill in all business information fields correctly.");
-    return;
-  }
+    if (
+      !formData.businessName ||
+      !formData.industry ||
+      !formData.location ||
+      formData.contactPerson.length !== 10
+    ) {
+      setError("Please fill in all business information fields correctly.");
+      return;
+    }
 
-  const payload = {
-    ...formData,
-    contactPerson: Number(formData.contactPerson),
-    ExpectedSalary: Number(formData.ExpectedSalary),
-    jobPositions: formData.jobPositions
-      ? formData.jobPositions.split(",").map((p) => p.trim())
-      : [],
+    const payload = {
+      ...formData,
+      contactPerson: Number(formData.contactPerson),
+      ExpectedSalary: Number(formData.ExpectedSalary),
+      jobPositions: formData.jobPositions
+        ? formData.jobPositions.split(",").map((p) => p.trim())
+        : [],
+    };
+
+    console.log("FINAL PAYLOAD:", payload);
+
+
+    // isLoggedIn ? createBusiness(payload) : alert("error")
+    dispatch(register({ data: payload, type: "business" }));
+    navigate("/login");
   };
-
-  console.log("FINAL PAYLOAD:", payload);
-
-  
-  isLoggedIn ? createBusiness(payload) : alert("error")
-  dispatch(register({ data: payload, type: "business" }));
-  navigate("/login");
-};
 
 
   return (
@@ -263,16 +263,6 @@ const BusinessRegistration = () => {
                 />
               </div>
 
-              {/* ACTION BUTTONS */}
-              <div className="mb-5 w-full flex justify-center">
-                {/* REGISTER BUTTON - Primary action */}
-                <button
-                  className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
-                  onClick={finalRegisterBusiness}
-                >
-                  {t.forms.registerBusiness}
-                </button>
-              </div>
             </div>
 
             {/* ======================================== */}
@@ -356,7 +346,19 @@ const BusinessRegistration = () => {
                   ))}
                 </div>
               </div>
+
             </div>
+
+          </div>
+          {/* ACTION BUTTONS */}
+          <div className="mb-5 w-full flex justify-center">
+            {/* REGISTER BUTTON - Primary action */}
+            <button
+              className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
+              onClick={finalRegisterBusiness}
+            >
+              {t.forms.registerBusiness}
+            </button>
           </div>
         </div>
       </div>

@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 
 // Import login action to update authentication state
 import { login } from '../store/slices/authSlice';
+import { useSelector } from 'react-redux';
 
 /**
  * LoginPage functional component
@@ -40,6 +41,8 @@ const LoginPage = () => {
 
   // Get dispatch function to trigger Redux actions
   const dispatch = useDispatch();
+  const user=useSelector((state)=>state.auth.user)
+  const type=useSelector((state)=>state.auth.type)
 
   /**
    * handleLogin - Processes login attempt
@@ -56,14 +59,25 @@ const LoginPage = () => {
       return;
     }
 
-    const user = {
-      username,
-      email,
-      password
+    const userkey = {
+      ...user,
+      "email":email,
+      "password":password,
+      "username":username
     };
 
+    if(type==="business"){
+      navigate("/business-dashboard");
+      createBusiness(userkey)
+    }else if(type==="jobseeker"){
+      navigate("/jobseeker-dashboard");
+      createJobseeker(userkey)
+    }else if(type==="user"){
+      navigate("/user-dashboard");
+      createUser(userkey)
+    }
 
-    dispatch(login(user));
+    dispatch(login(userkey));
     navigate("/dashboard");
   };
 

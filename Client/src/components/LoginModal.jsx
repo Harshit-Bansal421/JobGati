@@ -14,7 +14,6 @@ const LoginModal = ({ onClose, onLogin }) => {
   const { currentLanguage, translations } = useSelector(
     (state) => state.language
   );
- 
   
   const dispatch = useDispatch();
 
