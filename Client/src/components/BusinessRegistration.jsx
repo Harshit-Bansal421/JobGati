@@ -54,8 +54,7 @@ const BusinessRegistration = () => {
     (state) => state.language
   );
 
-  // Extract the list of required skills from the user Redux slice
-  const { requiredSkills } = useSelector((state) => state.user);
+  const isLoggedIn=useSelector(state=> state.auth.isLoggedIn)
 
   // Get the translation object for the current language
   // Falls back to empty object if translations not available
@@ -146,7 +145,8 @@ const BusinessRegistration = () => {
 
   console.log("FINAL PAYLOAD:", payload);
 
-  createBusiness(payload);
+  
+  isLoggedIn ? createBusiness(payload) : alert("error")
   dispatch(register({ data: payload, type: "business" }));
   navigate("/login");
 };

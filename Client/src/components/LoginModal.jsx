@@ -42,7 +42,7 @@ const LoginModal = ({ onClose, onLogin }) => {
     e.preventDefault();
 
     // Simulate login process - check if both fields have values
-    if (email && password) {
+    if (form.email && form.password) {
       // Call onLogin callback if provided (this dispatches Redux login action in Layout)
       if (onLogin) onLogin();
     }
@@ -88,7 +88,7 @@ const LoginModal = ({ onClose, onLogin }) => {
             <input
               type="email" // HTML5 email validation
               id="email" // Matches htmlFor in label
-              value={email} // Controlled by email state
+              value={form.email} // Controlled by email state
               onChange={(e) => setEmail(e.target.value)} // Updates state on change
               required // HTML5 required validation
               className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100"
@@ -105,7 +105,7 @@ const LoginModal = ({ onClose, onLogin }) => {
             <input
               type="password" // Masks password characters
               id="password" // Matches htmlFor in label
-              value={password} // Controlled by password state
+              value={form.password} // Controlled by password state
               onChange={(e) => setPassword(e.target.value)} // Updates state on change
               required // HTML5 required validation
               className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100"
