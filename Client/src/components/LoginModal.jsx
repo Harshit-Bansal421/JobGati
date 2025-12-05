@@ -23,6 +23,7 @@ const LoginModal = ({ onClose, onLogin }) => {
     name: "",
     email: "",
     password: "",
+    type:""
   });
 
   // Get translations from Redux store for multi-language support
