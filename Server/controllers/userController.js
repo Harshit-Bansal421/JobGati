@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 // ----------------------------
 export const createUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
     // Validate fields
     if (!email || !password) {
@@ -31,17 +31,19 @@ export const createUser = async (req, res) => {
 
     // Create user
     const user = await userModel.create({
-      email,
-      password: hashedPassword,
-    });
+  name,
+  email,
+  password: hashedPassword,
+});
 
     res.status(201).json({
       success: true,
       message: "User created successfully",
       user: {
-        _id: user._id,
-        email: user.email,
-      },
+  _id: user._id,
+  name: user.name,
+  email: user.email
+}
     });
   } catch (error) {
     res.status(500).json({
@@ -57,7 +59,7 @@ export const createUser = async (req, res) => {
 // ----------------------------
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {name, email, password } = req.body;
 
     // Validate fields
     if (!email || !password) {

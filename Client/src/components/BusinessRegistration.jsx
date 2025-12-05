@@ -23,6 +23,8 @@ const BusinessRegistration = () => {
   // Default values are empty strings
   const [formData, setFormData] = useState({
     businessName: "", // Name of the business
+    email: "",
+    password: "",
     industry: "", // Industry sector the business operates in
     location: "", // Physical location of the business
     contactPerson: "", // Main contact person for the business

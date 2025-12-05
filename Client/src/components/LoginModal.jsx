@@ -5,6 +5,7 @@ import { login } from "../store/slices/authSlice";
 
 const LoginModal = ({ onClose, onLogin }) => {
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -33,7 +34,6 @@ const LoginModal = ({ onClose, onLogin }) => {
       // 🔥 3. UI actions
       onLogin();
       onClose();
-
     } catch (error) {
       alert(error.message);
     }
@@ -46,7 +46,9 @@ const LoginModal = ({ onClose, onLogin }) => {
       <div className="bg-white rounded-lg p-10 w-full max-w-[500px] shadow-xl">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold">{t.loginTitle || "Login"}</h2>
-          <button onClick={onClose} className="text-2xl text-gray-500">×</button>
+          <button onClick={onClose} className="text-2xl text-gray-500">
+            ×
+          </button>
         </div>
 
         <form className="login-form" onSubmit={handleLogin}>
@@ -59,6 +61,15 @@ const LoginModal = ({ onClose, onLogin }) => {
               onChange={handleChange}
               required
               className="w-full p-3 border rounded-md"
+            />
+          </div>
+          <div className="mb-5">
+            <label>Name</label>
+            <input
+              id="name"
+              value={form.name}
+              onChange={handleChange}
+              required
             />
           </div>
 
@@ -74,8 +85,10 @@ const LoginModal = ({ onClose, onLogin }) => {
             />
           </div>
 
-          <button type="submit"
-            className="bg-primary text-white w-full py-2.5 rounded-md">
+          <button
+            type="submit"
+            className="bg-primary text-white w-full py-2.5 rounded-md"
+          >
             {t.login || "Login"}
           </button>
         </form>

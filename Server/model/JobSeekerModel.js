@@ -4,27 +4,27 @@ const jobSeekerSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      // required: true,
     },
 
     phone: {
       type: String,      // Store as string → aage leading 0 remove na ho
-      required: true,
+      // required: true,
     },
 
     age: {
       type: Number,
-      required: true,
+      // required: true,
     },
 
     education: {
       type: String,
-      required: true,
+      // required: true,
     },
 
     location: {
       type: String,
-      required: true,
+      // required: true,
     },
 
     aadhar: {
