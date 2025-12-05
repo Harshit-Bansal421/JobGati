@@ -8,6 +8,7 @@ const LoginModal = ({ onClose, onLogin }) => {
   const [form, setForm] = useState({
     email: "",
     password: "",
+    type:""
   });
 
   const { currentLanguage, translations } = useSelector(
@@ -30,6 +31,7 @@ const LoginModal = ({ onClose, onLogin }) => {
     dispatch(login(form));
     onLogin();
     onClose();
+
   };
 
   // Guard clause: don't render modal if translations aren't loaded yet
@@ -73,7 +75,9 @@ const LoginModal = ({ onClose, onLogin }) => {
               type="email" // HTML5 email validation
               id="email" // Matches htmlFor in label
               value={form.email} // Controlled by email state
+
               onChange={handleChange} // Updates state on change
+
               required // HTML5 required validation
               className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100"
             />

@@ -1,7 +1,6 @@
 // controllers/userController.js
 import userModel from "../model/userModel.js";
 
-
 // Create user (basic function)
 export const createUser = async (req, res) => {
   try {

@@ -62,7 +62,7 @@ const LoginPage = () => {
       password
     };
 
-    
+
     dispatch(login(user));
     navigate("/dashboard");
   };
