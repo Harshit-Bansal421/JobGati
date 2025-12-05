@@ -1,52 +1,37 @@
-/**
- * LoginModal Component - User Authentication Dialog
- *
- * This component renders a modal dialog for user login.
- * It includes email/password fields, remember me checkbox, and forgot password link.
- * The modal has a dark overlay backdrop and can be closed via X button or backdrop click.
- */
 
-// Import React and useState hook for managing form state
 import React, { useState } from "react";
 import { createUser } from "../services/userServices";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/slices/authSlice";
 
-// Import useSelector to access translations from Redux
-import { useSelector } from "react-redux";
-
-/**
- * LoginModal functional component
- * @param {Function} onClose - Callback function to close the modal
- * @param {Function} onLogin - Callback function called after successful login
- */
 const LoginModal = ({ onClose, onLogin }) => {
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
     type:""
   });
 
-  // Get translations from Redux store for multi-language support
   const { currentLanguage, translations } = useSelector(
     (state) => state.language
   );
+ 
+  
+  const dispatch = useDispatch();
 
-  // Extract form translations for current language (with fallback to empty object)
   const t = translations[currentLanguage]?.forms || {};
 
-  /**
-   * handleLogin - Processes login form submission
-   * @param {Event} e - Form submit event
-   */
-  const handleLogin = (e) => {
-    // Prevent default form submission (which would reload the page)
-    e.preventDefault();
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));
 
-    // Simulate login process - check if both fields have values
-    if (form.email && form.password) {
-      // Call onLogin callback if provided (this dispatches Redux login action in Layout)
-      if (onLogin) onLogin();
-    }
+  }
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    createUser(form);
+    dispatch(login(form));
+    onLogin();
+    onClose();
+
   };
 
   // Guard clause: don't render modal if translations aren't loaded yet
@@ -90,7 +75,9 @@ const LoginModal = ({ onClose, onLogin }) => {
               type="email" // HTML5 email validation
               id="email" // Matches htmlFor in label
               value={form.email} // Controlled by email state
-              onChange={(e) => setEmail(e.target.value)} // Updates state on change
+
+              onChange={handleChange} // Updates state on change
+
               required // HTML5 required validation
               className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100"
             />
@@ -107,7 +94,7 @@ const LoginModal = ({ onClose, onLogin }) => {
               type="password" // Masks password characters
               id="password" // Matches htmlFor in label
               value={form.password} // Controlled by password state
-              onChange={(e) => setPassword(e.target.value)} // Updates state on change
+              onChange={handleChange} // Updates state on change
               required // HTML5 required validation
               className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100"
             />
