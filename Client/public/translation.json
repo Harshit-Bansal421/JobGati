@@ -102,18 +102,22 @@
       "login": "Login",
       "forgotPassword": "Forgot Password?",
       "businessReg": "Register Your Business",
-      "businessName": "Business Name",
-      "industry": "Industry",
+      "businessName": "Business Name*",
+      "industry": "Industry*",
       "industryOptions": [
         "Manufacturing",
         "Construction",
         "Retail",
         "Services",
         "Technology",
+        "Healthcare",
+        "Education",
+        "Agriculture",
+        "Transportation",
         "Other"
       ],
-      "location": "Location",
-      "contactPerson": "Contact Person",
+      "location": "Location*",
+      "contactPerson": "Contact*",
       "jobPositions": "Job Positions Needed",
       "jobPositionsPlaceholder": "List the positions you need to fill...",
       "requiredSkills": "Required Skills",
@@ -124,7 +128,10 @@
       "password": "Password",
       "rememberMe": "Remember me",
       "noAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "signUp": "Sign up",
+      "ExpectedSalary":"Expected Salary",
+      "aadhar":"Aadhar",
+      "phone":"Phone"
     }
   },
   "hi": {
