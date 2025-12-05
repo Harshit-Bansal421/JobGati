@@ -18,6 +18,10 @@ const authSlice = createSlice({
   initialState: {
     isLoggedIn: false, // Boolean - tracks if the user is currently authenticated
     user: null,        // Object or null - stores user details like name, email, id
+    type:null , //which type of user is logged in
+    isRegisered:false, // Boolean - tracks if the user is currently registered
+    isVerified:false, // Boolean - tracks if the user is currently verified
+    loginDetails:null // Object or null - stores user details like name, email, id
   },
   
   // Reducers - pure functions that handle state updates
@@ -25,12 +29,21 @@ const authSlice = createSlice({
   reducers: {
     // login reducer - handles user authentication
     // When dispatched, sets user as logged in and stores user data
+    register: (state, action) => {
+      // Set logged in status to true
+      state.isRegisered = true;
+      
+      // Store user data from action payload (e.g., { name: 'John', email: 'john@example.com' })
+      state.user = action.payload.data; // Payload could be user data
+      state.type = action.payload.type; // Payload could be user data
+    },
+
     login: (state, action) => {
       // Set logged in status to true
       state.isLoggedIn = true;
       
       // Store user data from action payload (e.g., { name: 'John', email: 'john@example.com' })
-      state.user = action.payload; // Payload could be user data
+      state.loginDetails = action.payload.data; // Payload could be user data
     },
     
     // logout reducer - handles user sign out
@@ -41,13 +54,18 @@ const authSlice = createSlice({
       
       // Clear user data
       state.user = null;
+      state.type = null;
+      state.isRegisered = false;
+      state.isVerified = false;
+      state.loginDetails = null;
     },
+
   },
 });
 
 // Export action creators - these can be imported and dispatched in components
 // Usage: dispatch(login(userData)) or dispatch(logout())
-export const { login, logout } = authSlice.actions;
+export const { login, logout,register } = authSlice.actions;
 
 // Export the reducer - this is added to the store in store/index.js
 export default authSlice.reducer;
