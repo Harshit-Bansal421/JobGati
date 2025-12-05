@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", router)
 app.use("/api/jobseekers", jsrouter);
-app.use("/api/businesses", businessrouter);
+app.use("/api/business", businessrouter);
 
 // Start server
 app.listen(PORT, () => {
