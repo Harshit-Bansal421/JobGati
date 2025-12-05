@@ -14,13 +14,17 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    password: {
+    password:{
       type: String,
       required: true,
       minlength: 6,
     },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true}
 );
 
 const userModel = mongoose.models.JGUser || mongoose.model("JGUser", userSchema)
