@@ -1,35 +1,23 @@
-
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const businessSchema = new mongoose.Schema(
   {
-    business_name: {
-      type: String,
-      
-    },
-    industry: {
-      type: String,
-      
-    },
-    location: {
-      type: String,
-
-    },
-    contact_person: {
-      type: Number,
-    },
-    job_positions: {
-      type: [String], // Array of positions
+    businessName: String,
+    industry: String,
+    location: String,
+    contactPerson: Number,
+    jobPositions: {
+      type: [String],
       default: [],
     },
-    required_Skills: {
-      type: [String], 
+    ExpectedSalary: Number,
+    requiredSkills: {
+      type: [String],
       default: [],
     },
-
   },
   { timestamps: true }
 );
 
-const BusinessModel = mongoose.models.Businesses || mongoose.model("Businesses", userSchema)
-export default BusinessModel;
+// Important → use "Business" NOT "Businesses"
+export default mongoose.models.Business || mongoose.model("Business", businessSchema);

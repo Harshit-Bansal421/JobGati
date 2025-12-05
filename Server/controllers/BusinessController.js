@@ -1,9 +1,11 @@
-
 import BusinessModel from "../model/BusinessModel.js";
 
 // Create Business
 export const createBusiness = async (req, res) => {
   try {
+    console.log("🔥🔥 CREATE BUSINESS CONTROLLER HIT!");
+    console.log("Received data:", req.body);
+
     const business = new BusinessModel(req.body);
     const savedBusiness = await business.save();
     res.status(201).json({
