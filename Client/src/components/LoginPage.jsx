@@ -43,8 +43,8 @@ const LoginPage = () => {
 
   // Get dispatch function to trigger Redux actions
   const dispatch = useDispatch();
-  const user=useSelector((state)=>state.auth.user)
-  const type=useSelector((state)=>state.auth.type)
+  const user = useSelector((state) => state.auth.user)
+  const type = useSelector((state) => state.auth.type)
 
   /**
    * handleLogin - Processes login attempt
@@ -63,31 +63,30 @@ const LoginPage = () => {
 
     const userkey = {
       ...user,
-      "email":email,
-      "password":password,
-      "username":username
+      "email": email,
+      "password": password,
+      "username": username
     };
 
     const loginData = {
-      "email":email,
-      "password":password,
-      "username":username,
+      "email": email,
+      "password": password,
+      "username": username,
       "type": type
     }
-    if(type==="business"){
-      //navigate("/business/dashboard");
-      createUser(loginData)
+    if (type === "business") {
+      navigate("/business-dashboard");
       createBusiness(userkey)
-     }else if(type==="jobseeker"){
-      //navigate("/jobseeker/dashboard");
-       createJobseeker(userkey)
-       }else if(type==="user"){
-       //navigate("/user/dashboard");
-       createUser(userkey)
-     }
+    } else if (type === "jobseeker") {
+      navigate("/jobseeker-dashboard");
+      createJobseeker(userkey)
+    } else if (type === "user") {
+      navigate("/user-dashboard");
+      //createUser(userkey)
+    }
+    createUser(loginData)
 
     dispatch(login(userkey));
-    
   };
 
   // Render the login page

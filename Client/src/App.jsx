@@ -43,6 +43,8 @@ import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import About from './components/About';
 import BusinessDashboard from './components/BusinessDashboard';
+import JobseekerDashboard from './components/JobSeekerDashboard';
+import UserDashboard from './components/UserDashboard';
 
 /**
  * App functional component
@@ -108,7 +110,9 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         
         {/* Dashboard route - protected user dashboard (requires login) */}
-        <Route path="business/dashboard" element={<BusinessDashboard />} />
+        <Route path="business-dashboard" element={<BusinessDashboard />} />
+        <Route path="jobseeker-dashboard" element={<JobseekerDashboard />} />
+        <Route path="user-dashboard" element={<UserDashboard />} />
         <Route path="about" element={<About />} />
       </Route>
     </Routes>
