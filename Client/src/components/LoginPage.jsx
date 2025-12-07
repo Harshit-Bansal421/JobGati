@@ -10,6 +10,7 @@
 import React, { useState } from 'react';
 import { createBusiness } from "../services/BusinessServices";
 import { createUser } from '../services/userServices';
+import { createJobSeeker } from '../services/JobSeekerSeeker';
 
 // Import useNavigate for programmatic navigation after login
 import { useNavigate } from 'react-router-dom';
@@ -43,8 +44,8 @@ const LoginPage = () => {
 
   // Get dispatch function to trigger Redux actions
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user)
-  const type = useSelector((state) => state.auth.type)
+  const user=useSelector((state)=>state.auth.user)
+  const type=useSelector((state)=>state.auth.type)
 
   /**
    * handleLogin - Processes login attempt
@@ -63,31 +64,33 @@ const LoginPage = () => {
 
     const userkey = {
       ...user,
-      "email": email,
-      "password": password,
-      "username": username
+      "email":email,
+      "password":password,
+      "username":username
     };
 
     const loginData = {
-      "email": email,
-      "password": password,
-      "username": username,
+      "email":email,
+      "password":password,
+      "username":username,
       "type": type
     }
-    if (type === "business") {
-      navigate("/business-dashboard");
+    if(type==="business"){
+      //navigate("/business/dashboard");
+      createUser(loginData)
       createBusiness(userkey)
-    } else if (type === "jobseeker") {
-      navigate("/jobseeker-dashboard");
-      createJobseeker(userkey)
-    } else if (type === "user") {
-      navigate("/user-dashboard");
-      //createUser(userkey)
-    }
-    createUser(loginData)
+     }else if(type==="jobseeker"){
+      //navigate("/jobseeker/dashboard");
+       createJobSeeker(loginData)
+       }else if(type==="user"){
+       //navigate("/user/dashboard");
+       createUser(userkey)
+     }
 
     dispatch(login(userkey));
-  };
+    
+    navigate("/dashboard");
+};
 
   // Render the login page
   return (

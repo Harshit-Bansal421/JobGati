@@ -4,12 +4,16 @@ import JobSeekerModel from "../model/JobSeekerModel.js";
 export const createJobSeeker = async (req, res) => {
   console.log("Req Body:", req.body);
   try {
-    const { name, age, Highest_Education_Level, skills } = req.body;
+    const { username, email, password, type, name, age, education, skills } = req.body;
 
     const jobSeeker = await JobSeekerModel.create({
+      username,
+      email,
+      password,
+      type,
       name,
       age,
-      Highest_Education_Level,
+      education,
       skills,
     });
 
