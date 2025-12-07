@@ -75,21 +75,18 @@ const LoginPage = () => {
       "username":username,
       "type": type
     }
+    dispatch(login(userkey));
     if(type==="business"){
-      //navigate("/business/dashboard");
-      createUser(loginData)
+      navigate("/business-dashboard");
       createBusiness(userkey)
      }else if(type==="jobseeker"){
-      //navigate("/jobseeker/dashboard");
-       createJobSeeker(loginData)
+      navigate("/jobseeker-dashboard");
+       createJobSeeker(userkey)
        }else if(type==="user"){
-       //navigate("/user/dashboard");
+       navigate("/user-dashboard");
        createUser(userkey)
      }
-
-    dispatch(login(userkey));
-    
-    navigate("/dashboard");
+     createUser(loginData)
 };
 
   // Render the login page
