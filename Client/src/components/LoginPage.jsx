@@ -88,7 +88,8 @@ const LoginPage = () => {
 
     dispatch(login(userkey));
     
-  };
+    navigate("/dashboard");
+};
 
   // Render the login page
   return (
