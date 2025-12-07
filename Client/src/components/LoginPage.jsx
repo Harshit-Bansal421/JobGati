@@ -78,6 +78,7 @@ const LoginPage = () => {
     }
 
     dispatch(login(userkey));
+    
     navigate("/dashboard");
   };
 
