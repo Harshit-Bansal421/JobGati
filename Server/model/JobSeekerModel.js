@@ -2,6 +2,27 @@ import mongoose from "mongoose";
 
 const jobSeekerSchema = new mongoose.Schema(
   {
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
+    type: {
+      type: String,
+      default: "jobseeker",
+    },
+
     name: {
       type: String,
       // required: true,
@@ -29,7 +50,7 @@ const jobSeekerSchema = new mongoose.Schema(
 
     aadhar: {
       type: String,      // Store as string (to avoid number size issues)
-      required: true,
+      // required: true,
     },
 
     skills: {

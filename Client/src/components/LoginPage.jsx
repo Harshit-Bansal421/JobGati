@@ -10,6 +10,7 @@
 import React, { useState } from 'react';
 import { createBusiness } from "../services/BusinessServices";
 import { createUser } from '../services/userServices';
+import { createJobSeeker } from '../services/JobSeekerSeeker';
 
 // Import useNavigate for programmatic navigation after login
 import { useNavigate } from 'react-router-dom';
@@ -80,7 +81,7 @@ const LoginPage = () => {
       createBusiness(userkey)
      }else if(type==="jobseeker"){
       //navigate("/jobseeker/dashboard");
-       createJobseeker(userkey)
+       createJobSeeker(loginData)
        }else if(type==="user"){
        //navigate("/user/dashboard");
        createUser(userkey)
@@ -88,7 +89,8 @@ const LoginPage = () => {
 
     dispatch(login(userkey));
     
-  };
+    navigate("/dashboard");
+};
 
   // Render the login page
   return (
