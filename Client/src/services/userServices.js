@@ -10,6 +10,8 @@ export const createUser = async (userData) => {
       body: JSON.stringify(userData),
     });
 
+    console.log("user DB : ",req.body)
+
     // Check if request failed
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));

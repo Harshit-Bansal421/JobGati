@@ -8,6 +8,8 @@
 
 // Import React and useState hook for managing form state
 import React, { useState } from 'react';
+import { createBusiness } from "../services/BusinessServices";
+import { createUser } from '../services/userServices';
 
 // Import useNavigate for programmatic navigation after login
 import { useNavigate } from 'react-router-dom';
@@ -66,19 +68,26 @@ const LoginPage = () => {
       "username":username
     };
 
-    if(type==="business"){
-      navigate("/business-dashboard");
-      createBusiness(userkey)
-    }else if(type==="jobseeker"){
-      navigate("/jobseeker-dashboard");
-      createJobseeker(userkey)
-    }else if(type==="user"){
-      navigate("/user-dashboard");
-      createUser(userkey)
+    const loginData = {
+      "email":email,
+      "password":password,
+      "username":username,
+      "type": type
     }
+    if(type==="business"){
+      //navigate("/business/dashboard");
+      createUser(loginData)
+      createBusiness(userkey)
+     }else if(type==="jobseeker"){
+      //navigate("/jobseeker/dashboard");
+       createJobseeker(userkey)
+       }else if(type==="user"){
+       //navigate("/user/dashboard");
+       createUser(userkey)
+     }
 
     dispatch(login(userkey));
-    navigate("/dashboard");
+    
   };
 
   // Render the login page

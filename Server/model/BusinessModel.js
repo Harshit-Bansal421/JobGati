@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 const businessSchema = new mongoose.Schema(
   {
     businessName: String,
+    username: String,
+    email: String,
+    password: String,
     industry: String,
     location: String,
     contactPerson: Number,

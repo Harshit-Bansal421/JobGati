@@ -6,8 +6,9 @@ import bcrypt from "bcryptjs";
 //   CREATE USER (SIGNUP)
 // ----------------------------
 export const createUser = async (req, res) => {
+  
   try {
-    const { email, password } = req.body;
+    const { username, email, password, type } = req.body;
 
     // Validate fields
     if (!email || !password) {
@@ -31,8 +32,10 @@ export const createUser = async (req, res) => {
 
     // Create user
     const user = await userModel.create({
+      username,
       email,
       password: hashedPassword,
+      type
     });
 
     res.status(201).json({
@@ -40,9 +43,14 @@ export const createUser = async (req, res) => {
       message: "User created successfully",
       user: {
         _id: user._id,
+        username: user.username,
         email: user.email,
+        type: user.type
       },
     });
+
+    console.log("User Data : ", req.body)
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -57,7 +65,7 @@ export const createUser = async (req, res) => {
 // ----------------------------
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {username, email, password, type } = req.body;
 
     // Validate fields
     if (!email || !password) {
@@ -91,6 +99,7 @@ export const loginUser = async (req, res) => {
       user: {
         _id: user._id,
         email: user.email,
+        type : user.type,
       },
     });
   } catch (error) {
@@ -100,7 +109,6 @@ export const loginUser = async (req, res) => {
     });
   }
 };
-
 
 // ----------------------------
 //   GET ALL USERS

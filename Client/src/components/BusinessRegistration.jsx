@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { register } from "../store/slices/authSlice";
 import "./../index.css";
-import { createBusiness } from "../services/BusinessServices";
 
 // ============================================
 // BUSINESS REGISTRATION COMPONENT
@@ -23,6 +22,8 @@ const BusinessRegistration = () => {
   // Default values are empty strings
   const [formData, setFormData] = useState({
     businessName: "", // Name of the business
+    email: "",
+    password: "",
     industry: "", // Industry sector the business operates in
     location: "", // Physical location of the business
     contactPerson: "", // Main contact person for the business
