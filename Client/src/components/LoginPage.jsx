@@ -13,19 +13,6 @@ import { createUser } from '../services/userServices';
 import { createJobSeeker } from '../services/JobSeekerSeeker';
 
 // Import useNavigate for programmatic navigation after login
-import { useNavigate } from 'react-router-dom';
-
-// Import Redux hooks for state management
-import { useDispatch } from 'react-redux';
-
-// Import login action to update authentication state
-import { login } from '../store/slices/authSlice';
-import { useSelector } from 'react-redux';
-
-/**
- * LoginPage functional component
- * Renders a centered login form on a full page
- */
 const LoginPage = () => {
   // Local state for email input field
   const [email, setEmail] = useState("");
@@ -40,16 +27,19 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   // Get navigate function for route navigation
+  // Local state for user type
+  const [type, setType] = useState("jobseeker"); // Default to jobseeker
+
+  // Get navigate function for route navigation
   const navigate = useNavigate();
 
   // Get dispatch function to trigger Redux actions
   const dispatch = useDispatch();
-  const user=useSelector((state)=>state.auth.user)
-  const type=useSelector((state)=>state.auth.type)
+  // const user=useSelector((state)=>state.auth.user) // Not used/needed here for registration input
+  // const type=useSelector((state)=>state.auth.type) // Removed: type should be selected by user
 
   /**
-   * handleLogin - Processes login attempt
-   * Validates credentials, stores in localStorage, updates Redux, and navigates to dashboard
+   * handleLogin - Processes registration attempt
    */
   const handleLogin = async () => {
     if (!username || !email || !password) {
@@ -62,35 +52,49 @@ const LoginPage = () => {
       return;
     }
 
-    const userkey = {
-      ...user,
-      "email":email,
-      "password":password,
-      "username":username
+    const userData = {
+      username,
+      email,
+      password,
+      type
     };
 
-    const loginData = {
-      "email":email,
-      "password":password,
-      "username":username,
-      "type": type
-    }
-    if(type==="business"){
-      navigate("/business/dashboard");
-      createBusiness(userkey)
-     }else if(type==="jobseeker"){
-      //navigate("/jobseeker/dashboard");
-       createJobSeeker(userkey)
-       }else if(type==="user"){
-       //navigate("/user/dashboard");
-       createUser(userkey)
-     }
+    try {
+      console.log(">>> Starting Registration. UserData:", userData);
+      // 1. Dispatch Login (or Register) action - mostly for state update if needed immediately
+      dispatch(login({ data: userData }));
 
-     createUser(loginData);
-    dispatch(login(userkey));
-    
-    navigate("/dashboard");
-};
+      // 2. Call APIs based on type
+      let res1, res2;
+      
+      // Always create the base User account
+      // Note: userServices.createUser usually returns the response data
+      res1 = await createUser(userData); 
+      console.log("User creation response:", res1);
+
+      if (type === "business") {
+         res2 = await createBusiness(userData);
+         console.log("Business creation response:", res2);
+         if (res2 && res2.success !== false) { // basic check depending on service return
+             dispatch(setUserData(res2.data || res2));
+             navigate("/business-dashboard");
+         }
+      } else if (type === "jobseeker") {
+         res2 = await createJobSeeker(userData);
+         console.log("JobSeeker creation response:", res2);
+         // createJobSeeker returns res.json() directly. 
+         dispatch(setUserData(res2.data || res2));
+         navigate("/jobseeker-dashboard");
+      } else {
+         // Default generic user
+         navigate("/user-dashboard");
+      }
+
+    } catch (err) {
+      console.error("Registration Error:", err);
+      setError("Registration failed: " + err.message);
+    }
+  };
 
   // Render the login page
   return (
@@ -102,6 +106,20 @@ const LoginPage = () => {
 
         {/* Error message display - only shown if error exists */}
         {error && <div className="bg-red-100 text-red-700 p-4 rounded mb-4">{error}</div>}
+
+        {/* User Type Selection */}
+        <div className="mb-5">
+          <label className="block mb-2 font-medium dark:text-gray-200">I am a:</label>
+          <select
+            className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:text-gray-200 dark:bg-gray-700"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="jobseeker">Job Seeker</option>
+            <option value="business">Business</option>
+            <option value="user">User</option>
+          </select>
+        </div>
 
         {/* input field container */}
         <div className="mb-5">
@@ -147,7 +165,7 @@ const LoginPage = () => {
           className="w-full bg-success text-white hover:bg-green-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
           onClick={handleLogin}  // Calls handleLogin when clicked
         >
-          Login
+          Register
         </button>
       </div>
     </div>

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { createUser } from "../services/userServices"; // ← backend login API
+import { loginUser } from "../services/userServices"; // ← backend login API
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../store/slices/authSlice";
+import { setUserData } from "../store/slices/userSlice";
 
 const LoginModal = ({ onClose, onLogin }) => {
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -25,13 +25,25 @@ const LoginModal = ({ onClose, onLogin }) => {
     e.preventDefault();
 
     try {
-      
-      // 🔥 2. Update Redux
-      dispatch(login(res.user));
+      // 🔥 1. Call API
+      const res = await loginUser(form);
 
-      // 🔥 3. UI actions
-      onLogin();
-      onClose();
+      if (res.success) {
+         // 🔥 2. Update Redux
+         // The structure from backend is { user: {...}, profile: {...} }
+         // The authSlice expects { loginDetails: action.payload.data }
+         // We might need to adjust what we pass to match authSlice expectation or update authSlice.
+         // Looking at authSlice: state.loginDetails = action.payload.data;
+         // So we should pass { data: { ...res.user, ...res.profile } } or similar.
+         // But wait, the user wants "get the data fields according to the type... and retrieve the data... in the redux model"
+         
+         dispatch(login({ data: { ...res.user, profile: res.profile } }));
+         dispatch(setUserData(res.profile));
+
+         // 🔥 3. UI actions
+         onLogin();
+         onClose();
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -59,15 +71,6 @@ const LoginModal = ({ onClose, onLogin }) => {
               onChange={handleChange}
               required
               className="w-full p-3 border rounded-md"
-            />
-          </div>
-          <div className="mb-5">
-            <label>Name</label>
-            <input
-              id="name"
-              value={form.name}
-              onChange={handleChange}
-              required
             />
           </div>
 

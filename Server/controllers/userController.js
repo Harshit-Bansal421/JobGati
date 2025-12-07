@@ -1,5 +1,7 @@
 // controllers/userController.js
 import userModel from "../model/userModel.js";
+import JobSeekerModel from "../model/JobSeekerModel.js";
+import BusinessModel from "../model/BusinessModel.js";
 import bcrypt from "bcryptjs";
 
 // ----------------------------
@@ -65,7 +67,7 @@ export const createUser = async (req, res) => {
 // ----------------------------
 export const loginUser = async (req, res) => {
   try {
-    const {username, email, password, type } = req.body;
+    const { email, password } = req.body;
 
     // Validate fields
     if (!email || !password) {
@@ -93,14 +95,23 @@ export const loginUser = async (req, res) => {
       });
     }
 
+    // Fetch profile data based on type
+    let profileData = null;
+    if (user.type === "jobseeker") {
+      profileData = await JobSeekerModel.findOne({ email: user.email });
+    } else if (user.type === "business") {
+      profileData = await BusinessModel.findOne({ email: user.email });
+    }
+
     res.status(200).json({
       success: true,
       message: "Login successful",
       user: {
         _id: user._id,
         email: user.email,
-        type : user.type,
+        type: user.type,
       },
+      profile: profileData,
     });
   } catch (error) {
     res.status(500).json({
