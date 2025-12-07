@@ -61,8 +61,7 @@ const LoginPage = () => {
       email,
       password
     };
-
-
+    
     dispatch(login(user));
     navigate("/dashboard");
   };
