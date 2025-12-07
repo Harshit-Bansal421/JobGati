@@ -76,17 +76,17 @@ const LoginPage = () => {
       "type": type
     }
     if(type==="business"){
-      //navigate("/business/dashboard");
-      createUser(loginData)
+      navigate("/business/dashboard");
       createBusiness(userkey)
      }else if(type==="jobseeker"){
       //navigate("/jobseeker/dashboard");
-       createJobSeeker(loginData)
+       createJobSeeker(userkey)
        }else if(type==="user"){
        //navigate("/user/dashboard");
        createUser(userkey)
      }
 
+     createUser(loginData);
     dispatch(login(userkey));
     
     navigate("/dashboard");
