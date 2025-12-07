@@ -1,16 +1,18 @@
-/**
- * LoginPage Component - Dedicated Login Page  
- * 
- * This is a full-page login component (as opposed to the LoginModal).
- * It handles user authentication, stores credentials in localStorage,
- * and redirects to dashboard upon successful login.
- */
 
-// Import React and useState hook for managing form state
 import React, { useState } from 'react';
+// Import useNavigate for programmatic navigation after login
+import { useNavigate } from 'react-router-dom';
+// Import useDispatch for Redux actions
+import { useDispatch } from 'react-redux';
+
 import { createBusiness } from "../services/BusinessServices";
 import { createUser } from '../services/userServices';
 import { createJobSeeker } from '../services/JobSeekerSeeker';
+
+// Import Redux actions
+import { login } from '../store/slices/authSlice';
+import { setUserData } from '../store/slices/userSlice';
+import { useSelector } from 'react-redux';
 
 // Import useNavigate for programmatic navigation after login
 const LoginPage = () => {
@@ -27,10 +29,6 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   // Get navigate function for route navigation
-  // Local state for user type
-  const [type, setType] = useState("jobseeker"); // Default to jobseeker
-
-  // Get navigate function for route navigation
   const navigate = useNavigate();
 
   // Get dispatch function to trigger Redux actions
@@ -41,6 +39,7 @@ const LoginPage = () => {
   /**
    * handleLogin - Processes registration attempt
    */
+  const type=useSelector((state)=>state.auth.type)
   const handleLogin = async () => {
     if (!username || !email || !password) {
       setError("Please fill in all fields.");
@@ -66,28 +65,28 @@ const LoginPage = () => {
 
       // 2. Call APIs based on type
       let res1, res2;
-      
+
       // Always create the base User account
       // Note: userServices.createUser usually returns the response data
-      res1 = await createUser(userData); 
+      res1 = await createUser(userData);
       console.log("User creation response:", res1);
 
       if (type === "business") {
-         res2 = await createBusiness(userData);
-         console.log("Business creation response:", res2);
-         if (res2 && res2.success !== false) { // basic check depending on service return
-             dispatch(setUserData(res2.data || res2));
-             navigate("/business-dashboard");
-         }
+        res2 = await createBusiness(userData);
+        console.log("Business creation response:", res2);
+        if (res2 && res2.success !== false) { // basic check depending on service return
+          dispatch(setUserData(res2.data || res2));
+          navigate("/business-dashboard");
+        }
       } else if (type === "jobseeker") {
-         res2 = await createJobSeeker(userData);
-         console.log("JobSeeker creation response:", res2);
-         // createJobSeeker returns res.json() directly. 
-         dispatch(setUserData(res2.data || res2));
-         navigate("/jobseeker-dashboard");
+        res2 = await createJobSeeker(userData);
+        console.log("JobSeeker creation response:", res2);
+        // createJobSeeker returns res.json() directly. 
+        dispatch(setUserData(res2.data || res2));
+        navigate("/jobseeker-dashboard");
       } else {
-         // Default generic user
-         navigate("/user-dashboard");
+        // Default generic user
+        navigate("/user-dashboard");
       }
 
     } catch (err) {
@@ -107,19 +106,6 @@ const LoginPage = () => {
         {/* Error message display - only shown if error exists */}
         {error && <div className="bg-red-100 text-red-700 p-4 rounded mb-4">{error}</div>}
 
-        {/* User Type Selection */}
-        <div className="mb-5">
-          <label className="block mb-2 font-medium dark:text-gray-200">I am a:</label>
-          <select
-            className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:text-gray-200 dark:bg-gray-700"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <option value="jobseeker">Job Seeker</option>
-            <option value="business">Business</option>
-            <option value="user">User</option>
-          </select>
-        </div>
 
         {/* input field container */}
         <div className="mb-5">

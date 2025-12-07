@@ -33,13 +33,13 @@ import { Menu, X, Globe, User, LogOut, LayoutDashboard, Moon, Sun } from 'lucide
 const Header = ({ setShowLogin }) => {
   // Local state for mobile menu visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   // Get navigation function for programmatic routing
   const navigate = useNavigate();
-  
+
   // Get current location to highlight active nav item
   const location = useLocation();
-  
+
   // Get dispatch function to trigger Redux actions
   const dispatch = useDispatch();
 
@@ -47,26 +47,12 @@ const Header = ({ setShowLogin }) => {
   const { currentLanguage, translations } = useSelector((state) => state.language);  // Translations
   const { isLoggedIn } = useSelector((state) => state.auth);                        // Authentication status
   const { mode } = useSelector((state) => state.theme);                             // Theme mode (dark/light)
-  
+
   // Extract translations for current language with fallback
   const t = translations[currentLanguage] || {};
 
-  // Navigation items array - defines all navigation links
-  const navItems = [
-    { path: '/', label: t?.nav?.home || 'Home' },
-    { path: '/register-seeker', label: t?.nav?.forJobSeekers || 'For Job Seekers' },
-    { path: '/register-business', label: t?.nav?.forBusinesses || 'For Businesses' },
-    {path: '/about', label:'About'}
-    // Commented out - future navigation items
-    // { path: '/about', label: t?.nav?.about || 'About' }, 
-    // { path: '/contact', label: t?.nav?.contact || 'Contact' },
-  ];
 
-  /**
-   * isActive - Checks if a navigation item is currently active
-   * @param {string} path - Route path to check
-   * @returns {boolean} True if the path matches current location
-   */
+
   const isActive = (path) => {
     return location.pathname === path;
   };
@@ -93,7 +79,7 @@ const Header = ({ setShowLogin }) => {
     <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link 
+        <Link
           to="/"
           className="text-2xl font-bold text-primary dark:text-blue-400 cursor-pointer flex items-center gap-2"
         >
@@ -102,17 +88,44 @@ const Header = ({ setShowLogin }) => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-3 lg:gap-6">
-          {navItems.map((item) => (
-            <button
-              key={item.path}
-              onClick={() => handleNavClick(item.path)}
-              className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${
-                isActive(item.path) ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+          {/* Home - Always visible */}
+          <button
+            onClick={() => handleNavClick('/')}
+            className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
               }`}
-            >
-              {item.label}
-            </button>
-          ))}
+          >
+            {t?.nav?.home || 'Home'}
+          </button>
+
+          {/* Show registration links only when NOT logged in */}
+          {!isLoggedIn && (
+            <>
+              <button
+                onClick={() => handleNavClick('/register-seeker')}
+                className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/register-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                  }`}
+              >
+                {t?.nav?.forJobSeekers || 'For Job Seekers'}
+              </button>
+
+              <button
+                onClick={() => handleNavClick('/register-business')}
+                className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/register-business') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                  }`}
+              >
+                {t?.nav?.forBusinesses || 'For Businesses'}
+              </button>
+            </>
+          )}
+
+          {/* About - Always visible */}
+          <button
+            onClick={() => handleNavClick('/about')}
+            className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/about') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+              }`}
+          >
+            About
+          </button>
         </nav>
 
         {/* Actions (Theme, Language & Login) */}
@@ -181,33 +194,60 @@ const Header = ({ setShowLogin }) => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 py-4 px-4 flex flex-col gap-4 shadow-lg absolute w-full left-0 z-50">
-          {navItems.map((item) => (
-            <button
-              key={item.path}
-              onClick={() => handleNavClick(item.path)}
-              className={`text-left text-base font-medium transition-colors hover:text-primary ${
-                isActive(item.path) ? 'text-primary' : 'text-gray-600'
+        <div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 py-4 px-4 flex flex-col gap-4 shadow-lg absolute w-full left-0 z-50">
+          {/* Home - Always visible */}
+          <button
+            onClick={() => handleNavClick('/')}
+            className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
               }`}
-            >
-              {item.label}
-            </button>
-          ))}
-          
+          >
+            {t?.nav?.home || 'Home'}
+          </button>
+
+          {/* Show registration links only when NOT logged in */}
+          {!isLoggedIn && (
+            <>
+              <button
+                onClick={() => handleNavClick('/register-seeker')}
+                className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/register-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                  }`}
+              >
+                {t?.nav?.forJobSeekers || 'For Job Seekers'}
+              </button>
+
+              <button
+                onClick={() => handleNavClick('/register-business')}
+                className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/register-business') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                  }`}
+              >
+                {t?.nav?.forBusinesses || 'For Businesses'}
+              </button>
+            </>
+          )}
+
+          {/* About - Always visible */}
+          <button
+            onClick={() => handleNavClick('/about')}
+            className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/about') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+              }`}
+          >
+            About
+          </button>
+
           <div className="border-t border-gray-100 pt-4 flex flex-col gap-4">
-             <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm flex items-center gap-2">
-                  <Globe size={16} /> Language
-                </span>
-                <select
-                  value={currentLanguage}
-                  onChange={(e) => dispatch(setLanguage(e.target.value))}
-                  className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="en">English</option>
-                  <option value="hi">हिंदी</option>
-                </select>
-             </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 text-sm flex items-center gap-2">
+                <Globe size={16} /> Language
+              </span>
+              <select
+                value={currentLanguage}
+                onChange={(e) => dispatch(setLanguage(e.target.value))}
+                className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="en">English</option>
+                <option value="hi">हिंदी</option>
+              </select>
+            </div>
 
             {isLoggedIn ? (
               <>
