@@ -1,87 +1,167 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Briefcase, Settings, FileText, Users, Edit2, Plus, 
   X, Save, PenTool, EyeOff, MapPin, Clock, DollarSign, CheckSquare, Phone,
   Trash2, Power, AlertCircle
 } from 'lucide-react';
-
-// --- DATA ---
-const COMPANY_DATA = {
-  "bussiness name": "BuildTech Constructions",
-  username: "buildtech.hr",
-  industry: "Construction",
-  location: "Pune, Maharashtra",
-  contact: "+91 20 4567 8900",
-  email: "hr@buildtech.com",
-  password: "password123",
-  about: "We are a leading infrastructure development company specializing in high-rise commercial buildings and metro projects across Western India.",
-  jobs: [
-    { id: 1, title: "Senior Welder", date: "Oct 20, 2024", status: "Active", applicants: 12, jobCategory: "Construction", jobType: "Full-time", salary: "25000" },
-    { id: 2, title: "Site Supervisor", date: "Oct 18, 2024", status: "Active", applicants: 8, jobCategory: "Construction", jobType: "Contractual", salary: "35000" },
-    { id: 3, title: "Electrician", date: "Sep 30, 2024", status: "Closed", applicants: 45, jobCategory: "Electrical", jobType: "Daily Wage", salary: "800" },
-  ]
-};
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { 
+    getBusinessProfile, updateBusiness, 
+    getBusinessJobs, postJob, updateJob, deleteJob, toggleJobStatus 
+} from '../services/BusinessServices';
+import { setUserData } from '../store/slices/userSlice';
 
 // --- MAIN COMPONENT ---
 export default function CompanyDashboard({ isDarkMode = true }) {
-  const [data, setData] = useState(COMPANY_DATA);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data: currentUser } = useSelector((state) => state.user);
+  
+  const [data, setData] = useState({
+      businessName: "",
+      username: "",
+      email: "", 
+      industry: "",
+      location: "",
+      contact: "",
+      about: "",
+      jobs: []
+  });
+  
   const [modalType, setModalType] = useState(null);
   const [tempData, setTempData] = useState({});
   const [selectedJob, setSelectedJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Load Initial Data
+  useEffect(() => {
+      const fetchData = async () => {
+          if (!currentUser?._id) {
+              setLoading(false);
+              return; // Should probably redirect to login
+          }
+
+          try {
+              setLoading(true);
+              // Fetch latest profile and jobs in parallel
+              const [profile, jobs] = await Promise.all([
+                  getBusinessProfile(currentUser._id),
+                  getBusinessJobs(currentUser._id)
+              ]);
+
+              if (profile) {
+                 dispatch(setUserData(profile)); // Keep redux in sync
+                 setData(prev => ({ ...profile, jobs: jobs || [] }));
+              }
+          } catch (error) {
+              console.error("Error fetching dashboard data:", error);
+          } finally {
+              setLoading(false);
+          }
+      };
+
+      fetchData();
+  }, [currentUser?._id, dispatch]);
 
   // Unified Edit Handler
   const openEditProfile = () => {
-    setTempData({ ...data }); // Load all current data into temp state
+    setTempData({ ...data }); 
     setModalType('editProfile');
   };
 
-  const handleSaveProfile = () => {
-    setData({ ...data, ...tempData });
-    setModalType(null);
-  };
-
-  const handleSaveJob = () => {
-    if (selectedJob) {
-      // UPDATE EXISTING JOB
-      const updatedJobs = data.jobs.map(job => 
-        job.id === selectedJob.id 
-          ? { ...job, ...tempData, title: tempData.newJobTitle } // merging temp data
-          : job
-      );
-      setData({ ...data, jobs: updatedJobs });
-    } else {
-      // CREATE NEW JOB
-      const newJob = {
-        id: Date.now(),
-        title: tempData.newJobTitle,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        status: "Active",
-        applicants: 0,
-        ...tempData // Spread rest of the form data
-      };
-      setData({ ...data, jobs: [newJob, ...data.jobs] });
+  const handleSaveProfile = async () => {
+    if (!currentUser?._id) return;
+    setSaving(true);
+    
+    try {
+        // Remove jobs from profile update payload if present
+        const { jobs, ...profileData } = tempData;
+        
+        const updatedProfile = await updateBusiness(currentUser._id, profileData);
+        if (updatedProfile) {
+            setData(prev => ({ ...prev, ...updatedProfile }));
+            dispatch(setUserData(updatedProfile));
+            setModalType(null);
+        }
+    } catch (error) {
+        console.error("Error saving profile:", error);
+        alert("Failed to save profile changes.");
+    } finally {
+        setSaving(false);
     }
-    setModalType(null);
-    setSelectedJob(null);
   };
 
-  const handleDeleteJob = (id) => {
+  const handleSaveJob = async () => {
+    if (!currentUser?._id) return;
+    setSaving(true);
+
+    try {
+        if (selectedJob) {
+          // UPDATE EXISTING JOB
+          const updatedJob = await updateJob(selectedJob._id, { ...tempData, title: tempData.newJobTitle });
+          
+          if (updatedJob) {
+              const updatedJobs = data.jobs.map(job => 
+                job._id === selectedJob._id ? updatedJob : job
+              );
+              setData({ ...data, jobs: updatedJobs });
+          }
+        } else {
+          // CREATE NEW JOB
+          const newJobData = {
+            ...tempData,
+            title: tempData.newJobTitle,
+            businessId: currentUser._id, // Attach business ID
+            jobCategory: tempData.jobCategory || "Other",
+            jobType: tempData.jobType || "Full-time",
+            status: "Active"
+          };
+    
+          const createdJob = await postJob(newJobData);
+          if (createdJob) {
+              setData({ ...data, jobs: [createdJob, ...data.jobs] });
+          }
+        }
+        setModalType(null);
+        setSelectedJob(null);
+        setTempData({});
+    } catch (error) {
+        console.error("Error saving job:", error);
+        alert("Failed to save job details.");
+    } finally {
+        setSaving(false);
+    }
+  };
+
+  const handleDeleteJob = async (id) => {
     if(window.confirm("Are you sure you want to delete this job post?")) {
-      const updatedJobs = data.jobs.filter(job => job.id !== id);
-      setData({ ...data, jobs: updatedJobs });
-      setModalType(null);
+      const res = await deleteJob(id);
+      if (res && res.success) {
+          const updatedJobs = data.jobs.filter(job => job._id !== id);
+          setData({ ...data, jobs: updatedJobs });
+          setModalType(null);
+      }
     }
   };
 
-  const handleToggleStatus = (id) => {
-    const updatedJobs = data.jobs.map(job => {
-      if (job.id === id) {
-        return { ...job, status: job.status === "Active" ? "Closed" : "Active" };
-      }
-      return job;
-    });
-    setData({ ...data, jobs: updatedJobs });
-    setModalType(null); // Close the manage modal if open
+  const handleToggleStatus = async (id) => {
+    const updatedJob = await toggleJobStatus(id);
+    if (updatedJob) {
+        const updatedJobs = data.jobs.map(job => {
+          if (job._id === id) {
+            return updatedJob;
+          }
+          return job;
+        });
+        setData({ ...data, jobs: updatedJobs });
+        
+        // Also update selectedJob if it's the one currently open in modal
+        if (selectedJob && selectedJob._id === id) {
+            setSelectedJob(updatedJob);
+        }
+    }
   };
 
   const handleViewApplicants = (job) => {
@@ -104,6 +184,13 @@ export default function CompanyDashboard({ isDarkMode = true }) {
       experience: selectedJob.experience,
       education: selectedJob.education,
       salary: selectedJob.salary,
+      payFreq: selectedJob.payFreq,
+      overtime: selectedJob.overtime,
+      accommodation: selectedJob.accommodation,
+      food: selectedJob.food,
+      location: selectedJob.location,
+      shift: selectedJob.shift,
+      description: selectedJob.description
     });
     setModalType('newJob');
   };
@@ -116,6 +203,24 @@ export default function CompanyDashboard({ isDarkMode = true }) {
   const modalContainerClass = `rounded-2xl w-full max-w-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`;
   const modalHeaderClass = `flex justify-between items-center p-4 border-b ${isDarkMode ? 'border-slate-700 bg-slate-900/50' : 'border-slate-200 bg-slate-50'}`;
   const buttonBaseClass = "px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 w-full";
+
+  if (loading) {
+      return (
+          <div className={`min-h-screen flex items-center justify-center ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-slate-50'}`}>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+      );
+  }
+
+  // If no user data even after loading (e.g. strict protected route logic needed elsewhere)
+  if (!currentUser) {
+      return (
+        <div className={`min-h-screen flex flex-col items-center justify-center ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-slate-50'}`}>
+            <p>Please log in to view the dashboard.</p>
+            <button onClick={() => navigate('/login')} className="mt-4 text-blue-500 underline">Go to Login</button>
+        </div>
+      )
+  }
 
   return (
     <div className={`min-h-screen p-4 md:p-8 font-sans transition-colors duration-300 ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
@@ -137,7 +242,7 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className={inputContainerClass}>
                     <label className={labelClass}>Business Name</label>
-                    <input type="text" value={tempData["bussiness name"] || ''} onChange={e => setTempData({...tempData, "bussiness name": e.target.value})} className={inputClass} />
+                    <input type="text" value={tempData.businessName || ''} onChange={e => setTempData({...tempData, businessName: e.target.value})} className={inputClass} />
                   </div>
                   <div className={inputContainerClass}>
                     <label className={labelClass}>Username</label>
@@ -169,8 +274,10 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                 </div>
 
                 <div className="pt-4 flex justify-end gap-2">
-                  <button onClick={() => setModalType(null)} className={`${buttonBaseClass} ${isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95"}`}>Cancel</button>
-                  <button onClick={handleSaveProfile} className={`${buttonBaseClass} bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95`}><Save size={16}/> Save Changes</button>
+                  <button onClick={() => setModalType(null)} className={`${buttonBaseClass} ${isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95"}`} disabled={saving}>Cancel</button>
+                  <button onClick={handleSaveProfile} className={`${buttonBaseClass} bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95`} disabled={saving}>
+                      {saving ? "Saving..." : <><Save size={16}/> Save Changes</>}
+                  </button>
                 </div>
               </div>
             </div>
@@ -187,28 +294,29 @@ export default function CompanyDashboard({ isDarkMode = true }) {
               </div>
               <div className="p-6 overflow-y-auto custom-scrollbar">
                 <div className="space-y-3">
-                   {[1, 2, 3, 4, 5].map((id) => (
-                       <div key={id} className={`p-4 rounded-lg flex justify-between items-center border transition-colors ${isDarkMode ? 'bg-slate-700/50 border-slate-600 hover:bg-slate-700' : 'bg-slate-50 border-slate-200 hover:bg-slate-100'}`}>
-                          <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-900/50">A{id}</div>
-                              <div>
-                                  <p className={`font-bold text-sm md:text-base ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Applicant Name {id}</p>
-                                  <div className="flex gap-2 text-xs text-slate-400 mt-0.5">
-                                     <span>Experience: {id + 2} Years</span>
-                                     <span>•</span>
-                                     <span>Pune, MH</span>
-                                  </div>
-                                  <div className="flex gap-2 mt-2">
-                                    <span className={`text-[10px] px-2 py-0.5 rounded ${isDarkMode ? 'bg-slate-600/50 text-slate-300' : 'bg-slate-200 text-slate-700'}`}>Certified Welder</span>
-                                    <span className={`text-[10px] px-2 py-0.5 rounded ${isDarkMode ? 'bg-slate-600/50 text-slate-300' : 'bg-slate-200 text-slate-700'}`}>Immediate Joiner</span>
+                   {/* NOTE: Applicants logic needs to be connected to backend when applicants data model is ready. 
+                       For now, showing 0 or mock if necessary, but focusing on job/business integration first. 
+                       Currently `job.applicants` is a number from the model. 
+                   */}
+                   {selectedJob?.applicants === 0 && <p className="text-center text-gray-500">No applicants yet.</p>}
+                   
+                   {/* Placeholder for when we have applicant objects */}
+                   {[...Array(selectedJob?.applicants || 0)].map((_, index) => {
+                       const id = index + 1;
+                       return (
+                           <div key={id} className={`p-4 rounded-lg flex justify-between items-center border transition-colors ${isDarkMode ? 'bg-slate-700/50 border-slate-600 hover:bg-slate-700' : 'bg-slate-50 border-slate-200 hover:bg-slate-100'}`}>
+                              <div className="flex items-center gap-4">
+                                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-900/50">A{id}</div>
+                                  <div>
+                                      <p className={`font-bold text-sm md:text-base ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Applicant {id}</p>
+                                      <div className="flex gap-2 text-xs text-slate-400 mt-0.5">
+                                         <span>Details unavailable</span>
+                                      </div>
                                   </div>
                               </div>
-                          </div>
-                          <button className="bg-blue-600 hover:bg-blue-500 text-white p-2.5 rounded-lg transition-colors shadow-lg shadow-blue-900/30 active:scale-95 group" title="Contact Applicant">
-                              <Phone size={18} className="group-hover:fill-current" />
-                          </button>
-                       </div>
-                   ))}
+                           </div>
+                       )
+                   })}
                </div>
                <div className="pt-4 flex justify-end">
                   <button onClick={() => setModalType(null)} className={`${buttonBaseClass} ${isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95"}`}>Close</button>
@@ -242,13 +350,13 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                           <Edit2 size={16} /> Edit Job Details
                        </button>
                        
-                       <button onClick={() => handleToggleStatus(selectedJob?.id)} className={`${buttonBaseClass} ${selectedJob?.status === 'Active' ? (isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95") : "bg-green-900/20 hover:bg-green-900/40 text-green-400 border border-green-900/50 active:scale-95"}`}>
+                       <button onClick={() => handleToggleStatus(selectedJob?._id)} className={`${buttonBaseClass} ${selectedJob?.status === 'Active' ? (isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95") : "bg-green-900/20 hover:bg-green-900/40 text-green-400 border border-green-900/50 active:scale-95"}`}>
                           <Power size={16} /> {selectedJob?.status === 'Active' ? 'Close Job Position' : 'Re-open Job Position'}
                        </button>
                        
                        <div className={`h-px my-2 ${isDarkMode ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
                        
-                       <button onClick={() => handleDeleteJob(selectedJob?.id)} className={`${buttonBaseClass} bg-red-900/20 hover:bg-red-900/40 text-red-400 border border-red-900/50 active:scale-95`}>
+                       <button onClick={() => handleDeleteJob(selectedJob?._id)} className={`${buttonBaseClass} bg-red-900/20 hover:bg-red-900/40 text-red-400 border border-red-900/50 active:scale-95`}>
                           <Trash2 size={16} /> Delete Job Permanently
                        </button>
                     </div>
@@ -373,8 +481,10 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                 </div>
 
                 <div className={`pt-6 flex justify-end gap-3 border-t mt-6 ${isDarkMode ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <button onClick={() => setModalType(null)} className={`${buttonBaseClass} ${isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95"}`}>Cancel</button>
-                  <button onClick={handleSaveJob} className={`${buttonBaseClass} bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95`}><Plus size={16}/> {selectedJob ? "Save Changes" : "Post Job"}</button>
+                  <button onClick={() => setModalType(null)} className={`${buttonBaseClass} ${isDarkMode ? "bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95" : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm active:scale-95"}`} disabled={saving}>Cancel</button>
+                  <button onClick={handleSaveJob} className={`${buttonBaseClass} bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95`} disabled={saving}>
+                       {saving ? "Saving..." : <><Plus size={16}/> {selectedJob ? "Save Changes" : "Post Job"}</>}
+                  </button>
                 </div>
               </div>
             </div>
@@ -385,7 +495,7 @@ export default function CompanyDashboard({ isDarkMode = true }) {
         <div className={`flex justify-between items-center border-b pb-6 ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}`}>
           <div>
             <h1 className={`text-3xl font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Company Dashboard</h1>
-            <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{data["bussiness name"]}</p>
+            <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{data.businessName}</p>
           </div>
           <div className="flex items-center gap-4">
             <div className={`px-3 py-1 rounded-full text-xs font-bold border ${isDarkMode ? 'bg-blue-900/30 text-blue-300 border-blue-500/30' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
@@ -409,7 +519,7 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                <div className="space-y-1">
                  <div className="mb-4">
                     <p className={`text-xs font-medium mb-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Business Name</p>
-                    <div className="flex items-center gap-2"><p className={`text-sm md:text-base font-medium ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{data["bussiness name"]}</p></div>
+                    <div className="flex items-center gap-2"><p className={`text-sm md:text-base font-medium ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{data.businessName}</p></div>
                  </div>
                  <div className="mb-4">
                     <p className={`text-xs font-medium mb-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Username</p>
@@ -452,14 +562,14 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                 <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-800'}`}>About Business</h3>
               </div>
             </div>
-            <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>{data.about}</p>
+            <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>{data.about || "No description provided."}</p>
             <div className={`mt-6 pt-6 border-t flex gap-6 ${isDarkMode ? 'border-slate-700' : 'border-slate-200'}`}>
               <div className="text-center">
                 <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{data.jobs.filter(j => j.status === 'Active').length}</p>
                 <p className={`text-xs uppercase ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Active Jobs</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-500">84</p>
+                <p className="text-2xl font-bold text-blue-500">0</p>
                 <p className={`text-xs uppercase ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Total Hired</p>
               </div>
             </div>
@@ -488,35 +598,41 @@ export default function CompanyDashboard({ isDarkMode = true }) {
                 </tr>
               </thead>
               <tbody className={`text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                {data.jobs.map(job => (
-                  <tr key={job.id} className={`border-b transition-colors ${isDarkMode ? 'border-slate-700/50 hover:bg-slate-700/30' : 'border-slate-200 hover:bg-slate-50'}`}>
-                    <td className={`p-4 font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{job.title}</td>
-                    <td className={`p-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{job.date}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${job.status === 'Active' ? (isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700') : (isDarkMode ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-600')}`}>
-                        {job.status}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <button 
-                        onClick={() => handleViewApplicants(job)}
-                        className="text-blue-500 hover:text-blue-600 font-medium hover:underline flex items-center gap-1 transition-colors"
-                      >
-                        <Users size={14} /> 
-                        <span>{job.applicants}</span>
-                        <span className="hidden sm:inline">Applicants</span>
-                      </button>
-                    </td>
-                    <td className="p-4 text-right">
-                      <button 
-                        onClick={() => openManageJobModal(job)}
-                        className={`${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-700'}`}
-                      >
-                        Manage
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {data.jobs.length === 0 ? (
+                    <tr>
+                        <td colSpan="5" className="p-4 text-center text-slate-500">No jobs posted yet.</td>
+                    </tr>
+                ) : (
+                    data.jobs.map(job => (
+                    <tr key={job._id} className={`border-b transition-colors ${isDarkMode ? 'border-slate-700/50 hover:bg-slate-700/30' : 'border-slate-200 hover:bg-slate-50'}`}>
+                        <td className={`p-4 font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{job.title}</td>
+                        <td className={`p-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{job.date}</td>
+                        <td className="p-4">
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${job.status === 'Active' ? (isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700') : (isDarkMode ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-600')}`}>
+                            {job.status}
+                        </span>
+                        </td>
+                        <td className="p-4">
+                        <button 
+                            onClick={() => handleViewApplicants(job)}
+                            className="text-blue-500 hover:text-blue-600 font-medium hover:underline flex items-center gap-1 transition-colors"
+                        >
+                            <Users size={14} /> 
+                            <span>{job.applicants}</span>
+                            <span className="hidden sm:inline">Applicants</span>
+                        </button>
+                        </td>
+                        <td className="p-4 text-right">
+                        <button 
+                            onClick={() => openManageJobModal(job)}
+                            className={`${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-700'}`}
+                        >
+                            Manage
+                        </button>
+                        </td>
+                    </tr>
+                    ))
+                )}
               </tbody>
             </table>
           </div>
