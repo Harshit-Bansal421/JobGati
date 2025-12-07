@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { register } from '../store/slices/authSlice';
 import { Plus, Trash2, Upload, FileText, Briefcase } from 'lucide-react';
 import './../index.css';
+import { createJobSeeker } from '../services/JobSeekerSeeker';
 
 const JobSeekerRegistration = () => {
   const [newSkill, setNewSkill] = useState("");
@@ -20,7 +21,7 @@ const JobSeekerRegistration = () => {
     skills: [],
     experience: [],
     resume: "",
-    certificates: new Set()
+    certificates: []
   });
   const [error, setError] = useState("");
 
@@ -95,65 +96,71 @@ const JobSeekerRegistration = () => {
     }
   };
 
-  const handleCertificateUpload = (e) => {
-    setFormData(prev => {
-      const existingFiles = Array.from(prev.certificates);
-      const newFiles = Array.from(e.target.files);
+const handleCertificateUpload = (e) => {
+  const files = Array.from(e.target.files);
 
-      const filteredFiles = newFiles.filter(
-        newFile => !existingFiles.some(file => file.name === newFile.name && file.size === newFile.size)
-      );
+  setFormData(prev => ({
+    ...prev,
+    certificates: [...prev.certificates, ...files]
+  }));
+};
 
-      return { ...prev, certificates: new Set([...existingFiles, ...filteredFiles]) };
+const handleRemoveCertificate = (index) => {  
+  setFormData(prev => ({
+    ...prev,
+    certificates: prev.certificates.filter((_, i) => i !== index)
+  }));
+};
+
+const handleRegisterJobSeeker = () => {
+  if (!formData.name || !formData.phone || !formData.age || !formData.education || !formData.aadhar) {
+    setError("Please fill in all required fields.");
+    errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  const phoneRegex = /^[1-9]\d{9}$/;
+  if (!phoneRegex.test(formData.phone)) {
+    setError("Phone number must be 10 digits and cannot start with 0.");
+    return;
+  }
+
+  const aadharRegex = /^[1-9][0-9]{11}$/;
+  if (!aadharRegex.test(formData.aadhar)) {
+    setError("Aadhar number must be 12 digits and cannot start with 0.");
+    return;
+  }
+
+  // 🔥 IMPORTANT FIX: File objects removed, only names sent
+  const finalData = {
+    name: formData.name,
+    phone: formData.phone,
+    age: formData.age,
+    education: formData.education,
+    location: formData.location,
+    aadhar: formData.aadhar,
+    skills: formData.skills,
+    experience: formData.experience,
+    resume: formData.resume ? formData.resume.name : "",
+    certificates: formData.certificates.map(c => c.name)
+  };
+
+  console.log("FINAL DATA SENT:", finalData);  // 🔥 Now backend will receive valid JSON
+
+  createJobSeeker(finalData)
+   .then(res => {
+      console.log("SERVER RESPONSE:", res);
+      dispatch(register({ data: finalData, type: "jobseeker" }));
+      navigate("/login");
+    })
+    .catch(err => {
+      console.log("SERVER ERROR:", err);
+      setError("Server error! Check backend logs.");
     });
-  };
+  dispatch(register({ data: finalData, type: "jobseeker" }));
+  navigate("/login");
+};
 
-
-  const handleRemoveCertificate = (index) => {
-    setFormData(prev => {
-      const arr = Array.from(prev.certificates);
-      arr.splice(index, 1);
-      return { ...prev, certificates: new Set(arr) };
-    });
-  };
-
-  const handleRegisterJobSeeker = () => {
-    if (!formData.name || !formData.phone || !formData.age || !formData.education || !formData.aadhar) {
-      setError("Please fill in all required fields.");
-      errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-
-    const phoneRegex = /^[1-9]\d{9}$/; // 10 digits, first digit 1-9
-
-    if (!phoneRegex.test(formData.phone)) {
-      setError("Phone number must be 10 digits and cannot start with 0.");
-      return;
-    }
-
-
-    const aadharRegex = /^[1-9][0-9]{11}$/; // 12 digits, first digit 1-9
-
-    if (!aadharRegex.test(formData.aadhar)) {
-      setError("Aadhar number must be 12 digits and cannot start with 0.");
-      return;
-    }
-
-
-
-
-    const finalData = {
-      ...formData,
-      skills: formData.skills,
-      experience: formData.experience,
-      resume: formData.resume,
-      certificates: Array.from(formData.certificates)
-    };
-
-
-    dispatch(register({ data: finalData, type: "jobseeker" }));
-    navigate("/login");
-  };
 
   if (!t.forms) return null;
 

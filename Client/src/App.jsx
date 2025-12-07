@@ -41,6 +41,7 @@ import LoginPage from './components/LoginPage';
 
 // Import Dashboard component - user-specific dashboard after login
 import Dashboard from './components/Dashboard';
+import About from './components/About';
 
 /**
  * App functional component
@@ -107,6 +108,7 @@ function App() {
         
         {/* Dashboard route - protected user dashboard (requires login) */}
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="about" element={<About />} />
       </Route>
     </Routes>
   );

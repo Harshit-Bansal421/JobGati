@@ -1,7 +1,8 @@
-import JobSeekerModel from "../model/jobSeekerModel.js";
+import JobSeekerModel from "../model/JobSeekerModel.js";
 
 // Create Job Seeker (Signup)
 export const createJobSeeker = async (req, res) => {
+  console.log("Req Body:", req.body);
   try {
     const { name, age, Highest_Education_Level, skills } = req.body;
 

@@ -56,6 +56,7 @@ const Header = ({ setShowLogin }) => {
     { path: '/', label: t?.nav?.home || 'Home' },
     { path: '/register-seeker', label: t?.nav?.forJobSeekers || 'For Job Seekers' },
     { path: '/register-business', label: t?.nav?.forBusinesses || 'For Businesses' },
+    {path: '/about', label:'About'}
     // Commented out - future navigation items
     // { path: '/about', label: t?.nav?.about || 'About' }, 
     // { path: '/contact', label: t?.nav?.contact || 'Contact' },
