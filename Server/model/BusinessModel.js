@@ -8,7 +8,8 @@ const businessSchema = new mongoose.Schema(
     password: String,
     industry: String,
     location: String,
-    contactPerson: Number,
+    contact: String, // Changed from contactPerson (Number) to contact (String)
+    about: String, // Added about field
     jobPositions: {
       type: [String],
       default: [],

@@ -77,7 +77,7 @@ const Header = ({ setShowLogin }) => {
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center relative">
         {/* Logo */}
         <Link
           to="/"
@@ -87,7 +87,7 @@ const Header = ({ setShowLogin }) => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-3 lg:gap-6">
+        <nav className={`hidden md:flex items-center gap-3 lg:gap-6 ${isLoggedIn ? 'absolute left-1/2 -translate-x-1/2' : ''}`}>
           {/* Home - Always visible */}
           <button
             onClick={() => handleNavClick('/')}

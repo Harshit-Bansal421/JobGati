@@ -39,7 +39,9 @@ const LoginPage = () => {
   /**
    * handleLogin - Processes registration attempt
    */
-  const type=useSelector((state)=>state.auth.type)
+  // Local state for user type
+  const [type, setType] = useState("jobseeker"); // Default to jobseeker
+
   const handleLogin = async () => {
     if (!username || !email || !password) {
       setError("Please fill in all fields.");
@@ -101,10 +103,24 @@ const LoginPage = () => {
       {/* Main container - centered with max width and top margin */}
       <div className="container mx-auto px-5 max-w-md pb-10 bg-gray-100 mt-17 mb-17 pt-3 rounded-lg dark:bg-gray-800">
         {/* Page heading - large, bold, centered */}
-        <h2 className="text-3xl font-bold mb-8 text-center dark:text-gray-200">Login</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center dark:text-gray-200">Register</h2>
 
         {/* Error message display - only shown if error exists */}
         {error && <div className="bg-red-100 text-red-700 p-4 rounded mb-4">{error}</div>}
+
+        {/* User Type Selection */}
+        <div className="mb-5">
+          <label className="block mb-2 font-medium dark:text-gray-200">I am a:</label>
+          <select
+            className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:text-gray-200 dark:bg-gray-700"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="jobseeker">Job Seeker</option>
+            <option value="business">Business</option>
+            <option value="user">User</option>
+          </select>
+        </div>
 
 
         {/* input field container */}
