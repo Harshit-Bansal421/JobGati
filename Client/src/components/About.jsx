@@ -10,9 +10,9 @@ const JobGatiAbout = () => {
       {/* Hero Image Section - Overlapping with Text Overlay */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 mb-20 relative z-20">
         <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-[16/9] sm:aspect-[2.4/1] bg-slate-200">
-          <img 
-            src="https://images.unsplash.com/photo-1556740714-a8395b3bf3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
-            alt="Young Indian men at a local shop" 
+          <img
+            src="https://images.unsplash.com/photo-1556740714-a8395b3bf3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+            alt="Young Indian men at a local shop"
             className="w-full h-full object-cover"
           />
           {/* Overlay Gradient & Text */}
@@ -30,15 +30,15 @@ const JobGatiAbout = () => {
       {/* "More Than Just a Job Portal" Section */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          
+
           {/* Blue Pill Badge */}
           <div className="inline-block bg-blue-600 text-white px-8 py-2.5 rounded-full font-bold text-lg mb-8 shadow-md">
             More Than Just a Job Portal
           </div>
-          
+
           <p className="max-w-3xl mx-auto text-slate-600 text-base sm:text-lg leading-relaxed mb-16 px-4">
-            We aren't just a database; we are a community-driven ecosystem designed specifically 
-            for Tier-2 and Tier-3 cities, connecting daily wagers and skilled youth with 
+            We aren't just a database; we are a community-driven ecosystem designed specifically
+            for Tier-2 and Tier-3 cities, connecting daily wagers and skilled youth with
             hyperlocal opportunities.
           </p>
 
@@ -88,26 +88,26 @@ const JobGatiAbout = () => {
                 Why We Built This
               </h2>
               <p className="text-slate-600 text-base leading-relaxed mb-6">
-                We realized that the current job market ignores the "Real India." Most platforms 
-                cater to corporate white-collar jobs in metros, leaving behind millions of 
+                We realized that the current job market ignores the "Real India." Most platforms
+                cater to corporate white-collar jobs in metros, leaving behind millions of
                 talented workers in smaller towns.
               </p>
               <p className="text-slate-600 text-base leading-relaxed">
-                JobGati leverages the power of hyperlocal connectivity. We built this to 
-                remove the friction of middlemen, giving dignity and direct access to 
+                JobGati leverages the power of hyperlocal connectivity. We built this to
+                remove the friction of middlemen, giving dignity and direct access to
                 shuttering carpenters, retail staff, and delivery partners across the country.
               </p>
             </div>
-            
+
             <div className="md:w-1/2 w-full flex justify-center">
-               <div className="relative w-full max-w-lg">
-                <img 
-                  src="https://img.freepik.com/free-vector/isometric-map-concept_23-2147746599.jpg?w=740&t=st=1701967200~exp=1701967800~hmac=abcdef" 
-                  alt="Isometric Map" 
+              <div className="relative w-full max-w-lg">
+                <img
+                  src="./wa"
+                  alt="Isometric Map"
                   className="w-full drop-shadow-xl"
                   onError={(e) => {
-                    e.target.onerror = null; 
-                    e.target.src="https://via.placeholder.com/600x450/3b82f6/ffffff?text=Hyperlocal+Map+Illustration";
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/600x450/3b82f6/ffffff?text=Hyperlocal+Map+Illustration";
                   }}
                 />
               </div>
