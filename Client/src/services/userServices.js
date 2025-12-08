@@ -1,4 +1,4 @@
-const API_URL = "https://jobgati-1.onrender.com/api/users";
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users`;
 
 export const createUser = async (userData) => {
   try {
