@@ -1,7 +1,7 @@
 // routes/userRoutes.js
 import express from "express";
 
-import { createUser, getUsers, loginUser } from "../controllers/UserController.js";
+import { createUser, getUsers, loginUser } from "../controllers/userController.js";
 
 const router = express.Router();
 
