@@ -212,7 +212,7 @@ const BusinessRegistration = () => {
                   id="industry"
                   value={formData.industry}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:text-gray-200"
+                  className="w-full p-3 border border-gray-300 rounded-md text-base transition-colors duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
                 >
                   {/* Default placeholder option */}
                   <option value="">Select Industry</option>
@@ -222,7 +222,6 @@ const BusinessRegistration = () => {
                     <option
                       key={option}
                       value={option}
-                      onClick={handleInputChange}
                     >
                       {option}
                     </option>

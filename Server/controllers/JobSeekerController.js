@@ -48,6 +48,30 @@ export const getAllJobSeekers = async (req, res) => {
   }
 };
 
+// Get Single Job Seeker by ID
+export const getJobSeekerById = async (req, res) => {
+  try {
+    const jobSeeker = await JobSeekerModel.findById(req.params.id);
+
+    if (!jobSeeker) {
+      return res.status(404).json({
+        success: false,
+        message: "Job Seeker not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: jobSeeker,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // Update Job Seeker
 export const updateJobSeeker = async (req, res) => {
   try {

@@ -6,6 +6,7 @@ import connectDB from "../configuration/mongodb.js";
 import router from "../routes/userRoutes.js";
 import jsrouter from "../routes/JobSeekerRoutes.js";
 import businessrouter from "../routes/businessRoutes.js";
+import jobrouter from "../routes/JobRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 5000;  
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", router)
 app.use("/api/jobseekers", jsrouter);
 app.use("/api/business", businessrouter);
+app.use("/api/jobs", jobrouter);
 
 // Start server
 app.listen(PORT, () => {
