@@ -1,0 +1,274 @@
+[
+  {
+    "id": 1,
+    "skill_title": "Full Stack Web Development",
+    "description": ["HTML", "CSS", "JavaScript", "Backend Development"],
+    "courses": [
+      { "title": "The Complete 2025 Web Development Bootcamp", "platform": "Udemy", "link": "https://www.udemy.com/course/the-complete-web-development-bootcamp/" },
+      { "title": "JavaScript Algorithms and Data Structures", "platform": "FreeCodeCamp", "link": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" },
+      { "title": "CS50's Web Programming with Python and JavaScript", "platform": "edX (Harvard)", "link": "https://pll.harvard.edu/course/cs50s-web-programming-with-python-and-javascript" },
+      { "title": "The Web Developer Bootcamp", "platform": "Udemy", "link": "https://www.udemy.com/course/the-web-developer-bootcamp/" },
+      { "title": "Modern HTML & CSS From The Beginning", "platform": "Udemy", "link": "https://www.udemy.com/course/modern-html-css-from-the-beginning/" },
+      { "title": "Meta Front-End Developer Professional Certificate", "platform": "Coursera", "link": "https://www.coursera.org/professional-certificates/meta-front-end-developer" },
+      { "title": "Full Stack Open 2025", "platform": "University of Helsinki", "link": "https://fullstackopen.com/en/" },
+      { "title": "React - The Complete Guide", "platform": "Udemy", "link": "https://www.udemy.com/course/react-the-complete-guide-incl-redux/" },
+      { "title": "Introduction to Web Development", "platform": "Coursera (UCDavis)", "link": "https://www.coursera.org/learn/web-development" },
+      { "title": "Backend Development and APIs", "platform": "FreeCodeCamp", "link": "https://www.freecodecamp.org/learn/back-end-development-and-apis/" }
+    ]
+  },
+  {
+    "id": 2,
+    "skill_title": "Mobile Hardware & Software Repair",
+    "description": ["Vocational Training", "Smartphone Troubleshooting", "Repair"],
+    "courses": [
+      { "title": "Mobile Phone Repairing Course", "platform": "Udemy", "link": "https://www.udemy.com/course/mobile-repairing-course/" },
+      { "title": "Smartphone Repair Training Course", "platform": "Repairs Universe", "link": "https://www.repairsuniverse.com/pages/repair-guides" },
+      { "title": "Cell Phone Repair Academy", "platform": "CellBotics", "link": "https://cellbotics.com/cell-phone-repair-training/" },
+      { "title": "Advanced Mobile Repairing Course", "platform": "Hi-Tech Institute", "link": "https://www.hitechlaxminagar.com/mobile-repairing-course.php" },
+      { "title": "iPhone Logic Board Repair", "platform": "Udemy", "link": "https://www.udemy.com/course/microsoldering/" },
+      { "title": "Android Software Repairing", "platform": "YouTube Playlist", "link": "https://www.youtube.com/results?search_query=android+software+repair+course" },
+      { "title": "Basic Electronics for Mobile Repair", "platform": "Udemy", "link": "https://www.udemy.com/course/basic-electronics-for-mobile-repair/" },
+      { "title": "Mobile Repairing Tools & Techniques", "platform": "AK Info", "link": "https://akinfoglobal.com/" },
+      { "title": "Expert Mobile Technician Course", "platform": "I Fixit (Guides)", "link": "https://www.ifixit.com/Device/Phone" },
+      { "title": "Chip Level Mobile Repairing", "platform": "Britco & Bridco", "link": "https://britco.co.in/courses/smartphone-engineering/" }
+    ]
+  },
+  {
+    "id": 3,
+    "skill_title": "Digital Marketing & SEO",
+    "description": ["Social Media", "SEO", "Ads for Small Business"],
+    "courses": [
+      { "title": "Google Digital Garage: Fundamentals of Digital Marketing", "platform": "Google", "link": "https://skillshop.exceedlms.com/student/collection/648385-digital-marketing" },
+      { "title": "The Complete Digital Marketing Course", "platform": "Udemy", "link": "https://www.udemy.com/course/learn-digital-marketing-course/" },
+      { "title": "Meta Social Media Marketing Professional Certificate", "platform": "Coursera", "link": "https://www.coursera.org/professional-certificates/meta-social-media-marketing" },
+      { "title": "SEO Training Course by Moz", "platform": "Udemy", "link": "https://www.udemy.com/course/seo-training/" },
+      { "title": "HubSpot Content Marketing Certification", "platform": "HubSpot Academy", "link": "https://academy.hubspot.com/courses/content-marketing" },
+      { "title": "Instagram Marketing 2025: Complete Guide", "platform": "Udemy", "link": "https://www.udemy.com/course/instagram-marketing-for-small-businesses/" },
+      { "title": "Digital Marketing Strategy", "platform": "edX", "link": "https://www.edx.org/course/digital-marketing-strategy" },
+      { "title": "Google Analytics for Beginners", "platform": "Google", "link": "https://analytics.google.com/analytics/academy/" },
+      { "title": "YouTube Marketing & Channel Growth", "platform": "Udemy", "link": "https://www.udemy.com/course/youtube-marketing/" },
+      { "title": "Copywriting for Beginners", "platform": "Skillshare", "link": "https://www.skillshare.com/classes/Copywriting-For-Beginners/297299797" }
+    ]
+  },
+  {
+    "id": 4,
+    "skill_title": "Electrician & Domestic Wiring",
+    "description": ["Home Wiring", "Safety", "Electrical Appliance Installation"],
+    "courses": [
+      { "title": "Electrician Training: Basic Electrical Course", "platform": "Udemy", "link": "https://www.udemy.com/course/basic-electrician-skills/" },
+      { "title": "Introduction to Electrical Wiring", "platform": "Alison", "link": "https://alison.com/course/introduction-to-electrical-wiring" },
+      { "title": "Home Repair: Electrical", "platform": "YouTube Playlist", "link": "https://www.youtube.com/results?search_query=home+electrical+wiring+course" },
+      { "title": "Basic Electricity and Electronics", "platform": "SkillsCommons", "link": "https://www.skillscommons.org/" },
+      { "title": "Safety in Electrical Works", "platform": "Alison", "link": "https://alison.com/course/electrical-safety" },
+      { "title": "Residential Wiring & Grounding", "platform": "Udemy", "link": "https://www.udemy.com/course/residential-wiring/" },
+      { "title": "Solar Panel Installation Course", "platform": "Udemy", "link": "https://www.udemy.com/course/solar-energy-course/" },
+      { "title": "National Occupational Standards: Electrician", "platform": "NSDC India", "link": "https://nsdcindia.org/" },
+      { "title": "Understanding Circuit Breakers", "platform": "YouTube", "link": "https://www.youtube.com/watch?v=CircuitBreakers" },
+      { "title": "Vocational Electrician Training", "platform": "SkillCat", "link": "https://www.skillcatapp.com/" }
+    ]
+  },
+  {
+    "id": 5,
+    "skill_title": "Graphic Design & Video Editing",
+    "description": ["Logo Design", "Banners", "Video Editing"],
+    "courses": [
+      { "title": "Canva Design School: Graphic Design Basics", "platform": "Canva", "link": "https://www.canva.com/designschool/" },
+      { "title": "Adobe Photoshop CC: Essentials Training", "platform": "Udemy", "link": "https://www.udemy.com/course/adobe-photoshop-cc-essentials-training-course/" },
+      { "title": "Graphic Design Specialization", "platform": "Coursera (CalArts)", "link": "https://www.coursera.org/specializations/graphic-design" },
+      { "title": "Video Editing with Adobe Premiere Pro", "platform": "Udemy", "link": "https://www.udemy.com/course/adobe-premiere-pro-video-editing/" },
+      { "title": "Logo Design in Adobe Illustrator", "platform": "Udemy", "link": "https://www.udemy.com/course/logo-design-masterclass/" },
+      { "title": "Learn Graphic Design for Free", "platform": "YouTube (GFXMentor)", "link": "https://www.youtube.com/c/GFXMentor" },
+      { "title": "DaVinci Resolve 18: Video Editing", "platform": "Udemy", "link": "https://www.udemy.com/course/davinci-resolve-15-course/" },
+      { "title": "Fundamentals of Graphic Design", "platform": "Coursera", "link": "https://www.coursera.org/learn/fundamentals-of-graphic-design" },
+      { "title": "Freelance Graphic Design Guide", "platform": "Skillshare", "link": "https://www.skillshare.com/browse/graphic-design" },
+      { "title": "Mobile Video Editing (CapCut/VN)", "platform": "YouTube", "link": "https://www.youtube.com/results?search_query=capcut+editing+course" }
+    ]
+  },
+  {
+    "id": 6,
+    "skill_title": "Accounting & Tally Prime",
+    "description": ["Bookkeeping", "GST Filing", "Tally"],
+    "courses": [
+      { "title": "Tally Prime with GST Training", "platform": "Udemy", "link": "https://www.udemy.com/course/tally-prime-gst/" },
+      { "title": "Accounting Fundamentals", "platform": "Corporate Finance Institute", "link": "https://corporatefinanceinstitute.com/course/accounting-fundamentals/" },
+      { "title": "Intuit Bookkeeping Professional Certificate", "platform": "Coursera", "link": "https://www.coursera.org/professional-certificates/intuit-bookkeeping" },
+      { "title": "Complete Accounting & Taxation Course", "platform": "Udemy", "link": "https://www.udemy.com/course/accounting-taxation/" },
+      { "title": "Tally Erp 9 + Tally Prime + GST", "platform": "YouTube (Tally School)", "link": "https://www.youtube.com/c/TallySchool" },
+      { "title": "Excel for Accountants", "platform": "Udemy", "link": "https://www.udemy.com/course/excel-for-accountants/" },
+      { "title": "Financial Accounting Basics", "platform": "HBS Online", "link": "https://online.hbs.edu/courses/financial-accounting/" },
+      { "title": "GST Return Filing Course", "platform": "ClearTax", "link": "https://cleartax.in/s/gst-certification-course" },
+      { "title": "QuickBooks Online Essential Training", "platform": "LinkedIn Learning", "link": "https://www.linkedin.com/learning/quickbooks-online-essential-training-2" },
+      { "title": "Basics of Business Finance", "platform": "Coursera", "link": "https://www.coursera.org/learn/finance-for-non-finance-managers" }
+    ]
+  },
+  {
+    "id": 7,
+    "skill_title": "AC & Refrigeration Repair",
+    "description": ["AC Repair", "Fridge Repair", "Vocational Training"],
+    "courses": [
+      { "title": "Air Conditioning and Refrigeration Repair", "platform": "Udemy", "link": "https://www.udemy.com/course/hvac-refrigeration/" },
+      { "title": "HVAC Fundamentals", "platform": "Coursera", "link": "https://www.coursera.org/learn/hvac-fundamentals" },
+      { "title": "Domestic Refrigeration Maintenance", "platform": "Alison", "link": "https://alison.com/course/refrigeration-and-air-conditioning" },
+      { "title": "AC Repairing Course Hindi", "platform": "YouTube", "link": "https://www.youtube.com/results?search_query=ac+repairing+course+hindi" },
+      { "title": "Troubleshooting HVAC Systems", "platform": "Udemy", "link": "https://www.udemy.com/course/hvac-troubleshooting/" },
+      { "title": "Inverter AC PCB Repair", "platform": "Chip Level Institute", "link": "https://chiplevels.com/" },
+      { "title": "Basic Tools for AC Repair", "platform": "YouTube", "link": "https://www.youtube.com/results?search_query=hvac+tools+training" },
+      { "title": "EPA Section 608 Certification Prep", "platform": "SkillCat", "link": "https://www.skillcatapp.com/" },
+      { "title": "Heat Pump Installation", "platform": "Udemy", "link": "https://www.udemy.com/course/heat-pumps/" },
+      { "title": "Fridge Compressor Repair Guide", "platform": "RepairClinic", "link": "https://www.repairclinic.com/" }
+    ]
+  },
+  {
+    "id": 8,
+    "skill_title": "Microsoft Excel & Data Entry",
+    "description": ["Excel Formulas", "Typing", "Office Data Management"],
+    "courses": [
+      { "title": "Microsoft Excel - Excel from Beginner to Advanced", "platform": "Udemy", "link": "https://www.udemy.com/course/microsoft-excel-2013-from-beginner-to-advanced-and-beyond/" },
+      { "title": "Excel Skills for Business", "platform": "Coursera (Macquarie Uni)", "link": "https://www.coursera.org/specializations/excel" },
+      { "title": "Data Entry Course for Beginners", "platform": "Alison", "link": "https://alison.com/course/data-entry-skills" },
+      { "title": "Master Microsoft Word 2025", "platform": "Udemy", "link": "https://www.udemy.com/course/master-microsoft-word/" },
+      { "title": "Touch Typing Training", "platform": "TypingClub", "link": "https://www.typingclub.com/" },
+      { "title": "Advanced Excel Formulas & Functions", "platform": "Udemy", "link": "https://www.udemy.com/course/excel-formulas-and-functions/" },
+      { "title": "Google Sheets - The Comprehensive Masterclass", "platform": "Udemy", "link": "https://www.udemy.com/course/google-sheets-masterclass/" },
+      { "title": "Office Admin & Receptionist Skills", "platform": "Udemy", "link": "https://www.udemy.com/course/office-admin-skills/" },
+      { "title": "Data Analysis with Excel", "platform": "Coursera (IBM)", "link": "https://www.coursera.org/learn/excel-analysis" },
+      { "title": "Fast Typing Career Course", "platform": "Ratatype", "link": "https://www.ratatype.com/" }
+    ]
+  },
+  {
+    "id": 9,
+    "skill_title": "Beauty & Wellness Specialist",
+    "description": ["Professional Makeup", "Hair Styling", "Salon Management"],
+    "courses": [
+      { "title": "Diploma in Makeup Artistry", "platform": "Alison", "link": "https://alison.com/course/diploma-in-makeup-artistry" },
+      { "title": "Professional Hair Styling Course", "platform": "Udemy", "link": "https://www.udemy.com/course/hair-styling-course/" },
+      { "title": "Nail Art & Technicians Course", "platform": "International Open Academy", "link": "https://internationalopenacademy.com/products/nail-art-course" },
+      { "title": "Skincare Expert and Dermatologist Course", "platform": "Udemy", "link": "https://www.udemy.com/course/skincare-expert/" },
+      { "title": "Bridal Makeup Masterclass", "platform": "YouTube Playlist", "link": "https://www.youtube.com/results?search_query=bridal+makeup+course" },
+      { "title": "Salon Management Business Course", "platform": "Udemy", "link": "https://www.udemy.com/course/salon-business/" },
+      { "title": "Men's Grooming & Barbering", "platform": "Udemy", "link": "https://www.udemy.com/course/barbering-101/" },
+      { "title": "Massage Therapy Fundamentals", "platform": "Coursera", "link": "https://www.coursera.org/learn/massage-therapy" },
+      { "title": "Lakme Academy Online Tutorials", "platform": "Lakme Academy", "link": "https://www.lakme-academy.com/" },
+      { "title": "Personal Grooming & Hygiene", "platform": "Alison", "link": "https://alison.com/course/grooming-and-etiquette" }
+    ]
+  },
+  {
+    "id": 10,
+    "skill_title": "Plumbing & Pipe Fitting",
+    "description": ["Plumbing Repairs", "Pipe Fitting", "Bathroom Installation"],
+    "courses": [
+      { "title": "Introduction to Plumbing Tools", "platform": "Alison", "link": "https://alison.com/course/introduction-to-plumbing-tools-and-drawings" },
+      { "title": "Complete Plumbing Guide", "platform": "Udemy", "link": "https://www.udemy.com/course/plumbing-course/" },
+      { "title": "Home Plumbing Repairs", "platform": "YouTube (Plumberparts)", "link": "https://www.youtube.com/user/plumberparts" },
+      { "title": "Pipe Fitting and Layout", "platform": "Udemy", "link": "https://www.udemy.com/course/pipe-fitting/" },
+      { "title": "Water Heater Installation", "platform": "YouTube", "link": "https://www.youtube.com/results?search_query=water+heater+installation" },
+      { "title": "Bathroom Fitting Masterclass", "platform": "Skillshare", "link": "https://www.skillshare.com/" },
+      { "title": "Drain Cleaning & Maintenance", "platform": "Udemy", "link": "https://www.udemy.com/course/drain-cleaning/" },
+      { "title": "Plumbing Code & Standards", "platform": "IPC (International Plumbing Code)", "link": "https://www.iccsafe.org/" },
+      { "title": "Modern Plumbing Technologies", "platform": "Coursera", "link": "https://www.coursera.org/" },
+      { "title": "Leak Detection Specialist", "platform": "Udemy", "link": "https://www.udemy.com/course/leak-detection/" }
+    ]
+  },
+  {
+    "id": 11,
+    "skill_title": "Backend Engineering",
+    "description": ["Server-side Programming", "Databases", "API Architecture"],
+    "courses": [
+      { "title": "NodeJS - The Complete Guide (MVC, REST APIs)", "platform": "Udemy", "link": "https://www.udemy.com/course/nodejs-the-complete-guide/" },
+      { "title": "Django for Everybody", "platform": "Coursera (UMich)", "link": "https://www.coursera.org/specializations/django" },
+      { "title": "Spring Boot 3, Spring 6 & Hibernate", "platform": "Udemy", "link": "https://www.udemy.com/course/spring-hibernate-tutorial/" },
+      { "title": "System Design Primer", "platform": "GitHub (Donne Martin)", "link": "https://github.com/donnemartin/system-design-primer" },
+      { "title": "Backend Development Roadmap", "platform": "roadmap.sh", "link": "https://roadmap.sh/backend" },
+      { "title": "CS50's Introduction to Databases with SQL", "platform": "edX (Harvard)", "link": "https://cs50.harvard.edu/sql/" },
+      { "title": "Go: The Complete Developer's Guide", "platform": "Udemy", "link": "https://www.udemy.com/course/go-the-complete-developers-guide/" },
+      { "title": "Microservices with Node JS and React", "platform": "Udemy", "link": "https://www.udemy.com/course/microservices-with-node-js-and-react/" },
+      { "title": "Designing Data-Intensive Applications", "platform": "O'Reilly (Book/Course)", "link": "https://dataintensive.net/" },
+      { "title": "APIs and Microservices Certification", "platform": "FreeCodeCamp", "link": "https://www.freecodecamp.org/learn/back-end-development-and-apis/" }
+    ]
+  },
+  {
+    "id": 12,
+    "skill_title": "Full Stack Engineering",
+    "description": ["MERN Stack", "Next.js", "End-to-End Development"],
+    "courses": [
+      { "title": "The Odin Project: Full Stack Curriculum", "platform": "The Odin Project", "link": "https://www.theodinproject.com/" },
+      { "title": "Full Stack Open 2025 (React + Node)", "platform": "University of Helsinki", "link": "https://fullstackopen.com/en/" },
+      { "title": "Next.js 14 & React - The Complete Guide", "platform": "Udemy", "link": "https://www.udemy.com/course/nextjs-react-the-complete-guide/" },
+      { "title": "Epic Web Dev (Kent C. Dodds)", "platform": "EpicWeb", "link": "https://www.epicweb.dev/" },
+      { "title": "MERN Stack Front To Back", "platform": "Udemy", "link": "https://www.udemy.com/course/mern-stack-front-to-back/" },
+      { "title": "Harvard CS50 Web Programming", "platform": "YouTube/edX", "link": "https://cs50.harvard.edu/web/" },
+      { "title": "Build a SaaS with Next.js", "platform": "YouTube (Josh Tried Coding)", "link": "https://www.youtube.com/@JoshTriedCoding" },
+      { "title": "Professional Full Stack Developer", "platform": "Udacity", "link": "https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044" },
+      { "title": "IBM Full Stack Software Developer Cert", "platform": "Coursera", "link": "https://www.coursera.org/professional-certificates/ibm-full-stack-cloud-developer" },
+      { "title": "Web Dev Simplified: Full Stack Roadmap", "platform": "YouTube", "link": "https://www.youtube.com/c/WebDevSimplified" }
+    ]
+  },
+  {
+    "id": 13,
+    "skill_title": "Machine Learning Engineer",
+    "description": ["Python", "TensorFlow", "PyTorch", "AI Models"],
+    "courses": [
+      { "title": "Machine Learning Specialization (Andrew Ng)", "platform": "Coursera", "link": "https://www.coursera.org/specializations/machine-learning-introduction" },
+      { "title": "Practical Deep Learning for Coders", "platform": "Fast.ai", "link": "https://course.fast.ai/" },
+      { "title": "TensorFlow Developer Certificate", "platform": "Coursera", "link": "https://www.coursera.org/professional-certificates/tensorflow-in-practice" },
+      { "title": "Python for Data Science and ML Bootcamp", "platform": "Udemy", "link": "https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/" },
+      { "title": "CS229: Machine Learning", "platform": "Stanford Online", "link": "https://online.stanford.edu/courses/cs229-machine-learning" },
+      { "title": "Kaggle Micro-Courses (Intro to ML)", "platform": "Kaggle", "link": "https://www.kaggle.com/learn" },
+      { "title": "Deep Learning Specialization", "platform": "Coursera (DeepLearning.AI)", "link": "https://www.coursera.org/specializations/deep-learning" },
+      { "title": "Hugging Face NLP Course", "platform": "Hugging Face", "link": "https://huggingface.co/learn/nlp-course" },
+      { "title": "Complete Machine Learning & Data Science", "platform": "Udemy (Zero To Mastery)", "link": "https://www.udemy.com/course/complete-machine-learning-and-data-science-zero-to-mastery/" },
+      { "title": "Applied ML with Python", "platform": "University of Michigan", "link": "https://www.coursera.org/learn/python-machine-learning" }
+    ]
+  },
+  {
+    "id": 14,
+    "skill_title": "Prompt Engineering & GenAI",
+    "description": ["LLMs", "ChatGPT", "API Integration"],
+    "courses": [
+      { "title": "ChatGPT Prompt Engineering for Developers", "platform": "DeepLearning.AI", "link": "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" },
+      { "title": "Prompt Engineering Guide", "platform": "LearnPrompting.org", "link": "https://learnprompting.org/" },
+      { "title": "Generative AI Fundamentals", "platform": "Google Cloud Skills Boost", "link": "https://www.cloudskillsboost.google/course_templates/536" },
+      { "title": "Master Prompt Engineering", "platform": "Udemy", "link": "https://www.udemy.com/course/master-prompt-engineering/" },
+      { "title": "Building Systems with the ChatGPT API", "platform": "DeepLearning.AI", "link": "https://www.deeplearning.ai/short-courses/" },
+      { "title": "Google AI: Introduction to LLMs", "platform": "Google", "link": "https://www.cloudskillsboost.google/paths/118" },
+      { "title": "LangChain for LLM Application Development", "platform": "DeepLearning.AI", "link": "https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/" },
+      { "title": "Generative AI with Large Language Models", "platform": "Coursera (AWS)", "link": "https://www.coursera.org/learn/generative-ai-with-llms" },
+      { "title": "Prompt Engineering for Everyone", "platform": "Coursera (Vanderbilt)", "link": "https://www.coursera.org/learn/prompt-engineering" },
+      { "title": "Midjourney & AI Art Generation", "platform": "YouTube", "link": "https://www.youtube.com/results?search_query=midjourney+prompting" }
+    ]
+  },
+  {
+    "id": 15,
+    "skill_title": "Data Structures & Algorithms (DSA)",
+    "description": ["Core Logic", "Coding Interviews", "Competitive Programming"],
+    "courses": [
+      { "title": "Striver's A2Z DSA Course/Sheet", "platform": "TakeUForward", "link": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/" },
+      { "title": "Mastering Data Structures & Algorithms using C/C++", "platform": "Udemy (Abdul Bari)", "link": "https://www.udemy.com/course/datastructurescncpp/" },
+      { "title": "DSA Supreme Batch (Love Babbar)", "platform": "CodeHelp", "link": "https://www.codehelp.in/" },
+      { "title": "Algorithms Part I & II", "platform": "Coursera (Princeton)", "link": "https://www.coursera.org/learn/algorithms-part1" },
+      { "title": "LeetCode 75 Study Plan", "platform": "LeetCode", "link": "https://leetcode.com/studyplan/leetcode-75/" },
+      { "title": "NeetCode 150 (Video Solutions)", "platform": "NeetCode.io", "link": "https://neetcode.io/" },
+      { "title": "Introduction to Algorithms (MIT 6.006)", "platform": "MIT OpenCourseWare", "link": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/" },
+      { "title": "JavaScript Algorithms and Data Structures", "platform": "FreeCodeCamp", "link": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" },
+      { "title": "Data Structures in Java", "platform": "Udemy", "link": "https://www.udemy.com/course/data-structures-and-algorithms-deep-dive-using-java/" },
+      { "title": "Competitive Programmer's Handbook", "platform": "CSES.fi (Book)", "link": "https://cses.fi/book/book.pdf" }
+    ]
+  },
+  {
+    "id": 16,
+    "skill_title": "Communication & Soft Skills",
+    "description": ["Business English", "Public Speaking", "Interview Preparation"],
+    "courses": [
+      { "title": "Improve Your English Communication Skills", "platform": "Coursera (Georgia Tech)", "link": "https://www.coursera.org/specializations/improve-english" },
+      { "title": "Complete Presentation Skills Masterclass", "platform": "Udemy", "link": "https://www.udemy.com/course/complete-presentation-skills-masterclass-for-every-occasion/" },
+      { "title": "Soft Skills for Engineering Leaders", "platform": "YouTube (GOTO Conf)", "link": "https://www.youtube.com/results?search_query=soft+skills+for+developers" },
+      { "title": "Business English: Networking", "platform": "Coursera (Washington)", "link": "https://www.coursera.org/learn/business-english-intro" },
+      { "title": "Public Speaking for Beginners", "platform": "Skillshare", "link": "https://www.skillshare.com/classes/Public-Speaking-for-Beginners/1169623838" },
+      { "title": "Effective Communication for Leaders", "platform": "Udemy", "link": "https://www.udemy.com/course/effective-communication-for-leaders/" },
+      { "title": "Interview Preparation Guide", "platform": "Pramp/InterviewBit", "link": "https://www.interviewbit.com/" },
+      { "title": "Writing Professional Emails", "platform": "Coursera", "link": "https://www.coursera.org/learn/professional-emails-english" },
+      { "title": "Think Fast, Talk Smart", "platform": "YouTube (Stanford GSB)", "link": "https://www.youtube.com/watch?v=HAnw168huqA" },
+      { "title": "Body Language for Success", "platform": "Udemy", "link": "https://www.udemy.com/course/body-language-for-business-success/" }
+    ]
+  }
+]

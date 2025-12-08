@@ -1,283 +1,193 @@
 /**
  * TrainingBridge Component - Training & Education Recommendations
  * 
- * This component helps users find relevant training courses and nearby training centers.
- * It displays both online micro-courses and physical training center locations.
- * Part of the JobGati skill development journey.
+ * This component helps users find relevant training courses.
+ * It displays courses based on user's desired position with horizontal scrolling.
  */
 
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { BookOpen, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import coursesData from '../data/coursesData.json';
 
-const jobsData = {
-  jobs: [
-    {
-      id: 11,
-      jobTitle: "Junior Web Developer",
-      skills: ["HTML", "CSS", "JavaScript", "React"],
-      courses: {
-        onlineFree: [
-          {
-            title: "Full Web Development – freeCodeCamp",
-            link: "https://www.freecodecamp.org/"
-          }
-        ],
-        onlinePremium: [
-          {
-            id: 101,
-            title: "The Complete 2024 Web Development Bootcamp",
-            provider: "Udemy (Dr. Angela Yu)",
-            rating: "4.8 ⭐ (380k ratings)",
-            price: "₹3,499",
-            thumbnail: "https://img-c.udemycdn.com/course/750x422/1565838_e54e_18.jpg",
-            link: "https://www.udemy.com/course/the-complete-web-development-bootcamp/"
-          }
-        ],
-        offline: [
-          {
-            id: 203,
-            title: "MERN Stack Classroom Training",
-            provider: "TISA Tech",
-            location: "Govindpura, Jaipur",
-            duration: "6 Months",
-            type: "Offline Bootcamp",
-            thumbnail: "https://www.tisatech.in/assets/img/hero-img.png",
-            googleMapsLink: "https://maps.google.com/?q=TISA+Training+Institute+Jaipur"
-          }
-        ]
-      }
-    },
+const TrainingBridge = ({ t }) => {
+  const [showCourses, setShowCourses] = useState(false);
 
-    {
-      id: 7,
-      jobTitle: "Solar Panel Technician",
-      skills: ["Solar installation", "System maintenance", "Electrical basics"],
-      courses: {
-        onlinePremium: [
-          {
-            id: 102,
-            title: "Solar Energy: PV System Design & Installation",
-            provider: "Udemy",
-            rating: "4.5 ⭐",
-            price: "₹2,499",
-            thumbnail: "https://img-c.udemycdn.com/course/750x422/2301686_7952_3.jpg",
-            link: "https://www.udemy.com/course/solar-energy-etabs-pv-system-design-installation/"
-          }
-        ],
-        offline: [
-          {
-            id: 201,
-            title: "Certified Solar PV Installer",
-            provider: "Solar Training Centre Jaipur",
-            location: "Bais Godam, Jaipur",
-            duration: "45 Days",
-            type: "Offline (Classroom + Site)",
-            thumbnail:
-              "https://content3.jdmagicbox.com/comp/jaipur/d7/0141px141.x141.200702015317.y2c8/catalogue/solar-training-centre-bais-godam-jaipur-institutes-b84g43a2g5.jpg",
-            googleMapsLink: "https://maps.google.com/?q=Solar+Training+Centre+Jaipur"
-          }
-        ]
-      }
-    },
+  // Get user's desired position from Redux
+  const { profileData } = useSelector((state) => state.clerk);
+  const desiredPosition = profileData?.desiredPosition || '';
 
-    {
-      id: 9,
-      jobTitle: "Electrician",
-      skills: ["Wiring", "Circuits", "Safety"],
-      courses: {
-        onlinePremium: [
-          {
-            id: 104,
-            title: "Diploma in Electrical Studies",
-            provider: "Alison",
-            rating: "Certified",
-            price: "Get Quote",
-            thumbnail:
-              "https://cdn01.alison-static.net/courses/196/alison_courseware_intro_196.jpg",
-            link: "https://alison.com/course/diploma-in-electrical-studies"
-          }
-        ],
-        offline: [
-          {
-            id: 202,
-            title: "ITI Electrician Trade (NCVT)",
-            provider: "Ajmera ITI",
-            location: "Sodala, Jaipur",
-            duration: "2 Years",
-            type: "Offline (Diploma)",
-            thumbnail:
-              "https://ajmeraiti.com/wp-content/uploads/2020/02/Ajmera-ITI-Electrician-Lab.jpg",
-            googleMapsLink: "https://maps.google.com/?q=Ajmera+ITI+Sodala+Jaipur"
-          }
-        ]
-      }
-    },
+  // Filter courses based on desired position
+  const matchedCategory = coursesData.find(
+    category => category.skill_title.toLowerCase().includes(desiredPosition.toLowerCase()) ||
+      desiredPosition.toLowerCase().includes(category.skill_title.toLowerCase())
+  );
 
-    {
-      id: 3,
-      jobTitle: "Carpentry",
-      skills: ["Woodworking", "Furniture making"],
-      courses: {
-        onlinePremium: [
-          {
-            id: 103,
-            title: "Woodworking: Fundamentals of Furniture Making",
-            provider: "Udemy",
-            rating: "4.7 ⭐",
-            price: "₹1,299",
-            thumbnail: "https://img-c.udemycdn.com/course/750x422/1638206_6454.jpg",
-            link: "https://www.udemy.com/course/woodworking-fundamentals-of-furniture-making/"
-          }
-        ],
-        offline: [
-          {
-            id: 204,
-            title: "Vocational Carpentry Workshop",
-            provider: "Aditya Technical Classes",
-            location: "Jagatpura, Jaipur",
-            duration: "3 Months",
-            type: "Offline Workshop",
-            thumbnail:
-              "https://5.imimg.com/data5/SELLER/Default/2023/1/YV/WO/GA/47402636/carpentry-training-service-500x500.jpg",
-            googleMapsLink: "https://maps.google.com/?q=Aditya+Technical+Classes+Jaipur"
-          }
-        ]
-      }
+  const handleScroll = (direction) => {
+    const container = document.getElementById('courses-container');
+    if (container) {
+      const scrollAmount = 400;
+      const newPosition = direction === 'left'
+        ? container.scrollLeft - scrollAmount
+        : container.scrollLeft + scrollAmount;
+
+      container.scrollTo({
+        left: newPosition,
+        behavior: 'smooth'
+      });
     }
-  ]
-};
-
-/**
- * TrainingBridge functional component
- * @param {Object} t - Translation object containing localized text
- * @param {Function} onFindTraining - Optional callback when training is found
- */
-const TrainingBridge = ({ t, onFindTraining }) => {
-  // State to store training search results
-  const [trainingResult, setTrainingResult] = useState(null);
-
-  const handleFindTraining = () => {
-    // Simulate API call to find training
-    setTimeout(() => {
-      setTrainingResult(jobsData);
-      if (onFindTraining) onFindTraining();
-    }, 1500); 
   };
 
   return (
     <div className="bg-white py-16">
-      <div className="max-w-[1000px] mx-auto px-5">
+      <div className="max-w-[1200px] mx-auto px-5">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-4 text-dark">{t.title}</h2>
-          <p className="text-lg text-gray-500 max-w-[600px] mx-auto">{t.description}</p>
+          <h2 className="text-3xl font-bold mb-4 text-dark">{t?.title || '📚 Training & Courses'}</h2>
+          <p className="text-lg text-gray-500 max-w-[600px] mx-auto">
+            {t?.description || 'Discover courses to enhance your skills'}
+          </p>
         </div>
-        
-        <div className="bg-gray-50 rounded-lg p-8 shadow-sm">
-          {!trainingResult && (
-             <div className="text-center">
-                <button
-                    className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
-                    onClick={handleFindTraining}
-                >
-                    {t.findTrainingBtn}
-                </button>
-             </div>
-          )}
 
-          {trainingResult && (
-            <div className="space-y-12">
-              {trainingResult.jobs.map((job) => (
-                <div key={job.id} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                  <div className="mb-6 border-b pb-4">
-                    <h3 className="text-2xl font-bold text-dark mb-2">{job.jobTitle}</h3>
+        <div className="bg-gray-50 rounded-lg p-8 shadow-sm">
+          {!showCourses ? (
+            <div className="text-center">
+              <button
+                className="bg-green-600 text-white hover:bg-green-700 px-6 py-3 rounded-md font-semibold cursor-pointer transition-all duration-300 inline-flex items-center gap-2"
+                onClick={() => setShowCourses(true)}
+              >
+                📚 Explore Resources
+              </button>
+            </div>
+          ) : (
+            <div>
+              {matchedCategory ? (
+                <div>
+                  {/* Category Header */}
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      {matchedCategory.skill_title}
+                    </h3>
                     <div className="flex flex-wrap gap-2">
-                        {job.skills.map(skill => (
-                            <span key={skill} className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-                                {skill}
-                            </span>
-                        ))}
+                      {matchedCategory.description.map((desc, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full"
+                        >
+                          {desc}
+                        </span>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Online Premium Courses */}
-                  {job.courses.onlinePremium && job.courses.onlinePremium.length > 0 && (
-                      <div className="mb-8">
-                        <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <span className="text-primary">💻</span> Online Premium Courses
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            {job.courses.onlinePremium.map(course => (
-                                <div key={course.id} className="flex gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
-                                    <img src={course.thumbnail} alt={course.title} className="w-24 h-24 object-cover rounded-md flex-shrink-0" />
-                                    <div className="flex flex-col justify-between">
-                                        <div>
-                                            <h5 className="font-semibold text-dark line-clamp-2">{course.title}</h5>
-                                            <p className="text-sm text-gray-500 mt-1">{course.provider}</p>
-                                        </div>
-                                        <div className="mt-2 flex items-center justify-between gap-4">
-                                            <span className="text-yellow-500 text-sm font-medium">{course.rating}</span>
-                                            <span className="font-bold text-primary">{course.price}</span>
-                                        </div>
-                                        <a href={course.link} target="_blank" rel="noopener noreferrer" className="mt-3 text-sm text-primary font-semibold hover:underline">
-                                            View Course →
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                      </div>
-                  )}
+                  {/* Courses Horizontal Scroll */}
+                  <div className="relative group">
 
-                  {/* Offline Training */}
-                  {job.courses.offline && job.courses.offline.length > 0 && (
-                      <div>
-                        <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <span className="text-primary">🏢</span> Offline Training Centers
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            {job.courses.offline.map(course => (
-                                <div key={course.id} className="flex gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
-                                    <img src={course.thumbnail} alt={course.title} className="w-24 h-24 object-cover rounded-md flex-shrink-0" />
-                                    <div className="flex flex-col justify-between w-full">
-                                        <div>
-                                            <h5 className="font-semibold text-dark line-clamp-2">{course.title}</h5>
-                                            <p className="text-sm text-gray-500 mt-1">{course.provider}</p>
-                                        </div>
-                                        <div className="mt-2 text-sm text-gray-600">
-                                            <p>📍 {course.location}</p>
-                                            <p>⏱️ {course.duration} • {course.type}</p>
-                                        </div>
-                                        <a href={course.googleMapsLink} target="_blank" rel="noopener noreferrer" className="mt-3 text-sm text-primary font-semibold hover:underline">
-                                            View on Map →
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                      </div>
-                  )}
-                  
-                  {/* Online Free Courses (Optional, if needed) */}
-                  {job.courses.onlineFree && job.courses.onlineFree.length > 0 && (
-                      <div className="mt-6 pt-4 border-t">
-                          <h4 className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">Free Resources</h4>
-                          <ul className="list-disc pl-5 space-y-1">
-                              {job.courses.onlineFree.map((course, idx) => (
-                                  <li key={idx} className="text-sm">
-                                      <a href={course.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                          {course.title}
-                                      </a>
-                                  </li>
-                              ))}
-                          </ul>
-                      </div>
-                  )}
+                    {/* Left Scroll Button */}
+                    <button
+                      onClick={() => handleScroll('left')}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      aria-label="Scroll left"
+                    >
+                      <ChevronLeft className="w-6 h-6 text-gray-700" />
+                    </button>
 
+                    {/* Courses Container */}
+                    <div
+                      id="courses-container"
+                      className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                      {matchedCategory.courses.map((course, idx) => (
+                        <a
+                          key={idx}
+                          href={course.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-shrink-0 w-80 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-5 hover:shadow-xl hover:border-blue-300 transition-all duration-300 transform hover:-translate-y-1 group/card"
+                        >
+                          {/* Course Icon */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                              <BookOpen className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <ExternalLink className="w-4 h-4 text-gray-400 group-hover/card:text-blue-600 transition" />
+                          </div>
+
+                          {/* Course Title */}
+                          <h4 className="font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3rem]">
+                            {course.title}
+                          </h4>
+
+                          {/* Platform */}
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                              {course.platform}
+                            </span>
+                          </div>
+
+                          {/* View Course Link */}
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <span className="text-blue-600 font-medium text-sm flex items-center gap-1 group-hover/card:gap-2 transition-all">
+                              View Course
+                              <ExternalLink className="w-4 h-4" />
+                            </span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+
+                    {/* Right Scroll Button */}
+                    <button
+                      onClick={() => handleScroll('right')}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      aria-label="Scroll right"
+                    >
+                      <ChevronRight className="w-6 h-6 text-gray-700" />
+                    </button>
+                  </div>
+
+                  {/* Course Count */}
+                  <div className="mt-4 text-sm text-gray-500 text-right">
+                    {matchedCategory.courses.length} courses available
+                  </div>
+
+                  {/* Back Button */}
+                  <div className="mt-6 text-center">
+                    <button
+                      onClick={() => setShowCourses(false)}
+                      className="text-gray-600 hover:text-blue-600 font-medium transition"
+                    >
+                      ← Back
+                    </button>
+                  </div>
                 </div>
-              ))}
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600 mb-4">
+                    No courses found for "{desiredPosition}".
+                  </p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    Update your desired position in your profile to see relevant courses.
+                  </p>
+                  <button
+                    onClick={() => setShowCourses(false)}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Custom CSS for hiding scrollbar */}
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 };

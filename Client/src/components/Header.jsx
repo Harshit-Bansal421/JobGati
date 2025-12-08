@@ -88,55 +88,36 @@ const Header = ({ setShowLogin }) => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className={`hidden md:flex items-center gap-3 lg:gap-6 ${isLoggedIn ? 'absolute left-1/2 -translate-x-1/2' : ''}`}>
+        <nav className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
           {/* Home - Always visible */}
           <button
             onClick={() => handleNavClick('/')}
-            className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+            className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
               }`}
           >
             {t?.nav?.home || 'Home'}
           </button>
 
-          {/* Show registration links only when NOT logged in */}
-          {!isLoggedIn && (
-            <>
-              <button
-                onClick={() => handleNavClick('/register-seeker')}
-                className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/register-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forJobSeekers || 'For Job Seekers'}
-              </button>
-
-              <button
-                onClick={() => handleNavClick('/register-business')}
-                className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/register-business') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forBusinesses || 'For Businesses'}
-              </button>
-            </>
-          )}
-
           {/* About - Always visible */}
           <button
             onClick={() => handleNavClick('/about')}
-            className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/about') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+            className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/about') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
               }`}
           >
             About
           </button>
+
+          {/* Service Seeker - Only when logged in */}
+          {isLoggedIn && (
+            <button
+              onClick={() => handleNavClick('/service-seeker')}
+              className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                }`}
+            >
+              Service Seeker
+            </button>
+          )}
         </nav>
-        {isLoggedIn && (
-          <button
-            onClick={() => handleNavClick('/service-seeker')}
-            className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-              }`}
-          >
-            {'Service Seeker'}
-          </button>
-        )}
 
         {/* Actions (Theme, Language & Login) */}
         <div className="hidden md:flex items-center gap-4">
@@ -209,26 +190,6 @@ const Header = ({ setShowLogin }) => {
             {t?.nav?.home || 'Home'}
           </button>
 
-          {/* Show registration links only when NOT logged in */}
-          {!isLoggedIn && (
-            <>
-              <button
-                onClick={() => handleNavClick('/register-seeker')}
-                className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/register-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forJobSeekers || 'For Job Seekers'}
-              </button>
-
-              <button
-                onClick={() => handleNavClick('/register-business')}
-                className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/register-business') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forBusinesses || 'For Businesses'}
-              </button>
-            </>
-          )}
 
           {/* About - Always visible */}
           <button
