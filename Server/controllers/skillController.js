@@ -1,0 +1,75 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+export const analyzeSkillGap = async (req, res) => {
+  try {
+    const { userSkills, jobRole, jobDescription } = req.body;
+
+    console.log("📊 Skill Analysis Request:", { userSkills, jobRole, jobDescription });
+
+    // Validate input
+    if (!userSkills || !jobRole) {
+      console.error("❌ Missing required fields");
+      return res.status(400).json({ error: "Missing required fields: userSkills and jobRole" });
+    }
+
+    console.log("🔑 API Key exists:", !!process.env.GEMINI_API_KEY);
+
+    // SELECT THE MODEL (Flash is fast & free)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // THE PROMPT - Strictly tell it to output JSON for our graphs
+    const prompt = `
+      Act as an expert HR Algorithm.
+      
+      INPUT DATA:
+      - Candidate's Skills: ${JSON.stringify(userSkills)}
+      - Job Role: "${jobRole}"
+      - Job Description: "${jobDescription || 'Not provided'}"
+
+      TASK:
+      Compare the candidate's skills with the job requirements.
+      Handle synonyms (e.g., 'React' == 'React.js', 'Wiring' == 'Electrical').
+
+      OUTPUT FORMAT:
+      Return ONLY a valid JSON object (no markdown, no backticks) with this exact structure:
+      {
+        "matchScore": (integer between 0-100),
+        "missingSkills": ["List", "of", "critical", "missing", "skills"],
+        "radarChartData": {
+          "Technical": (integer 0-10),
+          "Practical": (integer 0-10),
+          "SoftSkills": (integer 0-10),
+          "Tools": (integer 0-10)
+        },
+        "oneLineAdvice": "A short, encouraging advice string."
+      }
+    `;
+
+    console.log("🤖 Calling Gemini AI...");
+
+    // GENERATE CONTENT
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+
+    console.log("✅ Gemini Response received");
+
+    // CLEANUP (Remove markdown backticks if Gemini adds them)
+    text = text.replace(/```json|```/g, '').trim();
+
+    // PARSE & SEND TO FRONTEND
+    const jsonResponse = JSON.parse(text);
+    console.log("📤 Sending response:", jsonResponse);
+    res.json(jsonResponse);
+
+  } catch (error) {
+    console.error("❌ AI Error:", error);
+    console.error("Error Stack:", error.stack);
+    res.status(500).json({ error: "Failed to analyze skills", details: error.message });
+  }
+};

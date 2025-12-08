@@ -169,15 +169,13 @@ const Header = ({ setShowLogin }) => {
 
           {isClerkSignedIn ? (
             <div className="flex items-center gap-4">
-              {isLoggedIn && (
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-primary"
-                >
-                  <LayoutDashboard size={16} />
-                  Dashboard
-                </button>
-              )}
+              <button
+                onClick={() => navigate('/user-dashboard')}
+                className="flex items-center gap-1 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
+              >
+                <LayoutDashboard size={16} />
+                Dashboard
+              </button>
               {/* Clerk UserButton handles logout */}
               <UserButton afterSignOutUrl="/" />
             </div>
@@ -260,15 +258,13 @@ const Header = ({ setShowLogin }) => {
 
             {isClerkSignedIn ? (
               <>
-                {isLoggedIn && (
-                  <button
-                    onClick={() => handleNavClick('/dashboard')}
-                    className="text-left text-base font-medium text-gray-600 hover:text-primary flex items-center gap-2"
-                  >
-                    <LayoutDashboard size={18} />
-                    Dashboard
-                  </button>
-                )}
+                <button
+                  onClick={() => handleNavClick('/user-dashboard')}
+                  className="text-left text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 flex items-center gap-2"
+                >
+                  <LayoutDashboard size={18} />
+                  Dashboard
+                </button>
                 <div className="flex items-center gap-2">
                   <span className="text-gray-600 text-sm">Account:</span>
                   <UserButton afterSignOutUrl="/" />

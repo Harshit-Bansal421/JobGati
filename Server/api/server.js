@@ -7,6 +7,7 @@ import router from "../routes/userRoutes.js";
 import jsrouter from "../routes/JobSeekerRoutes.js";
 import businessrouter from "../routes/businessRoutes.js";
 import jobrouter from "../routes/JobRoutes.js";
+import skillrouter from "../routes/skillRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 5000;  
 
@@ -35,6 +36,7 @@ app.use("/api/users", router)
 app.use("/api/jobseekers", jsrouter);
 app.use("/api/business", businessrouter);
 app.use("/api/jobs", jobrouter);
+app.use("/api/skills", skillrouter);
 
 // Start server
 app.listen(PORT, () => {

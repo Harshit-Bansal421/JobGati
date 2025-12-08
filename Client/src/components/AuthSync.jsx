@@ -1,28 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { login, logout } from '../store/slices/authSlice';
 import { setUserData } from '../store/slices/userSlice';
+import { setClerkUser, clearClerkUser } from '../store/slices/clerkSlice';
 import { getUserByEmail } from '../services/userServices';
 
 const AuthSync = () => {
     const { user, isLoaded, isSignedIn } = useUser();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+    const hasRedirected = useRef(false);
 
     useEffect(() => {
         const syncUser = async () => {
             if (isLoaded && isSignedIn && user) {
                 const email = user.primaryEmailAddress?.emailAddress;
+                console.log("📧 Email extracted:", email);
+
+                // Save Clerk user data to Redux
+                dispatch(setClerkUser(user));
+                console.log("✅ Clerk user saved to Redux");
 
                 if (email) {
                     try {
-                        // Check if user exists in our DB
+                        console.log("🔍 Checking database for user...");
                         const dbUser = await getUserByEmail(email);
+                        console.log("📊 Database query result:", dbUser);
 
+                        // If user exists in DB, load their data
                         if (dbUser && dbUser.user) {
-                            // User exists, sync Redux state
+                            console.log("✅ User found in database!");
+
                             dispatch(login({
                                 data: dbUser.user,
                                 type: dbUser.user.type
@@ -31,32 +42,49 @@ const AuthSync = () => {
                             if (dbUser.profile) {
                                 dispatch(setUserData(dbUser.profile));
                             }
-                        } else {
-                            // User is authenticated in Clerk but not in our DB
-                            // Redirect to signup/role selection if not already there
-                            if (window.location.pathname !== '/signup' &&
-                                window.location.pathname !== '/register-seeker' &&
-                                window.location.pathname !== '/register-business') {
-                                // You might want to auto-fill the email in the registration form
-                                // For now, let's just let them know or redirect
-                                // navigate('/signup');
-                                console.log("User not found in DB, please complete registration");
-                            }
                         }
+
+
+                        // Only redirect to dashboard once after login
+                        const currentPath = location.pathname;
+
+                        // Redirect only if not on dashboard and haven't redirected yet
+                        if (currentPath !== '/user-dashboard' && !hasRedirected.current) {
+                            console.log("🚀 Navigating to /user-dashboard after Clerk login");
+                            hasRedirected.current = true;
+                            navigate('/user-dashboard', { replace: true });
+                        } else if (currentPath === '/user-dashboard') {
+                            hasRedirected.current = true; // Mark as redirected if already on dashboard
+                            console.log("✅ Already on dashboard");
+                        }
+
                     } catch (error) {
-                        console.error("Error syncing user:", error);
+                        console.error("❌ Error syncing user:", error);
+
+                        // On error, redirect once if not on dashboard
+                        if (location.pathname !== '/user-dashboard' && !hasRedirected.current) {
+                            console.log("🚀 Error occurred - Navigating to /user-dashboard");
+                            hasRedirected.current = true;
+                            navigate('/user-dashboard', { replace: true });
+                        }
                     }
+                } else {
+                    console.warn("⚠️ No email found in Clerk user object");
                 }
             } else if (isLoaded && !isSignedIn) {
-                // Handle logout
+                console.log("🚪 User logged out");
+                hasRedirected.current = false; // Reset redirect flag on logout
                 dispatch(logout());
+                dispatch(clearClerkUser());
+            } else {
+                console.log("⏳ Waiting for Clerk to load...");
             }
         };
 
         syncUser();
-    }, [user, isLoaded, isSignedIn, dispatch, navigate]);
+    }, [user, isLoaded, isSignedIn, dispatch, navigate, location]);
 
-    return null; // This component handles side effects only
+    return null;
 };
 
 export default AuthSync;

@@ -22,6 +22,9 @@ import userReducer from './slices/userSlice';
 // Import theme reducer - manages dark/light mode theme state
 import themeReducer from './slices/themeSlice';
 
+// Import clerk reducer - manages Clerk authentication and profile data
+import clerkReducer from './slices/clerkSlice';
+
 // Configure and create the Redux store
 // This is the central place where all application state lives
 // The store is provided to React components via Provider in main.jsx
@@ -33,5 +36,6 @@ export const store = configureStore({
     auth: authReducer,          // state.auth - manages authentication and login state
     user: userReducer,          // state.user - manages user profile and personal data
     theme: themeReducer,        // state.theme - manages dark/light mode preferences
+    clerk: clerkReducer,        // state.clerk - manages Clerk user data and profile completion
   },
 });

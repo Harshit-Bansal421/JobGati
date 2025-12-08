@@ -26,7 +26,7 @@ import { useSelector } from 'react-redux';
 const HomePage = () => {
   // Access translations and current language from Redux language slice
   const { translations, currentLanguage } = useSelector((state) => state.language);
-  
+
   // Get translation object for current language (e.g., translations['en'])
   // If currentLanguage translations don't exist, use empty object as fallback
   const t = translations[currentLanguage] || {};
@@ -43,7 +43,7 @@ const HomePage = () => {
   const handleSectionClick = (section) => {
     // Find DOM element by id
     const element = document.getElementById(section);
-    
+
     // If element exists, scroll to it smoothly
     if (element) {
       // scrollIntoView with smooth behavior creates animated scrolling
@@ -61,11 +61,11 @@ const HomePage = () => {
       {/* Hero section - banner with title, description, and CTA buttons */}
       {/* Pass handleSectionClick so Hero buttons can navigate to sections */}
       <Hero handleSectionClick={handleSectionClick} />
-      
+
       {/* Skill Analysis section - wrapped in div with id for scroll navigation */}
       <div id="skill-analysis">
-        {/* Pass translation object and user skills as props */}
-        <SkillAnalysis t={t.interactive?.skillAnalysis} userSkills={skills} />
+        {/* Pass translation object - skills come from clerkSlice */}
+        <SkillAnalysis t={t.interactive?.skillAnalysis} />
       </div>
 
       {/* Gap Identification section - analyzes skill gaps */}

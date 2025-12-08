@@ -46,6 +46,7 @@ import BusinessDashboard from './components/BusinessDashboard';
 import JobseekerDashboard from './components/JobSeekerDashboard';
 import UserDashboard from './components/UserDashboard';
 import ServiceSeeker from './components/ServiceSeeker';
+import SkillAnalysisDashboard from './components/SkillAnalysisDashboard';
 
 /**
  * App functional component
@@ -54,10 +55,10 @@ import ServiceSeeker from './components/ServiceSeeker';
 function App() {
   // Get dispatch function to trigger Redux actions
   const dispatch = useDispatch();
-  
+
   // Extract loading state from language slice to show loading indicator while fetching translations
   const { loading } = useSelector((state) => state.language);
-  
+
   // Extract current theme mode (dark or light) from theme slice
   const { mode } = useSelector((state) => state.theme);
 
@@ -66,7 +67,7 @@ function App() {
   useEffect(() => {
     // Dispatch action to fetch translation data from API for the selected language
     dispatch(fetchTranslations());
-    
+
     // Dispatch action to initialize theme from localStorage or system preference
     dispatch(initializeTheme()); // Initialize theme on mount
   }, [dispatch]); // Re-run only if dispatch changes (which it never does, so effectively runs once)
@@ -97,23 +98,24 @@ function App() {
       <Route path="/" element={<Layout />}>
         {/* Index route - renders HomePage at the root path "/" */}
         <Route index element={<HomePage />} />
-        
+
         {/* Job seeker registration route - form for individuals seeking jobs */}
         <Route path="register-seeker" element={<JobSeekerRegistration />} />
-        
+
         {/* Business registration route - form for companies/employers */}
         <Route path="register-business" element={<BusinessRegistration />} />
-        
+
         {/* Sign up page route - user type selection (seeker vs business) */}
         <Route path="signup" element={<SignUpPage />} />
-        
+
         {/* Login page route - authentication form */}
         <Route path="login" element={<LoginPage />} />
-        
+
         {/* Dashboard route - protected user dashboard (requires login) */}
         <Route path="business-dashboard" element={<BusinessDashboard />} />
         <Route path="jobseeker-dashboard" element={<JobseekerDashboard />} />
         <Route path="user-dashboard" element={<UserDashboard />} />
+        <Route path="skill-analysis" element={<SkillAnalysisDashboard />} />
         <Route path="about" element={<About />} />
         <Route path="service-seeker" element={<ServiceSeeker />} />
       </Route>
