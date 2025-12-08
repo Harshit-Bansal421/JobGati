@@ -1,75 +1,84 @@
 // server.js
 import express from "express";
 import cors from "cors";
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-const { getMatchAnalysis } = require('./services/geminiService');
-
-// Get current directory for ES modules
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import dashboardrouter from "../routes/dashboardRoutes.js";
+// Get current directory for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env from Server directory
-dotenv.config({ path: join(__dirname, '../.env') });
+// Load .env
+dotenv.config({ path: join(__dirname, "../.env") });
 
+// DB + Services
 import connectDB from "../configuration/mongodb.js";
+import analyzeSkillGap from "../services/GrokServices.js";
+
+// Routes
 import router from "../routes/userRoutes.js";
 import jsrouter from "../routes/JobSeekerRoutes.js";
 import businessrouter from "../routes/businessRoutes.js";
 import jobrouter from "../routes/JobRoutes.js";
 import skillrouter from "../routes/skillRoutes.js";
 import profilerouter from "../routes/userProfileRoutes.js";
+
 const app = express();
-const PORT = process.env.PORT || 5000;  
+const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-await connectDB()
+connectDB()
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => {
+    console.error("MongoDB Connection Failed", err);
+    process.exit(1);
+  });
 
-// CORS Configuration - Allow requests from Vercel and localhost
+// CORS
 app.use(
   cors({
-    origin: ["https://job-gati-lq1t.vercel.app", "http://localhost:5173", "http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: "*",
+    methods: "*",
+    allowedHeaders: "*",
     credentials: true,
   })
 );
 
-// Middlewares
+// Middleware
 app.use(express.json());
 
-// Basic route
+// Default route
 app.get("/", (req, res) => {
   res.send("Server is running...");
 });
 
-app.use("/api/users", router)
+// API Routes
+app.use("/api/dashboard", dashboardrouter);
+app.use("/api/users", router);
 app.use("/api/jobseekers", jsrouter);
 app.use("/api/business", businessrouter);
 app.use("/api/jobs", jobrouter);
 app.use("/api/skills", skillrouter);
 app.use("/api/profile", profilerouter);
 
-// Jooble Jobs API Proxy
-const jobsProxyRouter = require('./routes/jobs.js');
-app.use("/api/jooble", jobsProxyRouter);
-
-// Match Analysis Endpoint
-app.post('/api/match', async (req, res) => {
+// Analyze Skill Gap Route
+app.post("/api/skills/analyze-gap", async (req, res) => {
   try {
-    const { userSkills, jobDescription } = req.body;
-    console.log('📊 Match analysis request received');
-    
-    const analysis = await getMatchAnalysis(userSkills, jobDescription);
-    res.json(analysis);
+    const { userSkills, jobRole } = req.body;
+
+    console.log(`Analyzing skill gap for role: ${jobRole}...`);
+
+    const data = await analyzeSkillGap(userSkills, jobRole);
+
+    res.json(data);
   } catch (error) {
-    console.error('Error in match analysis:', error);
-    res.status(500).json({ error: 'Failed to analyze match' });
+    console.error("Skill Gap Error:", error);
+    res.status(500).json({ error: "Analysis failed" });
   }
 });
 
-// Start server
+// Start Server
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
