@@ -98,26 +98,6 @@ const Header = ({ setShowLogin }) => {
             {t?.nav?.home || 'Home'}
           </button>
 
-          {/* Show registration links only when NOT logged in */}
-          {!isLoggedIn && (
-            <>
-              <button
-                onClick={() => handleNavClick('/register-seeker')}
-                className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/register-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forJobSeekers || 'For Job Seekers'}
-              </button>
-
-              <button
-                onClick={() => handleNavClick('/register-business')}
-                className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/register-business') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forBusinesses || 'For Businesses'}
-              </button>
-            </>
-          )}
 
           {/* About - Always visible */}
           <button
@@ -209,26 +189,6 @@ const Header = ({ setShowLogin }) => {
             {t?.nav?.home || 'Home'}
           </button>
 
-          {/* Show registration links only when NOT logged in */}
-          {!isLoggedIn && (
-            <>
-              <button
-                onClick={() => handleNavClick('/register-seeker')}
-                className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/register-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forJobSeekers || 'For Job Seekers'}
-              </button>
-
-              <button
-                onClick={() => handleNavClick('/register-business')}
-                className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/register-business') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
-              >
-                {t?.nav?.forBusinesses || 'For Businesses'}
-              </button>
-            </>
-          )}
 
           {/* About - Always visible */}
           <button

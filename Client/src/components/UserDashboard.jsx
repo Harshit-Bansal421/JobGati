@@ -150,6 +150,7 @@ const UserDashboard = () => {
             console.error('Error saving profile:', error);
             alert('Failed to save profile. Please try again.');
         }
+        navigate('/');
     };
 
     const isProfileIncomplete = !formData.phoneNumber || !formData.location || !formData.desiredPosition || formData.skills.length === 0;
@@ -357,7 +358,7 @@ const UserDashboard = () => {
                         </div>
 
                         {/* Save Button */}
-                        <div className="pt-4 space-y-3">
+                        <div className="pt-4">
                             <button
                                 onClick={handleSaveProfile}
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
@@ -365,17 +366,6 @@ const UserDashboard = () => {
                                 <Save className="w-5 h-5" />
                                 Save Profile
                             </button>
-
-                            {/* Analyze Skills Button */}
-                            {!isProfileIncomplete && (
-                                <button
-                                    onClick={() => navigate('/skill-analysis')}
-                                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                                >
-                                    <Briefcase className="w-5 h-5" />
-                                    Analyze My Skills with AI
-                                </button>
-                            )}
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login, logout } from '../store/slices/authSlice';
 import { setUserData } from '../store/slices/userSlice';
@@ -13,6 +13,10 @@ const AuthSync = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const hasRedirected = useRef(false);
+    const initialLoadComplete = useRef(false);
+
+    // Get profile completion status from Redux
+    const { profileData } = useSelector((state) => state.clerk);
 
     useEffect(() => {
         const syncUser = async () => {
@@ -44,28 +48,44 @@ const AuthSync = () => {
                             }
                         }
 
+                        // Only redirect to dashboard on FIRST login (not on every page load)
+                        // Check if this is the initial load after login
+                        if (!initialLoadComplete.current && !hasRedirected.current) {
+                            const currentPath = location.pathname;
 
-                        // Only redirect to dashboard once after login
-                        const currentPath = location.pathname;
+                            // Only redirect if user is on login/signup pages or root
+                            const shouldRedirect = currentPath === '/' ||
+                                currentPath === '/login' ||
+                                currentPath === '/signup' ||
+                                currentPath.includes('sign-in') ||
+                                currentPath.includes('sign-up');
 
-                        // Redirect only if not on dashboard and haven't redirected yet
-                        if (currentPath !== '/user-dashboard' && !hasRedirected.current) {
-                            console.log("🚀 Navigating to /user-dashboard after Clerk login");
-                            hasRedirected.current = true;
-                            navigate('/user-dashboard', { replace: true });
-                        } else if (currentPath === '/user-dashboard') {
-                            hasRedirected.current = true; // Mark as redirected if already on dashboard
-                            console.log("✅ Already on dashboard");
+                            if (shouldRedirect) {
+                                console.log("🚀 First login detected - Navigating to /user-dashboard");
+                                hasRedirected.current = true;
+                                navigate('/user-dashboard', { replace: true });
+                            }
+
+                            initialLoadComplete.current = true;
                         }
 
                     } catch (error) {
                         console.error("❌ Error syncing user:", error);
 
-                        // On error, redirect once if not on dashboard
-                        if (location.pathname !== '/user-dashboard' && !hasRedirected.current) {
-                            console.log("🚀 Error occurred - Navigating to /user-dashboard");
-                            hasRedirected.current = true;
-                            navigate('/user-dashboard', { replace: true });
+                        // On error during first load, redirect to dashboard
+                        if (!initialLoadComplete.current && !hasRedirected.current) {
+                            const currentPath = location.pathname;
+                            const shouldRedirect = currentPath === '/' ||
+                                currentPath === '/login' ||
+                                currentPath === '/signup';
+
+                            if (shouldRedirect) {
+                                console.log("🚀 Error occurred - Navigating to /user-dashboard");
+                                hasRedirected.current = true;
+                                navigate('/user-dashboard', { replace: true });
+                            }
+
+                            initialLoadComplete.current = true;
                         }
                     }
                 } else {
@@ -73,7 +93,8 @@ const AuthSync = () => {
                 }
             } else if (isLoaded && !isSignedIn) {
                 console.log("🚪 User logged out");
-                hasRedirected.current = false; // Reset redirect flag on logout
+                hasRedirected.current = false;
+                initialLoadComplete.current = false;
                 dispatch(logout());
                 dispatch(clearClerkUser());
             } else {
