@@ -45,6 +45,7 @@ import About from './components/About';
 import BusinessDashboard from './components/BusinessDashboard';
 import JobseekerDashboard from './components/JobSeekerDashboard';
 import UserDashboard from './components/UserDashboard';
+import ServiceSeeker from './components/ServiceSeeker';
 
 /**
  * App functional component
@@ -114,6 +115,7 @@ function App() {
         <Route path="jobseeker-dashboard" element={<JobseekerDashboard />} />
         <Route path="user-dashboard" element={<UserDashboard />} />
         <Route path="about" element={<About />} />
+        <Route path="service-seeker" element={<ServiceSeeker />} />
       </Route>
     </Routes>
   );

@@ -127,6 +127,15 @@ const Header = ({ setShowLogin }) => {
             About
           </button>
         </nav>
+        {isLoggedIn && (
+          <button
+            onClick={() => handleNavClick('/service-seeker')}
+            className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+              }`}
+          >
+            {'Service Seeker'}
+          </button>
+        )}
 
         {/* Actions (Theme, Language & Login) */}
         <div className="hidden md:flex items-center gap-4">
@@ -251,6 +260,13 @@ const Header = ({ setShowLogin }) => {
 
             {isLoggedIn ? (
               <>
+                <button
+                  onClick={() => handleNavClick('/service-seeker')}
+                  className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                    }`}
+                >
+                  {'Service Seeker'}
+                </button>
                 <button
                   onClick={() => handleNavClick('/dashboard')}
                   className="text-left text-base font-medium text-gray-600 hover:text-primary flex items-center gap-2"

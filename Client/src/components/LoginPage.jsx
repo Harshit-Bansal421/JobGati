@@ -122,7 +122,6 @@ const LoginPage = () => {
           </select>
         </div>
 
-
         {/* input field container */}
         <div className="mb-5">
           {/* user label */}

@@ -1,384 +1,311 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getJobSeekerProfile, updateJobSeeker } from '../services/JobSeekerServices';
-import { setUserData } from '../store/slices/userSlice';
-import { Loader2, X, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  User, Briefcase, FileText, Award, Zap, CheckCircle, 
+  PenTool, Eye, EyeOff, Save, X, File
+} from 'lucide-react';
 
-const JobSeekerDashboard = () => {
-    // Redux
-    const { user } = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
-
-    // Local State
-    const [profileData, setProfileData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [modal, setModal] = useState(null); // 'editProfile' | 'editSkills' | null
-    const [tempData, setTempData] = useState({});
-    const [saving, setSaving] = useState(false);
-    const [newSkill, setNewSkill] = useState("");
-
-
-    // Mock data for things we don't have backend logic for yet
-    const profileViews = 128;
-    const learningProgress = 65;
-    const recentApplications = [
-        { title: "Welder at ABC Corp", status: "Viewed by Recruiter", statusColor: "text-yellow-400" },
-        { title: "Electrician at XYZ Ltd", status: "Interview Invite", statusColor: "text-green-400" },
-        { title: "Technician at BuildCo", status: "Application Sent", statusColor: "text-blue-400" },
-    ];
-    const recommendedJobs = [
-        { title: "Senior Solar Technician", company: "SunPower Solutions" },
-        { title: "Electrical Installation Expert", company: "Grid Systems Inc" },
-        { title: "Maintenance Specialist", company: "Urban Infrastructure" },
-    ];
-
-    // Load Data
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!user?._id) return;
-            setLoading(true);
-            try {
-                // If the user registered as a job seeker, 'user' object might have the basic details
-                // But we fetch fresh profile data to be sure
-                const data = await getJobSeekerProfile(user._id);
-                if (data) {
-                    setProfileData(data);
-                    // Optionally update Redux if needed, but keeping local state is fine for dashboard
-                } else {
-                    // Fallback to redux user if API fails or returns nothing (e.g. initial render)
-                    setProfileData(user); 
-                }
-            } catch (error) {
-                console.error("Failed to load profile", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [user?._id]);
-
-
-    // Handlers
-    const handleSaveProfile = async () => {
-        if (!user?._id) return;
-        setSaving(true);
-        try {
-            const updated = await updateJobSeeker(user._id, tempData);
-            if (updated && updated.success) {
-                setProfileData(updated.data);
-                dispatch(setUserData(updated.data)); // Sync Redux
-                setModal(null);
-            } else {
-                alert("Failed to update profile");
-            }
-        } catch (error) {
-            console.error("Update failed", error);
-            alert("Error updating profile");
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const handleAddSkill = () => {
-        if(newSkill.trim()) {
-            setTempData(prev => ({
-                ...prev,
-                skills: [...(prev.skills || []), newSkill.trim()]
-            }));
-            setNewSkill("");
-        }
-    }
-
-    const handleRemoveSkill = (skillToRemove) => {
-        setTempData(prev => ({
-            ...prev,
-            skills: prev.skills.filter(s => s !== skillToRemove)
-        }));
-    }
-
-    const openEditProfile = () => {
-        setTempData({ ...profileData });
-        setModal('editProfile');
-    }
-
-    const openEditSkills = () => {
-        setTempData({ ...profileData });
-        setModal('editSkills');
-    }
-
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#1a202c] text-white">
-                <Loader2 className="animate-spin mr-2" /> Loading Dashboard...
-            </div>
-        );
-    }
-
-    // Use profileData or fallbacks
-    const displayData = profileData || user || {};
-
-    return (
-        <div className="bg-[#1a202c] min-h-screen text-white p-6 font-sans">
-            <div className="container mx-auto max-w-7xl">
-
-                {/* Header */}
-                <header className="mb-8 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold">Welcome back, {displayData.name || displayData.username || 'User'}!</h1>
-                        <p className="text-gray-400 mt-1">Here's what's happening with your job search today.</p>
-                    </div>
-                    <div className="bg-[#2d3748] px-4 py-2 rounded-lg border border-gray-700">
-                        <span className="text-gray-400 text-sm">Profile Views</span>
-                        <div className="text-2xl font-bold text-[#3182ce]">{profileViews}</div>
-                    </div>
-                </header>
-
-                {/* Top Section: Profile & Details */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-
-                    {/* Left Card: Profile Summary */}
-                    <div className="bg-[#2d3748] rounded-xl p-6 shadow-lg border border-gray-700 relative">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-semibold text-white">My Profile</h2>
-                            <button onClick={openEditProfile} className="text-[#3182ce] text-sm hover:underline">Edit</button>
-                        </div>
-
-                        <div className="space-y-4">
-                            <div className="flex justify-between border-b border-gray-700 pb-2">
-                                <span className="text-gray-400">Name</span>
-                                <span className="font-medium">{displayData.name || 'Not Added'}</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-700 pb-2">
-                                <span className="text-gray-400">Username</span>
-                                <span className="font-medium">{displayData.username}</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-700 pb-2">
-                                <span className="text-gray-400">Location</span>
-                                <span className="font-medium">{displayData.location || 'Not Added'}</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-700 pb-2">
-                                <span className="text-gray-400">Phone</span>
-                                <span className="font-medium">{displayData.phone || 'Not Added'}</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-700 pb-2">
-                                <span className="text-gray-400">Email</span>
-                                <span className="font-medium">{displayData.email}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Card: Personal Details & Documents */}
-                    <div className="bg-[#2d3748] rounded-xl p-6 shadow-lg border border-gray-700 relative">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-semibold text-white">Details & Credentials</h2>
-                            <button onClick={openEditProfile} className="text-[#3182ce] text-sm hover:underline">Update</button>
-                        </div>
-
-                        <div className="space-y-6">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p className="text-gray-400 text-sm mb-1">Age</p>
-                                    <p className="font-medium text-lg">{displayData.age ? `${displayData.age} years` : 'N/A'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-gray-400 text-sm mb-1">Aadhaar Number</p>
-                                    <p className="font-medium text-lg">{displayData.aadhar || 'Not Added'}</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <p className="text-gray-400 text-sm mb-1">Highest Education</p>
-                                <p className="font-medium text-lg">{displayData.education || 'Not Added'}</p>
-                            </div>
-
-                            <div className="pt-4 border-t border-gray-700">
-                                <p className="text-gray-400 text-sm mb-3">Documents</p>
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3 text-green-400">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        <span className="text-white">Resume {displayData.resume ? '(Uploaded)' : '(Not Uploaded)'}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Middle Section: Skills & Preferences */}
-                <div className="bg-[#2d3748] rounded-xl p-6 shadow-lg border border-gray-700 mb-8 relative">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-semibold text-white">Skills & Job Target</h2>
-                        <button onClick={openEditSkills} className="text-[#3182ce] text-sm hover:underline">Edit Skills</button>
-                    </div>
-
-                    <div className="mb-6">
-                        <p className="text-gray-400 text-sm mb-3">Skills</p>
-                        <div className="flex flex-wrap gap-3">
-                            {displayData.skills && displayData.skills.length > 0 ? displayData.skills.map((skill, idx) => (
-                                <span key={idx} className="bg-[#3182ce] text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-sm">
-                                    {skill}
-                                </span>
-                            )) : (
-                                <span className="text-gray-500 italic">No skills added yet. Click Edit to add.</span>
-                            )}
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-gray-400 text-sm mb-2">Looking For</p>
-                        <p className="text-lg font-medium">Full-time position (Preference not set)</p>
-                    </div>
-                </div>
-
-                {/* Bottom Section: Activity Tracking */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-
-                    {/* Card 1: Learning Path */}
-                    <div className="bg-[#2d3748] rounded-xl p-6 shadow-lg border border-gray-700">
-                        <div className="flex items-center gap-2 mb-4 text-[#3182ce]">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                            <h3 className="font-semibold text-white">Learning Path</h3>
-                        </div>
-                        <p className="text-gray-400 text-sm mb-2">Currently Pursuing:</p>
-                        <p className="font-medium mb-4">Advanced Solar Systems Certification</p>
-
-                        <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-400">Progress</span>
-                            <span className="text-[#3182ce] font-bold">{learningProgress}%</span>
-                        </div>
-                        <div className="w-full bg-gray-700 rounded-full h-2.5">
-                            <div className="bg-[#3182ce] h-2.5 rounded-full" style={{ width: `${learningProgress}%` }}></div>
-                        </div>
-                    </div>
-
-                    {/* Card 2: Application Responses */}
-                    <div className="bg-[#2d3748] rounded-xl p-6 shadow-lg border border-gray-700">
-                        <h3 className="font-semibold text-white mb-4">Application Responses</h3>
-                        <div className="space-y-4">
-                            {recentApplications.map((app, idx) => (
-                                <div key={idx} className="border-l-2 border-gray-600 pl-3">
-                                    <p className="font-medium text-sm">{app.title}</p>
-                                    <p className={`text-xs ${app.statusColor} font-medium`}>{app.status}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Card 3: Recommended Opportunities */}
-                    <div className="bg-[#2d3748] rounded-xl p-6 shadow-lg border border-gray-700">
-                        <h3 className="font-semibold text-white mb-4">Recommended Opportunities</h3>
-                        <div className="space-y-4">
-                            {recommendedJobs.map((job, idx) => (
-                                <div key={idx} className="pb-3 border-b border-gray-700 last:border-0 last:pb-0">
-                                    <p className="font-medium text-sm">{job.title}</p>
-                                    <p className="text-gray-400 text-xs mb-1">{job.company}</p>
-                                    <button className="text-[#3182ce] text-xs font-medium hover:underline flex items-center gap-1">
-                                        Apply Quick <span>→</span>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer Action Space */}
-                <div className="flex flex-wrap gap-4">
-                    <button onClick={openEditProfile} className="bg-[#3182ce] hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md">
-                        Update Profile
-                    </button>
-                    <button className="bg-transparent border border-[#3182ce] text-[#3182ce] hover:bg-[#3182ce] hover:text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-                        Browse All Jobs
-                    </button>
-                </div>
-            </div>
-
-            {/* --- MODAL: EDIT PROFILE --- */}
-            {modal === 'editProfile' && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                    <div className="bg-[#2d3748] w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-                        <div className="flex justify-between items-center p-6 border-b border-gray-700">
-                            <h3 className="text-xl font-bold text-white">Edit Profile</h3>
-                            <button onClick={() => setModal(null)} className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-gray-700"><X size={20} /></button>
-                        </div>
-                        <div className="p-6 overflow-y-auto custom-scrollbar space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-gray-400 mb-1 text-sm">Full Name</label>
-                                    <input type="text" value={tempData.name || ''} onChange={e => setTempData({ ...tempData, name: e.target.value })} className="w-full bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]" />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-400 mb-1 text-sm">Age</label>
-                                    <input type="number" value={tempData.age || ''} onChange={e => setTempData({ ...tempData, age: e.target.value })} className="w-full bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]" />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-400 mb-1 text-sm">Phone</label>
-                                    <input type="text" value={tempData.phone || ''} onChange={e => setTempData({ ...tempData, phone: e.target.value })} className="w-full bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]" />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-400 mb-1 text-sm">Location</label>
-                                    <input type="text" value={tempData.location || ''} onChange={e => setTempData({ ...tempData, location: e.target.value })} className="w-full bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]" />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-400 mb-1 text-sm">Highest Education</label>
-                                    <input type="text" value={tempData.education || ''} onChange={e => setTempData({ ...tempData, education: e.target.value })} className="w-full bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]" />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-400 mb-1 text-sm">Aadhaar Number</label>
-                                    <input type="text" value={tempData.aadhar || ''} onChange={e => setTempData({ ...tempData, aadhar: e.target.value })} className="w-full bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="p-6 border-t border-gray-700 flex justify-end gap-3">
-                            <button onClick={() => setModal(null)} className="px-4 py-2 rounded border border-gray-600 text-gray-300 hover:bg-gray-700">Cancel</button>
-                            <button onClick={handleSaveProfile} disabled={saving} className="px-4 py-2 rounded bg-[#3182ce] text-white hover:bg-blue-600 disabled:opacity-50">
-                                {saving ? 'Saving...' : 'Save Changes'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* --- MODAL: EDIT SKILLS --- */}
-            {modal === 'editSkills' && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                    <div className="bg-[#2d3748] w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
-                        <div className="flex justify-between items-center p-6 border-b border-gray-700">
-                            <h3 className="text-xl font-bold text-white">Edit Skills</h3>
-                            <button onClick={() => setModal(null)} className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-gray-700"><X size={20} /></button>
-                        </div>
-                        <div className="p-6">
-                             <div className="flex gap-2 mb-4">
-                                <input 
-                                    type="text" 
-                                    value={newSkill} 
-                                    onChange={(e) => setNewSkill(e.target.value)}
-                                    placeholder="Add a new skill (e.g. Wiring)" 
-                                    className="flex-1 bg-gray-700 border-gray-600 rounded p-2 text-white focus:outline-none focus:border-[#3182ce]"
-                                    onKeyDown={(e) => e.key === 'Enter' && handleAddSkill()}
-                                />
-                                <button onClick={handleAddSkill} className="bg-green-600 hover:bg-green-500 text-white p-2 rounded"><Plus size={20}/></button>
-                             </div>
-                             <div className="flex flex-wrap gap-2">
-                                {tempData.skills?.map((skill, idx) => (
-                                    <span key={idx} className="bg-blue-900 text-blue-100 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-                                        {skill}
-                                        <button onClick={() => handleRemoveSkill(skill)} className="hover:text-red-400"><X size={14}/></button>
-                                    </span>
-                                ))}
-                             </div>
-                        </div>
-                        <div className="p-6 border-t border-gray-700 flex justify-end gap-3">
-                            <button onClick={() => setModal(null)} className="px-4 py-2 rounded border border-gray-600 text-gray-300 hover:bg-gray-700">Cancel</button>
-                            <button onClick={handleSaveProfile} disabled={saving} className="px-4 py-2 rounded bg-[#3182ce] text-white hover:bg-blue-600 disabled:opacity-50">
-                                {saving ? 'Saving...' : 'Save Changes'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+// --- DATA ---
+const SEEKER_DATA = {
+  name: "Rahul Sharma",
+  username: "rahul_welder_99",
+  location: "Pune, Maharashtra",
+  phone: "+91 98765 43210",
+  email: "rahul.sharma@example.com",
+  age: 26,
+  adhaar: "XXXX-XXXX-1234",
+  education: "ITI Certification (Welding)",
+  skills: ["Arc Welding", "Metal Fabrication", "Safety Compliance", "Blueprint Reading"],
+  targetRole: "Senior Welder / Industrial Fitter",
+  course: "Advanced TIG Welding Certification",
+  courseProgress: 75,
+  applications: [
+    { id: 1, title: "Welder at ABC Corp", status: "Viewed", color: "text-blue-400" },
+    { id: 2, title: "Fitter at XYZ Ltd", status: "Interview", color: "text-green-400" },
+  ],
+  recommendations: [
+    { id: 101, title: "Industrial Pipe Fitter", company: "Tata Motors", location: "Pune", applied: false },
+    { id: 102, title: "Structural Welder", company: "L&T Heavy Eng", location: "Mumbai", applied: false }
+  ],
+  documents: {
+    resume: "Rahul_Sharma_Resume_2024.pdf",
+    certificates: [
+      "ITI Welder Certificate",
+      "Safety Compliance Level 1",
+      "Blueprint Reading Basics"
+    ],
+    pendingCertificates: []
+  }
 };
 
-export default JobSeekerDashboard;
+// --- MAIN COMPONENT ---
+export default function JobSeekerDashboard() {
+  const [data, setData] = useState(SEEKER_DATA);
+  const [modalType, setModalType] = useState(null);
+  const [tempData, setTempData] = useState({});
+  const [selectedDocType, setSelectedDocType] = useState(null); 
+
+  const handleEdit = (section, currentData) => {
+    setTempData({ ...currentData });
+    setModalType(section);
+  };
+
+  const handleSave = () => {
+    setData({ ...data, ...tempData });
+    setModalType(null);
+  };
+
+  const applyToJob = (id) => {
+    const updatedRecs = data.recommendations.map(job => 
+      job.id === id ? { ...job, applied: true } : job
+    );
+    setData({ ...data, recommendations: updatedRecs });
+  };
+
+  const handleViewDocument = (type) => {
+    setSelectedDocType(type);
+    setModalType('viewDoc');
+  };
+
+  // Styles
+  const cardClass = "bg-slate-800 rounded-xl border border-slate-700 shadow-sm p-6";
+  const modalOverlayClass = "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn";
+  const modalContentClass = "bg-slate-800 rounded-2xl w-full max-w-lg border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]";
+  const inputLabelClass = "block text-xs uppercase text-slate-400 font-bold mb-1 tracking-wider";
+  const inputClass = "w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500";
+  const buttonBase = "px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2";
+  const btnPrimary = `${buttonBase} bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95`;
+  const btnSecondary = `${buttonBase} bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 active:scale-95`;
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8 font-sans">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* --- MODAL: EDIT PROFILE --- */}
+        {modalType === 'profile' && (
+          <div className={modalOverlayClass}>
+            <div className={modalContentClass}>
+              <div className="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-900/50">
+                <h3 className="text-xl font-bold text-white">Edit Profile</h3>
+                <button onClick={() => setModalType(null)} className="text-slate-400 hover:text-white p-1 hover:bg-slate-700 rounded-full"><X size={20} /></button>
+              </div>
+              <div className="p-6 overflow-y-auto custom-scrollbar">
+                <div className="mb-4">
+                  <label className={inputLabelClass}>Full Name</label>
+                  <input type="text" value={tempData.name || ''} onChange={(e) => setTempData({...tempData, name: e.target.value})} className={inputClass} />
+                </div>
+                <div className="mb-4">
+                  <label className={inputLabelClass}>Location</label>
+                  <input type="text" value={tempData.location || ''} onChange={(e) => setTempData({...tempData, location: e.target.value})} className={inputClass} />
+                </div>
+                <div className="mb-4">
+                  <label className={inputLabelClass}>Phone</label>
+                  <input type="text" value={tempData.phone || ''} onChange={(e) => setTempData({...tempData, phone: e.target.value})} className={inputClass} />
+                </div>
+                <div className="mb-4">
+                  <label className={inputLabelClass}>Email</label>
+                  <input type="text" value={tempData.email || ''} onChange={(e) => setTempData({...tempData, email: e.target.value})} className={inputClass} />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="mb-4">
+                    <label className={inputLabelClass}>Age</label>
+                    <input type="text" value={tempData.age || ''} onChange={(e) => setTempData({...tempData, age: e.target.value})} className={inputClass} />
+                  </div>
+                  <div className="mb-4">
+                    <label className={inputLabelClass}>Highest Education</label>
+                    <input type="text" value={tempData.education || ''} onChange={(e) => setTempData({...tempData, education: e.target.value})} className={inputClass} />
+                  </div>
+                </div>
+
+                <div className="pt-4 flex justify-end gap-2">
+                  <button onClick={() => setModalType(null)} className={btnSecondary}>Cancel</button>
+                  <button onClick={handleSave} className={btnPrimary}><Save size={16}/> Save Changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- MODAL: DOCUMENT PREVIEW --- */}
+        {modalType === 'viewDoc' && (
+          <div className={modalOverlayClass}>
+            <div className={modalContentClass}>
+              <div className="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-900/50">
+                <h3 className="text-xl font-bold text-white">{selectedDocType === 'resume' ? 'My Resume' : 'My Certificates'}</h3>
+                <button onClick={() => setModalType(null)} className="text-slate-400 hover:text-white p-1 hover:bg-slate-700 rounded-full"><X size={20} /></button>
+              </div>
+              <div className="p-6 overflow-y-auto custom-scrollbar">
+                 <div className="space-y-4">
+                    {selectedDocType === 'resume' && (
+                      <div className="bg-slate-700/50 p-4 rounded border border-slate-600 flex flex-col items-center justify-center min-h-[200px]">
+                         <FileText size={48} className="text-slate-400 mb-2" />
+                         <p className="text-lg font-medium text-white">{data.documents.resume}</p>
+                         <p className="text-sm text-slate-400 mb-4">PDF • 1.2 MB</p>
+                         <button className={btnPrimary}>Download Resume</button>
+                      </div>
+                    )}
+
+                    {selectedDocType === 'certificates' && (
+                      <div className="space-y-3">
+                         {data.documents.certificates.map((cert, index) => (
+                           <div key={index} className="flex items-center gap-3 p-3 bg-slate-700/30 border border-slate-600 rounded-lg">
+                              <div className="w-10 h-10 bg-blue-900/30 rounded flex items-center justify-center text-blue-400">
+                                 <Award size={20} />
+                              </div>
+                              <div className="flex-1">
+                                 <p className="text-white font-medium">{cert}</p>
+                                 <p className="text-xs text-green-400 flex items-center gap-1"><CheckCircle size={10} /> Verified</p>
+                              </div>
+                              <button className="text-slate-400 hover:text-white"><Eye size={16}/></button>
+                           </div>
+                         ))}
+                      </div>
+                    )}
+                 </div>
+                 <div className="pt-4 flex justify-end">
+                    <button onClick={() => setModalType(null)} className={btnSecondary}>Close</button>
+                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- HEADER --- */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-800 pb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {data.name.split(' ')[0]}</h1>
+            <p className="text-slate-400">Track your applications and learning progress.</p>
+          </div>
+          <button onClick={() => handleEdit('profile', data)} className={btnPrimary}><PenTool size={16}/> Edit Profile</button>
+        </div>
+
+        {/* --- TOP SECTION --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className={cardClass}>
+            <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
+              <div className="flex items-center gap-2">
+                <User size={18} className="text-blue-500" />
+                <h3 className="text-lg font-semibold text-slate-100">My Profile</h3>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="mb-4">
+                <p className="text-xs text-slate-400 font-medium mb-1">Full Name</p>
+                <p className="text-slate-100 text-sm md:text-base font-medium">{data.name}</p>
+              </div>
+              <div className="mb-4">
+                <p className="text-xs text-slate-400 font-medium mb-1">Username</p>
+                <p className="text-slate-100 text-sm md:text-base font-medium">{data.username}</p>
+              </div>
+              <div className="mb-4">
+                <p className="text-xs text-slate-400 font-medium mb-1">Location</p>
+                <p className="text-slate-100 text-sm md:text-base font-medium">{data.location}</p>
+              </div>
+              <div className="mb-4">
+                <p className="text-xs text-slate-400 font-medium mb-1">Phone</p>
+                <p className="text-slate-100 text-sm md:text-base font-medium">{data.phone}</p>
+              </div>
+              <div className="mb-4">
+                <p className="text-xs text-slate-400 font-medium mb-1">Email</p>
+                <p className="text-slate-100 text-sm md:text-base font-medium">{data.email}</p>
+              </div>
+              <div className="mb-4">
+                 <p className="text-xs text-slate-400 font-medium mb-1">Password</p>
+                 <div className="flex items-center gap-2">
+                   <span className="text-slate-100 text-lg tracking-widest">••••••••</span>
+                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={cardClass}>
+            <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
+              <div className="flex items-center gap-2">
+                <FileText size={18} className="text-blue-500" />
+                <h3 className="text-lg font-semibold text-slate-100">Details & Credentials</h3>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+               <div className="mb-4">
+                 <p className="text-xs text-slate-400 font-medium mb-1">Age</p>
+                 <p className="text-slate-100 text-sm md:text-base font-medium">{data.age} Years</p>
+               </div>
+               <div className="mb-4">
+                 <p className="text-xs text-slate-400 font-medium mb-1">Highest Education</p>
+                 <p className="text-slate-100 text-sm md:text-base font-medium">{data.education}</p>
+               </div>
+               <div className="col-span-2 mb-4">
+                  <p className="text-xs text-slate-400 font-medium mb-1">Adhaar Number</p>
+                  <p className="text-slate-100 text-sm md:text-base font-medium">•••• •••• {data.adhaar.slice(-4)}</p>
+               </div>
+            </div>
+            
+            <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+              <p className="text-xs text-slate-400 uppercase mb-3">Uploaded Documents</p>
+              
+              <div className="flex flex-wrap gap-4 mb-4">
+                <button 
+                  onClick={() => handleViewDocument('resume')}
+                  className="flex items-center gap-2 text-green-400 text-sm bg-green-900/20 px-3 py-2 rounded border border-green-900/30 hover:bg-green-900/30 transition-colors"
+                >
+                  <FileText size={16} /> Resume.pdf
+                </button>
+                
+                <button 
+                  onClick={() => handleViewDocument('certificates')}
+                  className="flex items-center gap-2 text-blue-400 text-sm bg-blue-900/20 px-3 py-2 rounded border border-blue-900/30 hover:bg-blue-900/30 transition-colors"
+                >
+                  <Award size={16} /> {data.documents.certificates.length} Certificates
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- SKILLS --- */}
+        <div className={cardClass}>
+          <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
+            <div className="flex items-center gap-2">
+              <Briefcase size={18} className="text-blue-500" />
+              <h3 className="text-lg font-semibold text-slate-100">Skills & Job Target</h3>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+            <div>
+              <p className="text-slate-400 text-sm mb-2">My Top Skills</p>
+              <div className="flex flex-wrap gap-2">
+                {data.skills.map((skill, i) => (
+                  <span key={i} className="px-3 py-1 rounded-full text-xs font-medium border border-opacity-20 bg-blue-900 text-blue-200">{skill}</span>
+                ))}
+              </div>
+            </div>
+            <div className="bg-slate-700/30 px-6 py-4 rounded-lg border-l-4 border-blue-500 w-full md:w-auto">
+              <p className="text-slate-400 text-xs uppercase">Looking For</p>
+              <p className="text-white font-medium text-lg">{data.targetRole}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* --- BOTTOM GRID --- */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className={cardClass}>
+            <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
+              <div className="flex items-center gap-2">
+                <Award size={18} className="text-blue-500" />
+                <h3 className="text-lg font-semibold text-slate-100">Learning Path</h3>
+              </div>
+            </div>
+            <div className="mt-4">
+              <p className="text-slate-300 text-sm font-medium mb-1">{data.course}</p>
+              <p className="text-slate-500 text-xs mb-3">Skill India Certification</p>
+              <div className="w-full bg-slate-700 rounded-full h-2.5 mb-2">
+                <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${data.courseProgress}%` }}></div>
+              </div>
+              <p className="text-right text-xs text-blue-400">{data.courseProgress}% Completed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

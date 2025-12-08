@@ -6,8 +6,145 @@
  * Part of the JobGati skill development journey.
  */
 
-// Import React and useState hook for managing training results
 import React, { useState } from 'react';
+
+const jobsData = {
+  jobs: [
+    {
+      id: 11,
+      jobTitle: "Junior Web Developer",
+      skills: ["HTML", "CSS", "JavaScript", "React"],
+      courses: {
+        onlineFree: [
+          {
+            title: "Full Web Development – freeCodeCamp",
+            link: "https://www.freecodecamp.org/"
+          }
+        ],
+        onlinePremium: [
+          {
+            id: 101,
+            title: "The Complete 2024 Web Development Bootcamp",
+            provider: "Udemy (Dr. Angela Yu)",
+            rating: "4.8 ⭐ (380k ratings)",
+            price: "₹3,499",
+            thumbnail: "https://img-c.udemycdn.com/course/750x422/1565838_e54e_18.jpg",
+            link: "https://www.udemy.com/course/the-complete-web-development-bootcamp/"
+          }
+        ],
+        offline: [
+          {
+            id: 203,
+            title: "MERN Stack Classroom Training",
+            provider: "TISA Tech",
+            location: "Govindpura, Jaipur",
+            duration: "6 Months",
+            type: "Offline Bootcamp",
+            thumbnail: "https://www.tisatech.in/assets/img/hero-img.png",
+            googleMapsLink: "https://maps.google.com/?q=TISA+Training+Institute+Jaipur"
+          }
+        ]
+      }
+    },
+
+    {
+      id: 7,
+      jobTitle: "Solar Panel Technician",
+      skills: ["Solar installation", "System maintenance", "Electrical basics"],
+      courses: {
+        onlinePremium: [
+          {
+            id: 102,
+            title: "Solar Energy: PV System Design & Installation",
+            provider: "Udemy",
+            rating: "4.5 ⭐",
+            price: "₹2,499",
+            thumbnail: "https://img-c.udemycdn.com/course/750x422/2301686_7952_3.jpg",
+            link: "https://www.udemy.com/course/solar-energy-etabs-pv-system-design-installation/"
+          }
+        ],
+        offline: [
+          {
+            id: 201,
+            title: "Certified Solar PV Installer",
+            provider: "Solar Training Centre Jaipur",
+            location: "Bais Godam, Jaipur",
+            duration: "45 Days",
+            type: "Offline (Classroom + Site)",
+            thumbnail:
+              "https://content3.jdmagicbox.com/comp/jaipur/d7/0141px141.x141.200702015317.y2c8/catalogue/solar-training-centre-bais-godam-jaipur-institutes-b84g43a2g5.jpg",
+            googleMapsLink: "https://maps.google.com/?q=Solar+Training+Centre+Jaipur"
+          }
+        ]
+      }
+    },
+
+    {
+      id: 9,
+      jobTitle: "Electrician",
+      skills: ["Wiring", "Circuits", "Safety"],
+      courses: {
+        onlinePremium: [
+          {
+            id: 104,
+            title: "Diploma in Electrical Studies",
+            provider: "Alison",
+            rating: "Certified",
+            price: "Get Quote",
+            thumbnail:
+              "https://cdn01.alison-static.net/courses/196/alison_courseware_intro_196.jpg",
+            link: "https://alison.com/course/diploma-in-electrical-studies"
+          }
+        ],
+        offline: [
+          {
+            id: 202,
+            title: "ITI Electrician Trade (NCVT)",
+            provider: "Ajmera ITI",
+            location: "Sodala, Jaipur",
+            duration: "2 Years",
+            type: "Offline (Diploma)",
+            thumbnail:
+              "https://ajmeraiti.com/wp-content/uploads/2020/02/Ajmera-ITI-Electrician-Lab.jpg",
+            googleMapsLink: "https://maps.google.com/?q=Ajmera+ITI+Sodala+Jaipur"
+          }
+        ]
+      }
+    },
+
+    {
+      id: 3,
+      jobTitle: "Carpentry",
+      skills: ["Woodworking", "Furniture making"],
+      courses: {
+        onlinePremium: [
+          {
+            id: 103,
+            title: "Woodworking: Fundamentals of Furniture Making",
+            provider: "Udemy",
+            rating: "4.7 ⭐",
+            price: "₹1,299",
+            thumbnail: "https://img-c.udemycdn.com/course/750x422/1638206_6454.jpg",
+            link: "https://www.udemy.com/course/woodworking-fundamentals-of-furniture-making/"
+          }
+        ],
+        offline: [
+          {
+            id: 204,
+            title: "Vocational Carpentry Workshop",
+            provider: "Aditya Technical Classes",
+            location: "Jagatpura, Jaipur",
+            duration: "3 Months",
+            type: "Offline Workshop",
+            thumbnail:
+              "https://5.imimg.com/data5/SELLER/Default/2023/1/YV/WO/GA/47402636/carpentry-training-service-500x500.jpg",
+            googleMapsLink: "https://maps.google.com/?q=Aditya+Technical+Classes+Jaipur"
+          }
+        ]
+      }
+    }
+  ]
+};
 
 /**
  * TrainingBridge functional component
@@ -15,168 +152,128 @@ import React, { useState } from 'react';
  * @param {Function} onFindTraining - Optional callback when training is found
  */
 const TrainingBridge = ({ t, onFindTraining }) => {
-  // State to store training search results (null initially, object after search)
+  // State to store training search results
   const [trainingResult, setTrainingResult] = useState(null);
 
-  /**
-   * handleFindTraining - Initiates training search
-   * Simulates an API call to find training courses and centers
-   * In production, this would call a real backend API with user's skill gaps
-   */
   const handleFindTraining = () => {
     // Simulate API call to find training
     setTimeout(() => {
-      // Set mock training results after 1.5 second delay
-      setTrainingResult({
-        // Array of online micro-courses
-        microCourses: [
-          {
-            name: "Advanced Welding Techniques",
-            provider: "SkillIndia",      // Government skill training provider
-            duration: "4 weeks",           // Course duration
-            format: "Online",              // Online course
-          },
-          {
-            name: "Digital Literacy for Workers",
-            provider: "NPTEL",             // National online learning platform
-            duration: "6 weeks",
-            format: "Online",
-          },
-          {
-            name: "Solar Panel Installation",
-            provider: "NSDC",              // National Skill Development Corporation
-            duration: "8 weeks",
-            format: "Blended",             // Mix of online and offline learning
-          },
-        ],
-        // Array of nearby physical training centers
-        trainingCenters: [
-          {
-            name: "ITI Center Delhi",
-            distance: "2.5 km",            // Distance from user's location
-            courses: ["Welding L3", "Solar Installation"], // Available courses
-          },
-          {
-            name: "Skill Development Hub",
-            distance: "5 km",
-            courses: ["Digital Literacy", "Safety Training"],
-          },
-          {
-            name: "Vocational Training Institute",
-            distance: "7 km",
-            courses: ["Welding L3", "Electrical Safety"],
-          },
-        ],
-      });
-      // Call optional callback if provided
+      setTrainingResult(jobsData);
       if (onFindTraining) onFindTraining();
-    }, 1500); // 1.5 second delay to simulate network request
+    }, 1500); 
   };
 
-  // Render the training bridge section
   return (
-    // Main container - white background with vertical padding
     <div className="bg-white py-16">
-      {/* Content wrapper - max width container with horizontal padding */}
       <div className="max-w-[1000px] mx-auto px-5">
-        {/* Section header - centered text */}
         <div className="text-center mb-10">
-          {/* Section title - large, bold, dark text */}
           <h2 className="text-3xl font-bold mb-4 text-dark">{t.title}</h2>
-          {/* Section description - gray text with max width for readability */}
           <p className="text-lg text-gray-500 max-w-[600px] mx-auto">{t.description}</p>
         </div>
         
-        {/* Training search action container - light gray background with rounded corners */}
         <div className="bg-gray-50 rounded-lg p-8 shadow-sm">
-          {/* Find Training button - primary blue color with hover effect */}
-          <button
-            className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
-            onClick={handleFindTraining}
-          >
-            {t.findTrainingBtn} {/* Button text from translations */}
-          </button>
+          {!trainingResult && (
+             <div className="text-center">
+                <button
+                    className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
+                    onClick={handleFindTraining}
+                >
+                    {t.findTrainingBtn}
+                </button>
+             </div>
+          )}
 
-          {/* Results section - only shown if trainingResult exists (after button click) */}
           {trainingResult && (
-            // Results container - white background with shadow
-            <div className="bg-white rounded-lg p-5 mt-5 shadow-sm">
-              {/* Results heading */}
-              <h3 className="text-xl mb-4 text-dark font-bold">{t.resultTitle}</h3>
-
-              {/* Micro-Courses section */}
-              <div>
-                {/* Subheading for online courses */}
-                <h4 className="text-lg font-semibold mb-2">{t.microCourses}</h4>
-                {/* Course cards grid - responsive grid that adapts to screen size */}
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 mt-5">
-                  {/* Map through micro-courses and render each as a card */}
-                  {trainingResult.microCourses.map((course, index) => (
-                    // Course card - white background with shadow and hover lift effect
-                    <div key={index} className="bg-white rounded-lg p-5 shadow-md transition-transform duration-300 hover:-translate-y-1 border border-gray-100">
-                      {/* Course name - large, bold, dark text */}
-                      <h4 className="text-lg mb-2.5 text-dark font-bold">{course.name}</h4>
-                      
-                      {/* Provider name - small gray text with bold label */}
-                      <p className="text-sm text-gray-500 mb-4">
-                        <strong>Provider:</strong> {course.provider}
-                      </p>
-                      
-                      {/* Course duration - small gray text with bold label */}
-                      <p className="text-sm text-gray-500 mb-4">
-                        <strong>Duration:</strong> {course.duration}
-                      </p>
-                      
-                      {/* Course format (Online/Offline/Blended) - small gray text with bold label */}
-                      <p className="text-sm text-gray-500 mb-4">
-                        <strong>Format:</strong> {course.format}
-                      </p>
-                      
-                      {/* Enroll button - outlined style that fills on hover */}
-                      <button
-                        className="bg-transparent border border-primary text-primary hover:bg-primary hover:text-white px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300 mt-2.5"
-                      >
-                        Enroll {/* In production, would navigate to course enrollment page */}
-                      </button>
+            <div className="space-y-12">
+              {trainingResult.jobs.map((job) => (
+                <div key={job.id} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+                  <div className="mb-6 border-b pb-4">
+                    <h3 className="text-2xl font-bold text-dark mb-2">{job.jobTitle}</h3>
+                    <div className="flex flex-wrap gap-2">
+                        {job.skills.map(skill => (
+                            <span key={skill} className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                                {skill}
+                            </span>
+                        ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              {/* Training Centers section */}
-              <div className="mt-8">
-                {/* Subheading for physical training centers */}
-                <h4 className="text-lg font-semibold mb-2">{t.trainingCenters}</h4>
-                {/* Center cards grid - responsive grid that adapts to screen size */}
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 mt-5">
-                  {/* Map through training centers and render each as a card */}
-                  {trainingResult.trainingCenters.map((center, index) => (
-                    // Center card - white background with shadow and hover lift effect
-                    <div key={index} className="bg-white rounded-lg p-5 shadow-md transition-transform duration-300 hover:-translate-y-1 border border-gray-100">
-                      {/* Center name - large, bold, dark text */}
-                      <h4 className="text-lg mb-2.5 text-dark font-bold">{center.name}</h4>
-                      
-                      {/* Distance from user - small gray text with bold label */}
-                      <p className="text-sm text-gray-500 mb-4">
-                        <strong>Distance:</strong> {center.distance}
-                      </p>
-                      
-                      {/* Available courses - comma-separated list with bold label */}
-                      <p className="text-sm text-gray-500 mb-4">
-                        <strong>Courses:</strong>{" "}
-                        {center.courses.join(", ")} {/* Convert array to comma-separated string */}
-                      </p>
-                      
-                      {/* View Details button - outlined style that fills on hover */}
-                      <button
-                        className="bg-transparent border border-primary text-primary hover:bg-primary hover:text-white px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300 mt-2.5"
-                      >
-                        View Details {/* In production, would show center details/map */}
-                      </button>
-                    </div>
-                  ))}
+                  {/* Online Premium Courses */}
+                  {job.courses.onlinePremium && job.courses.onlinePremium.length > 0 && (
+                      <div className="mb-8">
+                        <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span className="text-primary">💻</span> Online Premium Courses
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {job.courses.onlinePremium.map(course => (
+                                <div key={course.id} className="flex gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
+                                    <img src={course.thumbnail} alt={course.title} className="w-24 h-24 object-cover rounded-md flex-shrink-0" />
+                                    <div className="flex flex-col justify-between">
+                                        <div>
+                                            <h5 className="font-semibold text-dark line-clamp-2">{course.title}</h5>
+                                            <p className="text-sm text-gray-500 mt-1">{course.provider}</p>
+                                        </div>
+                                        <div className="mt-2 flex items-center justify-between gap-4">
+                                            <span className="text-yellow-500 text-sm font-medium">{course.rating}</span>
+                                            <span className="font-bold text-primary">{course.price}</span>
+                                        </div>
+                                        <a href={course.link} target="_blank" rel="noopener noreferrer" className="mt-3 text-sm text-primary font-semibold hover:underline">
+                                            View Course →
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                      </div>
+                  )}
+
+                  {/* Offline Training */}
+                  {job.courses.offline && job.courses.offline.length > 0 && (
+                      <div>
+                        <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span className="text-primary">🏢</span> Offline Training Centers
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {job.courses.offline.map(course => (
+                                <div key={course.id} className="flex gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
+                                    <img src={course.thumbnail} alt={course.title} className="w-24 h-24 object-cover rounded-md flex-shrink-0" />
+                                    <div className="flex flex-col justify-between w-full">
+                                        <div>
+                                            <h5 className="font-semibold text-dark line-clamp-2">{course.title}</h5>
+                                            <p className="text-sm text-gray-500 mt-1">{course.provider}</p>
+                                        </div>
+                                        <div className="mt-2 text-sm text-gray-600">
+                                            <p>📍 {course.location}</p>
+                                            <p>⏱️ {course.duration} • {course.type}</p>
+                                        </div>
+                                        <a href={course.googleMapsLink} target="_blank" rel="noopener noreferrer" className="mt-3 text-sm text-primary font-semibold hover:underline">
+                                            View on Map →
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                      </div>
+                  )}
+                  
+                  {/* Online Free Courses (Optional, if needed) */}
+                  {job.courses.onlineFree && job.courses.onlineFree.length > 0 && (
+                      <div className="mt-6 pt-4 border-t">
+                          <h4 className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">Free Resources</h4>
+                          <ul className="list-disc pl-5 space-y-1">
+                              {job.courses.onlineFree.map((course, idx) => (
+                                  <li key={idx} className="text-sm">
+                                      <a href={course.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                          {course.title}
+                                      </a>
+                                  </li>
+                              ))}
+                          </ul>
+                      </div>
+                  )}
+
                 </div>
-              </div>
+              ))}
             </div>
           )}
         </div>
@@ -185,5 +282,4 @@ const TrainingBridge = ({ t, onFindTraining }) => {
   );
 };
 
-// Export TrainingBridge component as default export
 export default TrainingBridge;
