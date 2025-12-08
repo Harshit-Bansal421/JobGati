@@ -32,6 +32,7 @@ const authSlice = createSlice({
     register: (state, action) => {
       // Set logged in status to true
       state.isRegisered = true;
+      state.isLoggedIn=false;
       
       // Store user data from action payload (e.g., { name: 'John', email: 'john@example.com' })
       state.user = action.payload.data; // Payload could be user data

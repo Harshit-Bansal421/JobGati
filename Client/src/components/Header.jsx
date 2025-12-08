@@ -42,18 +42,6 @@ const Header = ({ setShowLogin }) => {
   // Get current location to highlight active nav item
   const location = useLocation();
 
-  // Get dispatch function to trigger Redux actions
-  const dispatch = useDispatch();
-
-  // Access state from Redux store
-  const { currentLanguage, translations } = useSelector((state) => state.language);  // Translations
-  const { isLoggedIn } = useSelector((state) => state.auth);                        // Authentication status
-  const { mode } = useSelector((state) => state.theme);                             // Theme mode (dark/light)
-  const { isSignedIn: isClerkSignedIn } = useUser();
-
-  // Extract translations for current language with fallback
-  const t = translations[currentLanguage] || {};
-
 
 
   const isActive = (path) => {

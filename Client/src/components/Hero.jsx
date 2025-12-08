@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 const Hero = ({ handleSectionClick }) => {
   // Get navigate function for route navigation
   const navigate = useNavigate();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   
   // Access translations and current language from Redux store
   const { currentLanguage, translations } = useSelector((state) => state.language);
@@ -57,20 +58,20 @@ const Hero = ({ handleSectionClick }) => {
             {/* CTA buttons container - centered on mobile, left-aligned on desktop */}
             <div className="flex gap-4 justify-center md:justify-start">
               {/* Job Seeker CTA button - orange/secondary color */}
-              <button
+              {!isLoggedIn  && <button
                 className="bg-secondary text-white hover:bg-orange-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
                 onClick={() => navigate("/register-seeker")}  // Navigate to job seeker registration
               >
                 {t.hero.jobSeekerBtn}  {/* Button text from translations */}
-              </button>
+              </button>}
               
               {/* Business CTA button - blue/primary color */}
-              <button
+              {!isLoggedIn && <button
                 className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300"
                 onClick={() => navigate("/register-business")}  // Navigate to business registration
               >
                 {t.hero.businessBtn}  {/* Button text from translations */}
-              </button>
+              </button>}
             </div>
           </div>
           
