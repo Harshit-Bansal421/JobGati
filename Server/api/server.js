@@ -24,7 +24,9 @@ app.use(
   })
 );
 
-// Middlewares
+
+
+// Middleware
 app.use(express.json());
 
 // Basic route
