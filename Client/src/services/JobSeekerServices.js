@@ -1,6 +1,4 @@
-import { data } from "autoprefixer";
-
-const API_URL = "http://localhost:5000/api/jobseeker";
+const API_URL = "https://jobgati-1.onrender.com/api/jobseekers";
 
 // Create Job Seeker
 export const createJobSeeker = async (jobSeekerData) => {

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://jobgati-1.onrender.com/api";
 
 export const createBusiness = async (businessData) => {
   try {
@@ -11,13 +11,15 @@ export const createBusiness = async (businessData) => {
     const data = await res.json();
     if (!res.ok) {
       console.error("Backend Error:", data);
-      alert("Failed to create business");
-      return null;
+      throw new Error(data.message || "Failed to create business");
     }
     return data;
   } catch (err) {
     console.error("Network error:", err);
-    return null;
+    if (err.message.includes("Failed to fetch")) {
+      throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+    }
+    throw err;
   }
 };
 

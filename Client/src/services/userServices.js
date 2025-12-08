@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/users";
+const API_URL = "https://jobgati-1.onrender.com/api/users";
 
 export const createUser = async (userData) => {
   try {
