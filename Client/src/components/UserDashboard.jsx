@@ -13,6 +13,7 @@ import {
     CheckCircle2,
     Briefcase
 } from 'lucide-react';
+import { saveDashboardData } from '../services/dashboardServices';
 import { updateProfileData, setProfileCompleted } from '../store/slices/clerkSlice';
 import { saveUserProfile, getUserProfile } from '../services/userProfileService';
 
@@ -132,26 +133,40 @@ const UserDashboard = () => {
     }, [clerkUser, dispatch]);
 
     const handleSaveProfile = async () => {
-        try {
-            // Save to database
-            await saveUserProfile({
-                clerkUserId: clerkUser.id,
-                ...formData,
-                profileCompleted: !isProfileIncomplete
-            });
+    try {
+        const result = await saveDashboardData({
+            clerkUserId: clerkUser.id,
+            phone: formData.phoneNumber,
+            location: formData.location,
+            desiredPosition: formData.desiredPosition,
+            skills: formData.skills,
+            educationLevel: formData.education,
+            about: formData.bio
+        });
 
-            // Update Redux
-            dispatch(updateProfileData(formData));
-            dispatch(setProfileCompleted(true));
+        console.log("Saved dashboard info:", result);
 
-            setSaveSuccess(true);
-            setTimeout(() => setSaveSuccess(false), 3000);
-        } catch (error) {
-            console.error('Error saving profile:', error);
-            alert('Failed to save profile. Please try again.');
-        }
+        // Save to DB
+        await saveUserProfile({
+            clerkUserId: clerkUser.id,
+            ...formData,
+            profileCompleted: !isProfileIncomplete
+        });
+
+        dispatch(updateProfileData(formData));
+        dispatch(setProfileCompleted(true));
+
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+
         navigate('/');
-    };
+
+    } catch (error) {
+        console.error("Error saving profile:", error);
+        alert("Failed to save profile. Please try again.");
+    }
+};
+
 
     const isProfileIncomplete = !formData.phoneNumber || !formData.location || !formData.desiredPosition || formData.skills.length === 0;
 

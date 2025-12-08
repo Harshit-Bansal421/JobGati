@@ -1,32 +1,41 @@
 // server.js
 import express from "express";
 import cors from "cors";
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { getMatchAnalysis } from '../services/geminiService.js';
-
-// Get current directory for ES modules
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import dashboardrouter from "../routes/dashboardRoutes.js";
+// Get current directory for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env from Server directory
-dotenv.config({ path: join(__dirname, '../.env') });
+// Load .env
+dotenv.config({ path: join(__dirname, "../.env") });
 
+// DB + Services
 import connectDB from "../configuration/mongodb.js";
+import analyzeSkillGap from "../services/GrokServices.js";
+
+// Routes
 import router from "../routes/userRoutes.js";
 import jsrouter from "../routes/JobSeekerRoutes.js";
 import businessrouter from "../routes/businessRoutes.js";
 import jobrouter from "../routes/JobRoutes.js";
 import skillrouter from "../routes/skillRoutes.js";
 import profilerouter from "../routes/userProfileRoutes.js";
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-await connectDB()
+connectDB()
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => {
+    console.error("MongoDB Connection Failed", err);
+    process.exit(1);
+  });
 
-// CORS Configuration - Allow requests from Vercel and localhost
+// CORS
 app.use(
   cors({
     origin: "*",
@@ -39,34 +48,37 @@ app.use(
 // Middleware
 app.use(express.json());
 
-// Basic route
+// Default route
 app.get("/", (req, res) => {
   res.send("Server is running...");
 });
 
-app.use("/api/users", router)
+// API Routes
+app.use("/api/dashboard", dashboardrouter);
+app.use("/api/users", router);
 app.use("/api/jobseekers", jsrouter);
 app.use("/api/business", businessrouter);
 app.use("/api/jobs", jobrouter);
 app.use("/api/skills", skillrouter);
 app.use("/api/profile", profilerouter);
 
-// THE API ROUTE
-app.post('/api/match', async (req, res) => {
+// Analyze Skill Gap Route
+app.post("/api/skills/analyze-gap", async (req, res) => {
   try {
-    const { userSkills, jobDescription } = req.body;
-    
-    // Call our Gemini Service
-    const analysis = await getMatchAnalysis(userSkills, jobDescription);
-    
-    res.json(analysis); // Send JSON back to React
+    const { userSkills, jobRole } = req.body;
+
+    console.log(`Analyzing skill gap for role: ${jobRole}...`);
+
+    const data = await analyzeSkillGap(userSkills, jobRole);
+
+    res.json(data);
   } catch (error) {
-    console.error("AI Error:", error);
-    res.status(500).json({ error: "Failed to analyze" });
+    console.error("Skill Gap Error:", error);
+    res.status(500).json({ error: "Analysis failed" });
   }
 });
 
-// Start server
+// Start Server
 app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
