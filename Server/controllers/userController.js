@@ -139,3 +139,52 @@ export const getUsers = async (req, res) => {
     });
   }
 };
+
+// ----------------------------
+//   GET USER BY EMAIL (FOR CLERK SYNC)
+// ----------------------------
+export const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Fetch profile data based on type
+    let profileData = null;
+    if (user.type === "jobseeker") {
+      profileData = await JobSeekerModel.findOne({ email: user.email });
+    } else if (user.type === "business") {
+      profileData = await BusinessModel.findOne({ email: user.email });
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+        type: user.type,
+      },
+      profile: profileData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

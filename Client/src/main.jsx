@@ -30,21 +30,26 @@ import App from './App.jsx'
 // document.getElementById('root') - finds the <div id="root"></div> in index.html
 // createRoot() - creates a React 18 root for rendering (replaces legacy ReactDOM.render)
 // .render() - renders the component tree into the root
+// Import ClerkProvider
+import { ClerkProvider } from '@clerk/clerk-react'
+import AuthSync from './components/AuthSync'
+
+// Import your publishable key
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+if (!PUBLISHABLE_KEY) {
+  console.warn("Missing Publishable Key. Please set VITE_CLERK_PUBLISHABLE_KEY in your .env file.")
+}
+
 createRoot(document.getElementById('root')).render(
-  // StrictMode wrapper - enables additional checks and warnings in development mode
-  // - Identifies components with unsafe lifecycles
-  // - Warns about legacy string ref API usage
-  // - Detects unexpected side effects in render phase
   <StrictMode>
-    {/* Provider wrapper - makes Redux store accessible to all child components via React context */}
-    {/* All components can now use useSelector and useDispatch hooks */}
     <Provider store={store}>
-      {/* BrowserRouter wrapper - enables client-side routing throughout the application */}
-      {/* Allows navigation without full page reloads using HTML5 History API */}
-      <BrowserRouter>
-        {/* App component - root component containing all routes and application logic */}
-        <App />
-      </BrowserRouter>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+        <BrowserRouter>
+          <AuthSync />
+          <App />
+        </BrowserRouter>
+      </ClerkProvider>
     </Provider>
   </StrictMode>,
 )

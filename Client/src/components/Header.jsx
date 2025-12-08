@@ -24,7 +24,9 @@ import { logout } from '../store/slices/authSlice';              // Log user out
 import { toggleTheme } from '../store/slices/themeSlice';        // Toggle dark mode
 
 // Import icons from lucide-react library
-import { Menu, X, Globe, User, LogOut, LayoutDashboard, Moon, Sun } from 'lucide-react';
+// Import icons from lucide-react library
+import { Menu, X, Globe, LayoutDashboard, Moon, Sun } from 'lucide-react';
+import { SignInButton, UserButton, useUser } from "@clerk/clerk-react";
 
 /**
  * Header functional component
@@ -47,6 +49,7 @@ const Header = ({ setShowLogin }) => {
   const { currentLanguage, translations } = useSelector((state) => state.language);  // Translations
   const { isLoggedIn } = useSelector((state) => state.auth);                        // Authentication status
   const { mode } = useSelector((state) => state.theme);                             // Theme mode (dark/light)
+  const { isSignedIn: isClerkSignedIn } = useUser();
 
   // Extract translations for current language with fallback
   const t = translations[currentLanguage] || {};
@@ -164,31 +167,28 @@ const Header = ({ setShowLogin }) => {
             </select>
           </div>
 
-          {isLoggedIn ? (
+          {isClerkSignedIn ? (
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-primary"
-              >
-                <LayoutDashboard size={16} />
-                Dashboard
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600"
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
+              {isLoggedIn && (
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-primary"
+                >
+                  <LayoutDashboard size={16} />
+                  Dashboard
+                </button>
+              )}
+              {/* Clerk UserButton handles logout */}
+              <UserButton afterSignOutUrl="/" />
             </div>
           ) : (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
-            >
-              <User size={16} />
-              {t?.forms?.login || 'Login'}
-            </button>
+            <SignInButton mode="modal">
+              <button
+                className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
+              >
+                {t?.forms?.login || 'Login'}
+              </button>
+            </SignInButton>
           )}
         </div>
 
@@ -258,41 +258,33 @@ const Header = ({ setShowLogin }) => {
               </select>
             </div>
 
-            {isLoggedIn ? (
+            {isClerkSignedIn ? (
               <>
-                <button
-                  onClick={() => handleNavClick('/service-seeker')}
-                  className={`text-left text-base font-medium transition-colors hover:text-primary dark:hover:text-blue-400 ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                    }`}
-                >
-                  {'Service Seeker'}
-                </button>
-                <button
-                  onClick={() => handleNavClick('/dashboard')}
-                  className="text-left text-base font-medium text-gray-600 hover:text-primary flex items-center gap-2"
-                >
-                  <LayoutDashboard size={18} />
-                  Dashboard
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="text-left text-base font-medium text-red-500 hover:text-red-600 flex items-center gap-2"
-                >
-                  <LogOut size={18} />
-                  Logout
-                </button>
+                {isLoggedIn && (
+                  <button
+                    onClick={() => handleNavClick('/dashboard')}
+                    className="text-left text-base font-medium text-gray-600 hover:text-primary flex items-center gap-2"
+                  >
+                    <LayoutDashboard size={18} />
+                    Dashboard
+                  </button>
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-600 text-sm">Account:</span>
+                  <UserButton afterSignOutUrl="/" />
+                </div>
               </>
             ) : (
-              <button
-                onClick={() => {
-                  setShowLogin(true);
-                  setIsMenuOpen(false);
-                }}
-                className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors w-full flex items-center justify-center gap-2"
-              >
-                <User size={18} />
-                {t?.forms?.login || 'Login'}
-              </button>
+              <SignInButton mode="modal">
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                  }}
+                  className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors w-full flex items-center justify-center gap-2"
+                >
+                  {t?.forms?.login || 'Login'}
+                </button>
+              </SignInButton>
             )}
           </div>
         </div>
