@@ -48,14 +48,13 @@ const AuthSync = () => {
                             }
                         }
 
-                        // Only redirect to dashboard on FIRST login (not on every page load)
+                        // Only redirect to dashboard on FIRST login from auth pages (not from homepage)
                         // Check if this is the initial load after login
                         if (!initialLoadComplete.current && !hasRedirected.current) {
                             const currentPath = location.pathname;
 
-                            // Only redirect if user is on login/signup pages or root
-                            const shouldRedirect = currentPath === '/' ||
-                                currentPath === '/login' ||
+                            // Only redirect if user is on login/signup pages (NOT from homepage)
+                            const shouldRedirect = currentPath === '/login' ||
                                 currentPath === '/signup' ||
                                 currentPath.includes('sign-in') ||
                                 currentPath.includes('sign-up');
@@ -72,12 +71,13 @@ const AuthSync = () => {
                     } catch (error) {
                         console.error("❌ Error syncing user:", error);
 
-                        // On error during first load, redirect to dashboard
+                        // On error during first load from auth pages, redirect to dashboard
                         if (!initialLoadComplete.current && !hasRedirected.current) {
                             const currentPath = location.pathname;
-                            const shouldRedirect = currentPath === '/' ||
-                                currentPath === '/login' ||
-                                currentPath === '/signup';
+                            const shouldRedirect = currentPath === '/login' ||
+                                currentPath === '/signup' ||
+                                currentPath.includes('sign-in') ||
+                                currentPath.includes('sign-up');
 
                             if (shouldRedirect) {
                                 console.log("🚀 Error occurred - Navigating to /user-dashboard");
