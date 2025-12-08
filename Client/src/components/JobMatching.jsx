@@ -1,120 +1,222 @@
-/**
- * JobMatching Component - AI-Powered Job Recommendations
- * 
- * This component displays job opportunities matched to the user's skills.
- * Each job shows a match percentage, company details, location, and required skills.
- * Users can apply to jobs directly from this interface.
- */
-
-// Import React and useState hook for managing job search results
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Briefcase, MapPin, DollarSign, ExternalLink, Calendar, Building2, Loader2, AlertCircle } from 'lucide-react';
+import { fetchJoobleJobs } from '../services/joobleService';
 
-/**
- * JobMatching functional component
- * @param {Object} t - Translation object containing localized text
- * @param {Array} userSkills - Array of user's current skills from Redux state
- */
-const JobMatching = ({ t, userSkills }) => {
-  // State to store job matching results (null initially, object with jobs array after search)
-  const [jobsResult, setJobsResult] = useState(null);
+const JobMatching = ({ t }) => {
+  const [showJobs, setShowJobs] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  /**
-   * handleFindJobs - Initiates job search and matching
-   * Simulates an API call to find jobs that match user's skills
-   * In production, this would call a real backend API with AI-powered matching
-   */
+  // Get user's desired position from Redux
+  const { profileData } = useSelector((state) => state.clerk);
+  const desiredPosition = profileData?.desiredPosition || '';
+  const userLocation = profileData?.location || 'India';
+
   const handleFindJobs = async () => {
-    // Simulate API call with setTimeout (mock data)
-    setTimeout(() => {
-        // Set mock job results after 1 second delay
-        setJobsResult({
-            jobs: [
-                {
-                    match: 95,  // 95% match with user's skills
-                    title: "Senior Welder",
-                    company: "BuildRight Construction",
-                    location: "New Delhi",
-                    skills: ["Welding L3", "Safety L2"] // Required skills for this job
-                },
-                {
-                    match: 80,  // 80% match with user's skills
-                    title: "Solar Technician Assistant",
-                    company: "Green Energy Sol",
-                    location: "Noida",
-                    skills: ["Solar Installation L1", "Electrical Basics"] // Required skills for this job
-                }
-            ]
-        });
-    }, 1000); // 1 second delay to simulate network request
+    if (!desiredPosition) {
+      setError('Please set your desired position in your profile first!');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setShowJobs(true);
+
+    try {
+      const jobListings = await fetchJoobleJobs(desiredPosition, userLocation, 1);
+      setJobs(jobListings);
+      if (jobListings.length === 0) {
+        setError('No jobs found for your search criteria. Try a different position or location.');
+      }
+    } catch (err) {
+      console.error('Error fetching jobs:', err);
+      setError('Failed to fetch jobs. Please try again later.');
+      setJobs([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Render the job matching section
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return `${Math.floor(diffDays / 30)} months ago`;
+  };
+
   return (
-    // Main container - white background with vertical padding
     <div className="bg-white py-16">
-      {/* Content wrapper - max width container with horizontal padding */}
-      <div className="max-w-[1000px] mx-auto px-5">
-        {/* Section header - centered text */}
+      <div className="max-w-[1200px] mx-auto px-5">
+
+        {/* Header Section */}
         <div className="text-center mb-10">
-          {/* Section title - large, bold, dark text */}
-          <h2 className="text-3xl font-bold mb-4 text-dark">{t.title}</h2>
-          {/* Section description - gray text with max width for readability */}
-          <p className="text-lg text-gray-500 max-w-[600px] mx-auto">{t.description}</p>
+          <h2 className="text-3xl font-bold mb-4 text-dark">{t?.title || '💼 Find Jobs'}</h2>
+          <p className="text-lg text-gray-500 max-w-[600px] mx-auto">
+            {t?.description || 'Discover job opportunities tailored to your skills'}
+          </p>
         </div>
-        
-        {/* Job search action container - light gray background with rounded corners */}
+
+        {/* Main Content */}
         <div className="bg-gray-50 rounded-lg p-8 shadow-sm">
-          {/* Find Jobs button - primary blue color with hover effect */}
-          <button className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300" onClick={handleFindJobs}>
-            {t.findJobsBtn} {/* Button text from translations */}
-          </button>
+          {!showJobs ? (
+            <div className="text-center">
+              <button
+                onClick={handleFindJobs}
+                disabled={!desiredPosition}
+                className="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-md font-semibold cursor-pointer transition-all duration-300 inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Briefcase className="w-5 h-5" />
+                {t?.findJobsBtn || 'Find Jobs'}
+              </button>
+              {!desiredPosition && (
+                <p className="text-sm text-gray-500 mt-3">
+                  Set your desired position in your profile to get started
+                </p>
+              )}
+            </div>
+          ) : (
+            <div>
+              {/* Loading State */}
+              {loading && (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-3" />
+                  <p className="text-gray-600">Searching for jobs...</p>
+                </div>
+              )}
 
-          {/* Results section - only shown if jobsResult exists (after button click) */}
-          {jobsResult && (
-            // Results container - white background with shadow
-            <div className="bg-white rounded-lg p-5 mt-5 shadow-sm">
-              {/* Results heading */}
-              <h3 className="text-xl mb-4 text-dark font-bold">{t.resultTitle}</h3>
+              {/* Error State */}
+              {error && !loading && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 mb-6">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-800 text-sm">{error}</p>
+                </div>
+              )}
 
-              {/* Job cards grid - responsive grid that adapts to screen size
-                  - auto-fit creates as many columns as possible
-                  - minmax(300px, 1fr) ensures each card is at least 300px wide */}
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 mt-5">
-                {/* Map through jobs array and render each job as a card */}
-                {jobsResult.jobs.map((job, index) => (
-                  // Job card - white background with shadow and left border accent
-                  <div key={index} className="bg-white rounded-lg p-5 shadow-md border-l-4 border-primary">
-                    {/* Match percentage - large, bold, primary color */}
-                    <div className="text-2xl font-bold text-primary mb-2.5">{job.match}%</div>
-                    
-                    {/* Job title - large, bold, dark text */}
-                    <h4 className="text-lg mb-2.5 text-dark font-bold">{job.title}</h4>
-                    
-                    {/* Company name - small gray text with bold label */}
-                    <p className="text-sm text-gray-500 mb-4">
-                      <strong>Company:</strong> {job.company}
-                    </p>
-                    
-                    {/* Location - small gray text with bold label */}
-                    <p className="text-sm text-gray-500 mb-4">
-                      <strong>Location:</strong> {job.location}
-                    </p>
-                    
-                    {/* Required skills - comma-separated list with bold label */}
-                    <p className="text-sm text-gray-500 mb-4">
-                      <strong>Required Skills:</strong>{" "}
-                      {job.skills.join(", ")} {/* Convert skills array to comma-separated string */}
-                    </p>
-                    
-                    {/* Apply Now button - primary blue color with hover effect */}
+              {/* Jobs List */}
+              {!loading && jobs.length > 0 && (
+                <div>
+                  <div className="mb-6 flex items-center justify-between">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {jobs.length} Jobs Found for "{desiredPosition}"
+                    </h3>
                     <button
-                      className="bg-primary text-white hover:bg-blue-600 px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-300 mt-2.5"
+                      onClick={() => setShowJobs(false)}
+                      className="text-gray-600 hover:text-blue-600 font-medium transition text-sm"
                     >
-                      Apply Now {/* In production, this would navigate to application page */}
+                      ← Back
                     </button>
                   </div>
-                ))}
-              </div>
+
+                  {/* Vertical Job Cards */}
+                  <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                    {jobs.map((job, index) => (
+                      <div
+                        key={job.id || index}
+                        className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-5 border border-gray-200"
+                      >
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                          {/* Job Info */}
+                          <div className="flex-1">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                                <Building2 className="w-4 h-4 text-blue-600" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="text-lg font-bold text-gray-900 mb-1 hover:text-blue-600 transition">
+                                  {job.title}
+                                </h4>
+                                <p className="text-gray-600 font-medium text-sm">
+                                  {job.company}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Job Details */}
+                            <div className="flex flex-wrap gap-4 mb-3 text-sm">
+                              <div className="flex items-center gap-1 text-gray-600">
+                                <MapPin className="w-4 h-4" />
+                                <span>{job.location}</span>
+                              </div>
+                              {job.salary && job.salary !== 'Salary not specified' && (
+                                <div className="flex items-center gap-1 text-gray-600">
+                                  <DollarSign className="w-4 h-4" />
+                                  <span>{job.salary}</span>
+                                </div>
+                              )}
+                              <div className="flex items-center gap-1 text-gray-600">
+                                <Calendar className="w-4 h-4" />
+                                <span>{formatDate(job.updated)}</span>
+                              </div>
+                            </div>
+
+                            {/* Description */}
+                            <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                              {job.description}
+                            </p>
+
+                            {/* Type Badge */}
+                            {job.type && (
+                              <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+                                {job.type}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Apply Button */}
+                          <div className="flex-shrink-0">
+                            <a
+                              href={job.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md font-semibold transition-all text-sm"
+                            >
+                              Apply Now
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Back Button at Bottom */}
+                  <div className="mt-6 text-center">
+                    <button
+                      onClick={() => setShowJobs(false)}
+                      className="text-gray-600 hover:text-blue-600 font-medium transition"
+                    >
+                      ← Back
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* No Jobs Found */}
+              {!loading && jobs.length === 0 && !error && (
+                <div className="text-center py-12">
+                  <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    No Jobs Found
+                  </h3>
+                  <p className="text-gray-600 mb-4 text-sm">
+                    Try adjusting your search criteria or check back later.
+                  </p>
+                  <button
+                    onClick={() => setShowJobs(false)}
+                    className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -123,5 +225,4 @@ const JobMatching = ({ t, userSkills }) => {
   );
 };
 
-// Export JobMatching component as default export
 export default JobMatching;

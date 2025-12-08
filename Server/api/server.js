@@ -51,22 +51,25 @@ app.use("/api/jobs", jobrouter);
 app.use("/api/skills", skillrouter);
 app.use("/api/profile", profilerouter);
 
-// THE API ROUTE
+// Jooble Jobs API Proxy
+const jobsProxyRouter = require('./routes/jobs.js');
+app.use("/api/jooble", jobsProxyRouter);
+
+// Match Analysis Endpoint
 app.post('/api/match', async (req, res) => {
   try {
     const { userSkills, jobDescription } = req.body;
+    console.log('📊 Match analysis request received');
     
-    // Call our Gemini Service
     const analysis = await getMatchAnalysis(userSkills, jobDescription);
-    
-    res.json(analysis); // Send JSON back to React
+    res.json(analysis);
   } catch (error) {
-    console.error("AI Error:", error);
-    res.status(500).json({ error: "Failed to analyze" });
+    console.error('Error in match analysis:', error);
+    res.status(500).json({ error: 'Failed to analyze match' });
   }
 });
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
