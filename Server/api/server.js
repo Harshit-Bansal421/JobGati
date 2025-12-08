@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+const { getMatchAnalysis } = require('./services/geminiService');
 
 // Get current directory for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -51,6 +52,21 @@ app.use("/api/business", businessrouter);
 app.use("/api/jobs", jobrouter);
 app.use("/api/skills", skillrouter);
 app.use("/api/profile", profilerouter);
+
+// THE API ROUTE
+app.post('/api/match', async (req, res) => {
+  try {
+    const { userSkills, jobDescription } = req.body;
+    
+    // Call our Gemini Service
+    const analysis = await getMatchAnalysis(userSkills, jobDescription);
+    
+    res.json(analysis); // Send JSON back to React
+  } catch (error) {
+    console.error("AI Error:", error);
+    res.status(500).json({ error: "Failed to analyze" });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
