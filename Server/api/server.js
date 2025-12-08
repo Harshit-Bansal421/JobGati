@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-const { getMatchAnalysis } = require('./services/geminiService');
+import { getMatchAnalysis } from '../services/geminiService.js';
 
 // Get current directory for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +21,7 @@ import jobrouter from "../routes/JobRoutes.js";
 import skillrouter from "../routes/skillRoutes.js";
 import profilerouter from "../routes/userProfileRoutes.js";
 const app = express();
-const PORT = process.env.PORT || 5000;  
+const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 await connectDB()
@@ -29,14 +29,12 @@ await connectDB()
 // CORS Configuration - Allow requests from Vercel and localhost
 app.use(
   cors({
-    origin: ["https://job-gati-lq1t.vercel.app", "http://localhost:5173", "http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: "*",
+    methods: "*",
+    allowedHeaders: "*",
     credentials: true,
   })
 );
-
-
 
 // Middleware
 app.use(express.json());
