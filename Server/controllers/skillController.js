@@ -1,5 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from 'dotenv';
+import SkillAnalysis from '../models/SkillAnalysis.js';
+import UserProfile from '../models/UserProfile.js';
 
 dotenv.config();
 
@@ -7,9 +9,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const analyzeSkillGap = async (req, res) => {
   try {
-    const { userSkills, jobRole, jobDescription } = req.body;
+    const { userSkills, jobRole, jobDescription, clerkUserId } = req.body;
 
-    console.log("📊 Skill Analysis Request:", { userSkills, jobRole, jobDescription });
+    console.log("📊 Skill Analysis Request:", { userSkills, jobRole, clerkUserId });
 
     // Validate input
     if (!userSkills || !jobRole) {
@@ -64,6 +66,30 @@ export const analyzeSkillGap = async (req, res) => {
 
     // PARSE & SEND TO FRONTEND
     const jsonResponse = JSON.parse(text);
+    
+    // Save to database if clerkUserId is provided
+    if (clerkUserId) {
+      try {
+        // Find user profile
+        const userProfile = await UserProfile.findOne({ clerkUserId });
+        
+        const analysisData = {
+          clerkUserId,
+          userProfile: userProfile?._id,
+          jobRole,
+          userSkills,
+          ...jsonResponse
+        };
+
+        const analysis = new SkillAnalysis(analysisData);
+        await analysis.save();
+        console.log("💾 Analysis saved to database");
+      } catch (dbError) {
+        console.error("⚠️ Failed to save analysis to DB:", dbError);
+        // Continue anyway, don't fail the request
+      }
+    }
+
     console.log("📤 Sending response:", jsonResponse);
     res.json(jsonResponse);
 
@@ -71,5 +97,27 @@ export const analyzeSkillGap = async (req, res) => {
     console.error("❌ AI Error:", error);
     console.error("Error Stack:", error.stack);
     res.status(500).json({ error: "Failed to analyze skills", details: error.message });
+  }
+};
+
+// Get skill analysis history for a user
+export const getAnalysisHistory = async (req, res) => {
+  try {
+    const { clerkUserId } = req.params;
+    
+    console.log("📜 Fetching analysis history for:", clerkUserId);
+
+    const history = await SkillAnalysis.find({ clerkUserId })
+      .sort({ analysisDate: -1 })
+      .limit(10);
+
+    res.json({
+      success: true,
+      history
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching history:", error);
+    res.status(500).json({ error: "Failed to fetch history", details: error.message });
   }
 };

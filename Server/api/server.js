@@ -1,13 +1,24 @@
 // server.js
 import express from "express";
 import cors from "cors";
-import 'dotenv/config'
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+// Get current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env from Server directory
+dotenv.config({ path: join(__dirname, '../.env') });
+
 import connectDB from "../configuration/mongodb.js";
 import router from "../routes/userRoutes.js";
 import jsrouter from "../routes/JobSeekerRoutes.js";
 import businessrouter from "../routes/businessRoutes.js";
 import jobrouter from "../routes/JobRoutes.js";
 import skillrouter from "../routes/skillRoutes.js";
+import profilerouter from "../routes/userProfileRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 5000;  
 
@@ -37,6 +48,7 @@ app.use("/api/jobseekers", jsrouter);
 app.use("/api/business", businessrouter);
 app.use("/api/jobs", jobrouter);
 app.use("/api/skills", skillrouter);
+app.use("/api/profile", profilerouter);
 
 // Start server
 app.listen(PORT, () => {
