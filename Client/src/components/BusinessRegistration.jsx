@@ -51,12 +51,8 @@ const BusinessRegistration = () => {
   // ============================================
 
   // Extract current language and translations from the language Redux slice
-  const { currentLanguage, translations } = useSelector(
-    (state) => state.language
-  );
-
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
-
+  const { currentLanguage, translations } = useSelector((state) => state.language);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   // Get the translation object for the current language
   // Falls back to empty object if translations not available
   const t = translations[currentLanguage] || {};
@@ -129,7 +125,7 @@ const BusinessRegistration = () => {
       !formData.businessName ||
       !formData.industry ||
       !formData.location ||
-      formData.contactPerson.length !== 10
+      !formData.contactPerson
     ) {
       setError("Please fill in all business information fields correctly.");
       return;
@@ -143,6 +139,13 @@ const BusinessRegistration = () => {
         ? formData.jobPositions.split(",").map((p) => p.trim())
         : [],
     };
+
+    const phoneRegex = /^[1-9]\d{9}$/; // 10 digits, first digit 1-9
+
+    if (!phoneRegex.test(formData.contactPerson)) {
+      setError("Phone number must be 10 digits and cannot start with 0.");
+      return;
+    }
 
     console.log("FINAL PAYLOAD:", payload);
 

@@ -54,8 +54,6 @@ const Header = ({ setShowLogin }) => {
   // Extract translations for current language with fallback
   const t = translations[currentLanguage] || {};
 
-
-
   const isActive = (path) => {
     return location.pathname === path;
   };

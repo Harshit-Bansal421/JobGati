@@ -14,6 +14,7 @@ import {
     Briefcase
 } from 'lucide-react';
 import { updateProfileData, setProfileCompleted } from '../store/slices/clerkSlice';
+import { saveUserProfile, getUserProfile } from '../services/userProfileService';
 
 const UserDashboard = () => {
     const dispatch = useDispatch();
@@ -104,14 +105,51 @@ const UserDashboard = () => {
         }
     };
 
-    const handleSaveProfile = () => {
-        dispatch(updateProfileData(formData));
-        dispatch(setProfileCompleted(true));
+    // Load profile from database on mount
+    useEffect(() => {
+        const loadProfile = async () => {
+            if (clerkUser?.id) {
+                try {
+                    const profile = await getUserProfile(clerkUser.id);
+                    if (profile) {
+                        dispatch(updateProfileData({
+                            fullName: profile.fullName,
+                            email: profile.email,
+                            phoneNumber: profile.phoneNumber,
+                            location: profile.location,
+                            desiredPosition: profile.desiredPosition,
+                            skills: profile.skills || [],
+                            education: profile.education,
+                            bio: profile.bio,
+                        }));
+                    }
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                }
+            }
+        };
+        loadProfile();
+    }, [clerkUser, dispatch]);
 
-        setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 3000);
+    const handleSaveProfile = async () => {
+        try {
+            // Save to database
+            await saveUserProfile({
+                clerkUserId: clerkUser.id,
+                ...formData,
+                profileCompleted: !isProfileIncomplete
+            });
 
-        console.log('Profile Data Saved:', JSON.stringify(formData, null, 2));
+            // Update Redux
+            dispatch(updateProfileData(formData));
+            dispatch(setProfileCompleted(true));
+
+            setSaveSuccess(true);
+            setTimeout(() => setSaveSuccess(false), 3000);
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            alert('Failed to save profile. Please try again.');
+        }
     };
 
     const isProfileIncomplete = !formData.phoneNumber || !formData.location || !formData.desiredPosition || formData.skills.length === 0;
