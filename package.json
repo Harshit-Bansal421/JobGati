@@ -9,7 +9,7 @@
   },
   "type": "module",
   "scripts": {
-  "start": "node api/server.js",
-  "build": "echo 'No build step required'"
-}
+    "start": "node Server/api/server.js",
+    "build": "echo 'No build step required'"
+  }
 }
