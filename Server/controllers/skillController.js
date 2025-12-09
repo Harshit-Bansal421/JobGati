@@ -1,123 +1,112 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import dotenv from 'dotenv';
-import SkillAnalysis from '../models/SkillAnalysis.js';
-import UserProfile from '../models/UserProfile.js';
+// skillController.js (FINAL – ES MODULE + GROQ)
+import dotenv from "dotenv";
+import SkillAnalysis from "../models/SkillAnalysis.js";
+import UserProfile from "../models/UserProfile.js";
+import Groq from "groq-sdk";
 
 dotenv.config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Initialize Groq Client
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-export const analyzeSkillGap = async (req, res) => {
+/* --------------------------------------------------------
+   GROQ AI FUNCTION (ES MODULE VERSION)
+---------------------------------------------------------*/
+export const runGroqAnalysis = async (userSkills, desiredRole) => {
+  const prompt = `
+    Act as a Career Coach.
+    User Skills: ${JSON.stringify(userSkills)}
+    Desired Role: "${desiredRole}"
+
+    Return strict JSON with these keys:
+    - readinessScore (0-100)
+    - skillGapAnalysis (object with 'missingSkills' array and 'criticalGaps' string)
+    - learningRoadmap (array of steps)
+    - radarChartData (object with keys: Technical, Experience, Tools, SoftSkills)
+  `;
+
   try {
-    const { userSkills, jobRole, jobDescription, clerkUserId } = req.body;
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: "You output ONLY JSON. No markdown." },
+        { role: "user", content: prompt }
+      ]
+    });
 
-    console.log("📊 Skill Analysis Request:", { userSkills, jobRole, clerkUserId });
-
-    // Validate input
-    if (!userSkills || !jobRole) {
-      console.error("❌ Missing required fields");
-      return res.status(400).json({ error: "Missing required fields: userSkills and jobRole" });
-    }
-
-    console.log("🔑 API Key exists:", !!process.env.GEMINI_API_KEY);
-
-    // SELECT THE MODEL (Flash is fast & free)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    // THE PROMPT - Strictly tell it to output JSON for our graphs
-    const prompt = `
-      Act as an expert HR Algorithm.
-      
-      INPUT DATA:
-      - Candidate's Skills: ${JSON.stringify(userSkills)}
-      - Job Role: "${jobRole}"
-      - Job Description: "${jobDescription || 'Not provided'}"
-
-      TASK:
-      Compare the candidate's skills with the job requirements.
-      Handle synonyms (e.g., 'React' == 'React.js', 'Wiring' == 'Electrical').
-
-      OUTPUT FORMAT:
-      Return ONLY a valid JSON object (no markdown, no backticks) with this exact structure:
-      {
-        "matchScore": (integer between 0-100),
-        "missingSkills": ["List", "of", "critical", "missing", "skills"],
-        "radarChartData": {
-          "Technical": (integer 0-10),
-          "Practical": (integer 0-10),
-          "SoftSkills": (integer 0-10),
-          "Tools": (integer 0-10)
-        },
-        "oneLineAdvice": "A short, encouraging advice string."
-      }
-    `;
-
-    console.log("🤖 Calling Gemini AI...");
-
-    // GENERATE CONTENT
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    let text = response.text();
-
-    console.log("✅ Gemini Response received");
-
-    // CLEANUP (Remove markdown backticks if Gemini adds them)
-    text = text.replace(/```json|```/g, '').trim();
-
-    // PARSE & SEND TO FRONTEND
-    const jsonResponse = JSON.parse(text);
-    
-    // Save to database if clerkUserId is provided
-    if (clerkUserId) {
-      try {
-        // Find user profile
-        const userProfile = await UserProfile.findOne({ clerkUserId });
-        
-        const analysisData = {
-          clerkUserId,
-          userProfile: userProfile?._id,
-          jobRole,
-          userSkills,
-          ...jsonResponse
-        };
-
-        const analysis = new SkillAnalysis(analysisData);
-        await analysis.save();
-        console.log("💾 Analysis saved to database");
-      } catch (dbError) {
-        console.error("⚠️ Failed to save analysis to DB:", dbError);
-        // Continue anyway, don't fail the request
-      }
-    }
-
-    console.log("📤 Sending response:", jsonResponse);
-    res.json(jsonResponse);
+    return JSON.parse(completion.choices[0].message.content);
 
   } catch (error) {
-    console.error("❌ AI Error:", error);
-    console.error("Error Stack:", error.stack);
-    res.status(500).json({ error: "Failed to analyze skills", details: error.message });
+    console.error("Groq Error:", error);
+    throw new Error("AI Analysis Failed");
   }
 };
 
-// Get skill analysis history for a user
+/* --------------------------------------------------------
+   MAIN CONTROLLER USED BY ROUTE
+---------------------------------------------------------*/
+export const analyzeSkillGap = async (req, res) => {
+  try {
+    const { userSkills, jobRole, clerkUserId } = req.body;
+
+    console.log("📊 Skill Analysis Request:", { userSkills, jobRole, clerkUserId });
+
+    if (!userSkills || !jobRole) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    console.log("🤖 Calling Groq AI...");
+    const aiResult = await runGroqAnalysis(userSkills, jobRole);
+
+    console.log("✅ AI Response:", aiResult);
+
+    /* ---------------------------------------------
+       SAVE TO DATABASE (IF USER IS LOGGED IN)
+    ----------------------------------------------*/
+    if (clerkUserId) {
+      const userProfile = await UserProfile.findOne({ clerkUserId });
+
+      const analysisData = {
+        clerkUserId,
+        jobRole,
+        userSkills,
+        readinessScore: aiResult.readinessScore,
+        skillGapAnalysis: aiResult.skillGapAnalysis,
+        learningRoadmap: aiResult.learningRoadmap,
+        radarChartData: aiResult.radarChartData,
+        userProfile: userProfile?._id || null
+      };
+
+      const analysis = new SkillAnalysis(analysisData);
+      await analysis.save();
+
+      console.log("💾 Analysis saved to DB");
+    }
+
+    return res.json(aiResult);
+
+  } catch (error) {
+    console.error("❌ Final Error:", error);
+    res.status(500).json({ error: "Skill gap analysis failed", details: error.message });
+  }
+};
+
+/* --------------------------------------------------------
+   HISTORY CONTROLLER
+---------------------------------------------------------*/
 export const getAnalysisHistory = async (req, res) => {
   try {
     const { clerkUserId } = req.params;
-    
-    console.log("📜 Fetching analysis history for:", clerkUserId);
 
     const history = await SkillAnalysis.find({ clerkUserId })
-      .sort({ analysisDate: -1 })
+      .sort({ createdAt: -1 })
       .limit(10);
 
-    res.json({
-      success: true,
-      history
-    });
+    return res.json({ success: true, history });
 
   } catch (error) {
-    console.error("❌ Error fetching history:", error);
-    res.status(500).json({ error: "Failed to fetch history", details: error.message });
+    console.error("❌ History Error:", error);
+    res.status(500).json({ error: "Failed to fetch history" });
   }
 };
