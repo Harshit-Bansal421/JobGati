@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-const { getMatchAnalysis } = require('./services/geminiService');
+// import { getMatchAnalysis } from "./services/geminiService.js";
 
 // Get current directory for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +29,7 @@ await connectDB()
 // CORS Configuration - Allow requests from Vercel and localhost
 app.use(
   cors({
-    origin: ["https://job-gati-lq1t.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,

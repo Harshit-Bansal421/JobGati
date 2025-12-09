@@ -209,4 +209,4 @@ const TrainingBridge = ({ t }) => {
   );
 };
 
-export default TrainingBridge;
+export default TrainingBridge;
