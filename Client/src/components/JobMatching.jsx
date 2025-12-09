@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Briefcase,
@@ -54,14 +54,62 @@ const JobMatching = ({ t }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedJobIndex, setExpandedJobIndex] = useState(null);
+  const [desiredPosition, setDesiredPosition] = useState("Full Stack Web Development");
+  const [userLocation, setUserLocation] = useState("India");
 
   // User Data from Redux
   const { profileData } = useSelector((state) => state.clerk);
+  const { user } = useSelector((state) => state.auth);
 
-  // Defaults for testing
-  const desiredPosition =
-    profileData?.desiredPosition?.trim() || "Full Stack Web Development";
-  const userLocation = profileData?.location?.trim() || "India";
+  // Fetch desired position from database
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        // Get clerkUserId from auth state or profileData
+        const clerkUserId = user?.id || profileData?.clerkUserId;
+
+        if (!clerkUserId) {
+          console.log("⚠️ No clerkUserId found, using defaults");
+          return;
+        }
+
+        console.log("🔄 Fetching user profile from database...");
+        const response = await fetch(`http://localhost:5000/api/profile/${clerkUserId}`);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("✅ Profile fetched:", data);
+
+          if (data.profile?.desiredPosition) {
+            setDesiredPosition(data.profile.desiredPosition);
+            console.log("📍 Desired Position set to:", data.profile.desiredPosition);
+          }
+
+          if (data.profile?.location) {
+            setUserLocation(data.profile.location);
+            console.log("🌍 Location set to:", data.profile.location);
+          }
+        } else {
+          console.log("⚠️ Profile not found in database, using defaults");
+        }
+      } catch (err) {
+        console.error("❌ Error fetching profile:", err);
+        // Continue with defaults if fetch fails
+      }
+    };
+
+    fetchUserProfile();
+  }, [user, profileData]);
+
+  // Also check Redux state as fallback
+  useEffect(() => {
+    if (profileData?.desiredPosition) {
+      setDesiredPosition(profileData.desiredPosition.trim());
+    }
+    if (profileData?.location) {
+      setUserLocation(profileData.location.trim());
+    }
+  }, [profileData]);
 
   console.log("🔍 Desired Position:", desiredPosition);
   console.log("📍 User Location:", userLocation);

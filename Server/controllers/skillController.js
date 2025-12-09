@@ -24,7 +24,7 @@ export const analyzeSkillGap = async (req, res) => {
     // SELECT THE MODEL (Flash is fast & free)
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // THE PROMPT - Strictly tell it to output JSON for our graphs
+    // THE PROMPT - Updated to match frontend expectations
     const prompt = `
       Act as an expert HR Algorithm.
       
@@ -40,15 +40,17 @@ export const analyzeSkillGap = async (req, res) => {
       OUTPUT FORMAT:
       Return ONLY a valid JSON object (no markdown, no backticks) with this exact structure:
       {
-        "matchScore": (integer between 0-100),
-        "missingSkills": ["List", "of", "critical", "missing", "skills"],
-        "radarChartData": {
-          "Technical": (integer 0-10),
-          "Practical": (integer 0-10),
-          "SoftSkills": (integer 0-10),
-          "Tools": (integer 0-10)
+        "readinessScore": (integer between 0-100 representing how ready the candidate is for this role),
+        "skillGapAnalysis": {
+          "missingSkills": ["List", "of", "critical", "missing", "skills"],
+          "criticalGaps": "A brief explanation of the most critical skill gaps"
         },
-        "oneLineAdvice": "A short, encouraging advice string."
+        "learningRoadmap": [
+          {
+            "action": "First recommended action to improve skills",
+            "priority": "high"
+          }
+        ]
       }
     `;
 
@@ -78,7 +80,15 @@ export const analyzeSkillGap = async (req, res) => {
           userProfile: userProfile?._id,
           jobRole,
           userSkills,
-          ...jsonResponse
+          matchScore: jsonResponse.readinessScore, // Map to old field for DB compatibility
+          missingSkills: jsonResponse.skillGapAnalysis?.missingSkills || [],
+          radarChartData: {
+            Technical: Math.floor(jsonResponse.readinessScore / 10),
+            Practical: Math.floor(jsonResponse.readinessScore / 10),
+            SoftSkills: Math.floor(jsonResponse.readinessScore / 10),
+            Tools: Math.floor(jsonResponse.readinessScore / 10)
+          },
+          oneLineAdvice: jsonResponse.learningRoadmap?.[0]?.action || "Keep learning!"
         };
 
         const analysis = new SkillAnalysis(analysisData);
