@@ -13,7 +13,8 @@ const JobMatching = ({ t }) => {
   // User Data from Redux
   const { profileData } = useSelector((state) => state.clerk);
 
-  const desiredPosition = profileData?.desiredPosition?.trim() || "";
+  // For testing: Use "Full Stack Web Development" as default if no desired position is set
+  const desiredPosition = profileData?.desiredPosition?.trim() || "Full Stack Web Development";
   const userLocation = profileData?.location?.trim() || "India";
 
   const handleFindJobs = async () => {
