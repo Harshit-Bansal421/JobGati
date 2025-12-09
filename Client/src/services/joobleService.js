@@ -4,7 +4,7 @@
  * Falls back to mock data if API fails
  */
 
-const BACKEND_URL = 'https://jobgati-1.onrender.com';
+const BACKEND_URL = 'http://localhost:5000';
 
 // Mock job data for fallback
 const getMockJobs = (keywords, location) => {

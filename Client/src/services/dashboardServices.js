@@ -1,4 +1,4 @@
-const API_URL = "https://jobgati-1.onrender.com/api/dashboard";
+const API_URL = "http://localhost:5000/api/dashboard";
 
 export const saveDashboardData = async (payload) => {
   const response = await fetch(`${API_URL}/save`, {
