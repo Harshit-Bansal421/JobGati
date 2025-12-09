@@ -9,6 +9,8 @@
 // Import React and useEffect hook for side effects (initialization tasks)
 import React, { useEffect } from 'react';
 
+import CareerChatbot from './components/CareerChatbot'; 
+
 // Import routing components from React Router for client-side navigation
 import { Routes, Route } from 'react-router-dom';
 
@@ -109,12 +111,13 @@ function App() {
 
         {/* Sign up page route - user type selection (seeker vs business) */}
         <Route path="signup" element={<SignUpPage />} />
-
+        
         {/* Login page route - authentication form */}
         <Route path="login" element={<LoginPage />} />
 
         {/* Dashboard route - protected user dashboard (requires login) */}
-        <Route path="business-dashboard" element={<BusinessDashboard />} />
+        <Route path="career-chatbot" element={<CareerChatbot />} />
+        <Route path="business-dashboard" element={<BusinessDashboard />} /> 
         <Route path="jobseeker-dashboard" element={<JobseekerDashboard />} />
         <Route path="user-dashboard" element={<UserDashboard />} />
         <Route path="skill-analysis" element={<SkillAnalysisDashboard />} />
