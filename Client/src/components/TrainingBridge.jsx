@@ -1,61 +1,49 @@
-/**
- * TrainingBridge Component - Training & Education Recommendations
- * 
- * This component helps users find relevant training courses.
- * It displays courses based on user's desired position with horizontal scrolling.
- */
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
 
-import { getDashboardData } from "../services/dashboardServices.js";
+dotenv.config();
 
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { BookOpen, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
-import coursesData from '../data/coursesData.json';
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const TrainingBridge = () => {
-  const { clerkUser } = useSelector((state) => state.clerk);
+export const getMatchAnalysis = async (userSkills, jobDescription) => {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  const [dashboardData, setDashboardData] = useState(null);
+  const prompt = `
+    Act as a strict Career Coach AI. 
+    
+    CONTEXT:
+    User's Current Skills: ${JSON.stringify(userSkills)}
+    Target Position/Description: "${jobDescription}"
+    
+    TASK:
+    Analyze the gap between the user's skills and the job requirements.
+    
+    OUTPUT FORMAT:
+    Return a strict JSON object (no markdown, no backticks). Follow this structure exactly:
+    {
+      "matchPercentage": <Integer between 0-100>,
+      "missingSkills": [<Array of strings listing top 3-5 specific technical skills missing>],
+      "graphData": {
+        "Technical_Skills": <Integer 0-10>,
+        "Experience_Match": <Integer 0-10>,
+        "Tools_Stack": <Integer 0-10>,
+        "Soft_Skills": <Integer 0-10>
+      },
+      "advice": "<Short 1 sentence advice>"
+    }
+  `;
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      if (!clerkUser?.id) return;
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
 
-      try {
-        const data = await getDashboardData(clerkUser.id);
-        setDashboardData(data);
-        console.log("Dashboard Loaded:", data);
-      } catch (err) {
-        console.error("Error loading dashboard", err);
-      }
-    };
+    // Clean JSON (removes markdown if Gemini adds it)
+    text = text.replace(/```json|```/g, "").trim();
 
-    loadDashboard();
-  }, [clerkUser]);
-
-  if (!dashboardData) return <p>Loading Dashboard...</p>;
-
-  return (
-    <div>
-      <h1 className="text-2xl font-bold">Training Bridge</h1>
-      
-      <p><strong>Name:</strong> {dashboardData.name}</p>
-      <p><strong>Phone:</strong> {dashboardData.phone}</p>
-      <p><strong>Location:</strong> {dashboardData.location}</p>
-      <p><strong>Desired Position:</strong> {dashboardData.desiredPosition}</p>
-      <p><strong>Education:</strong> {dashboardData.educationLevel}</p>
-      
-      <h3 className="mt-4 font-semibold">Skills:</h3>
-      <ul>
-        {dashboardData.skills.map((skill, i) => (
-          <li key={i}>• {skill}</li>
-        ))}
-      </ul>
-
-      <h3 className="mt-4 font-semibold">About:</h3>
-      <p>{dashboardData.about}</p>
-    </div>
-  );
+    return JSON.parse(text);
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    throw new Error("Failed to analyze skills.");
+  }
 };
-
-export default TrainingBridge;
