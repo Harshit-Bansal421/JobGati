@@ -9,8 +9,18 @@ import { useSelector } from 'react-redux';
 import { BookOpen, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import coursesData from '../data/coursesData.json';
 
+import { useLocation } from 'react-router-dom';
+
 const TrainingBridge = ({ t }) => {
   const [showCourses, setShowCourses] = useState(false);
+  const location = useLocation();
+
+  // Auto-open if coming from Chatbot
+  React.useEffect(() => {
+    if (location.state?.targetSection === 'training-bridge') {
+      setShowCourses(true);
+    }
+  }, [location.state]);
 
   // Get user's desired position from Redux
   const { profileData } = useSelector((state) => state.clerk);
@@ -77,9 +87,67 @@ const TrainingBridge = ({ t }) => {
           {/* Courses Display */}
           {showCourses && (
             <div>
-              {matchedCategory ? (
+              {profileData?.recommendedCourses?.length > 0 ? (
+                // AI Recommended Courses View
                 <div>
-                  {/* Category Header */}
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+                      Recommended for <span className="text-indigo-600">{desiredPosition}</span>
+                    </h3>
+                    <div className="flex justify-center">
+                      <span className="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">
+                        AI Personalized Selection
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {profileData.recommendedCourses.map((course, idx) => (
+                      <a
+                        key={idx}
+                        href={course.url || course.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-xl hover:border-indigo-400 transition-all duration-300 group flex flex-col h-full"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="p-2 bg-indigo-100 rounded-lg">
+                            <BookOpen className="w-5 h-5 text-indigo-600" />
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition" />
+                        </div>
+
+                        <h4 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                          {course.course_name || course.title}
+                        </h4>
+
+                        <div className="flex items-center gap-2 mt-auto">
+                          <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                            {course.platform}
+                          </span>
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-100">
+                          <span className="text-indigo-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                            Start Learning <ExternalLink className="w-4 h-4" />
+                          </span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 text-center">
+                    <button
+                      onClick={() => setShowCourses(false)}
+                      className="text-gray-600 hover:text-indigo-600 font-medium transition"
+                    >
+                      ← Back
+                    </button>
+                  </div>
+                </div>
+              ) : matchedCategory ? (
+                // Existing Static Data View
+                <div>
                   <div className="mb-6">
                     <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
                       {matchedCategory.skill_title}
@@ -96,9 +164,7 @@ const TrainingBridge = ({ t }) => {
                     </div>
                   </div>
 
-                  {/* Horizontal Scrollable Courses */}
                   <div className="relative group">
-                    {/* Left Scroll Button */}
                     <button
                       onClick={() => handleScroll('left')}
                       className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 md:p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
@@ -107,7 +173,6 @@ const TrainingBridge = ({ t }) => {
                       <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
                     </button>
 
-                    {/* Courses Container */}
                     <div
                       id="courses-container"
                       className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 px-2 md:px-0"
@@ -121,7 +186,6 @@ const TrainingBridge = ({ t }) => {
                           rel="noopener noreferrer"
                           className="flex-shrink-0 w-72 md:w-80 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-4 md:p-5 hover:shadow-xl hover:border-green-400 transition-all duration-300 transform hover:-translate-y-1 group/card cursor-pointer"
                         >
-                          {/* Course Icon */}
                           <div className="flex items-start justify-between mb-3">
                             <div className="p-2 bg-green-100 rounded-lg">
                               <BookOpen className="w-5 h-5 text-green-600" />
@@ -129,19 +193,16 @@ const TrainingBridge = ({ t }) => {
                             <ExternalLink className="w-4 h-4 text-gray-400 group-hover/card:text-green-600 transition" />
                           </div>
 
-                          {/* Course Title */}
                           <h4 className="font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3rem]">
                             {course.title}
                           </h4>
 
-                          {/* Platform */}
                           <div className="flex items-center gap-2">
                             <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
                               {course.platform}
                             </span>
                           </div>
 
-                          {/* View Course Link */}
                           <div className="mt-4 pt-4 border-t border-gray-200">
                             <span className="text-green-600 font-medium text-sm flex items-center gap-1 group-hover/card:gap-2 transition-all">
                               View Course
@@ -152,7 +213,6 @@ const TrainingBridge = ({ t }) => {
                       ))}
                     </div>
 
-                    {/* Right Scroll Button */}
                     <button
                       onClick={() => handleScroll('right')}
                       className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 md:p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
@@ -162,12 +222,10 @@ const TrainingBridge = ({ t }) => {
                     </button>
                   </div>
 
-                  {/* Course Count */}
                   <div className="mt-4 text-sm text-gray-500 text-center">
                     {matchedCategory.courses.length} courses available
                   </div>
 
-                  {/* Back Button */}
                   <div className="mt-6 text-center">
                     <button
                       onClick={() => setShowCourses(false)}
@@ -196,15 +254,14 @@ const TrainingBridge = ({ t }) => {
               )}
             </div>
           )}
-        </div>
-      </div>
 
-      {/* Custom CSS for hiding scrollbar */}
-      <style jsx>{`
+          <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
       `}</style>
+        </div>
+      </div>
     </div>
   );
 };

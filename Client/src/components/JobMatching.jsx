@@ -48,6 +48,8 @@ const fetchJoobleJobs = async (keywords, location) => {
   }
 };
 
+import { useLocation } from 'react-router-dom';
+
 const JobMatching = ({ t }) => {
   const [showJobs, setShowJobs] = useState(false);
   const [jobs, setJobs] = useState([]);
@@ -56,6 +58,18 @@ const JobMatching = ({ t }) => {
   const [expandedJobIndex, setExpandedJobIndex] = useState(null);
   const [desiredPosition, setDesiredPosition] = useState("Full Stack Web Development");
   const [userLocation, setUserLocation] = useState("India");
+
+  const location = useLocation();
+
+  // Auto-search if coming from Chatbot
+  useEffect(() => {
+    if (location.state?.targetSection === 'job-matching' && desiredPosition) {
+      // Use a slight timeout to ensure state is settled
+      setTimeout(() => {
+        handleFindJobs();
+      }, 500);
+    }
+  }, [location.state, desiredPosition]);
 
   // User Data from Redux
   const { profileData } = useSelector((state) => state.clerk);
