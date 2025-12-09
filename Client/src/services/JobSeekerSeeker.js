@@ -1,4 +1,4 @@
-const API_URL = "https://jobgati-1.onrender.com/api/jobseekers";
+const API_URL = "http://localhost:5000/api/jobseekers";
 
 export const createJobSeeker = async (jobSeekerData) => {
   const res = await fetch(`${API_URL}/create`, {

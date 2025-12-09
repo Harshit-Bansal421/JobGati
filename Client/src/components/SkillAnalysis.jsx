@@ -1,35 +1,18 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Radar, Doughnut } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  RadialLinearScale,
-  ArcElement,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-  Filler,
-} from 'chart.js';
-import { Loader2, TrendingUp, AlertCircle } from 'lucide-react';
+import { Target, BrainCircuit, AlertTriangle, CheckCircle2, Loader2, Zap } from 'lucide-react';
 
-// Register ChartJS components
-ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend, PointElement, LineElement, Filler);
-
-const SkillAnalysis = ({ t }) => {
-  const [loading, setLoading] = useState(false);
+const SkillAnalysisDashboard = () => {
+  const [jobRole, setJobRole] = useState('');
+  const [userSkills, setUserSkills] = useState('');
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
-  // Get user data from clerkSlice
-  const { profileData } = useSelector((state) => state.clerk);
-  const userSkills = profileData?.skills || [];
-  const jobRole = profileData?.desiredPosition || 'Job Seeker';
-
+  // API HANDLER
   const handleAnalyze = async () => {
-    if (!userSkills || userSkills.length === 0) {
-      setError('Please add skills to your profile first! Go to Dashboard → Add Skills');
-      console.error('❌ No skills found in user profile');
+    if (!jobRole || !userSkills) {
+      setError("Please fill in both fields.");
       return;
     }
 
@@ -38,188 +21,183 @@ const SkillAnalysis = ({ t }) => {
     setData(null);
 
     try {
-      console.log('🚀 Starting skill analysis...');
-      console.log('📊 User Skills:', userSkills);
-      console.log('💼 Job Role:', jobRole);
-
-      const response = await fetch('https://jobgati-1.onrender.com/api/skills/analyze-gap', {
+      const response = await fetch('http://localhost:5000/api/skills/analyze-gap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userSkills,
-          jobRole,
-          jobDescription: `Looking for ${jobRole} position with relevant skills and experience.`
+          userSkills: userSkills.split(',').map(s => s.trim()),
+          jobRole: jobRole
         }),
       });
 
-      console.log('📡 API Response Status:', response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ API Error Response:', errorText);
-        throw new Error(`API returned ${response.status}: ${errorText}`);
-      }
+      if (!response.ok) throw new Error("Failed to connect to AI server");
 
       const result = await response.json();
-      console.log('✅ Analysis Result:', result);
       setData(result);
-    } catch (error) {
-      console.error('❌ Skill Analysis Error:', error);
-      console.error('Error Details:', {
-        message: error.message,
-        stack: error.stack
-      });
-      setError(`Failed to analyze skills: ${error.message}`);
+
+    } catch (err) {
+      console.error(err);
+      setError("Analysis failed. Is your backend running on Port 5000?");
     } finally {
       setLoading(false);
     }
   };
 
-  // Radar Chart Configuration
-  const radarConfig = data ? {
-    labels: ['Technical', 'Practical', 'Soft Skills', 'Tools'],
-    datasets: [
-      {
-        label: 'Your Capability',
-        data: [
-          data.radarChartData.Technical,
-          data.radarChartData.Practical,
-          data.radarChartData.SoftSkills,
-          data.radarChartData.Tools
-        ],
-        backgroundColor: 'rgba(37, 99, 235, 0.2)',
-        borderColor: 'rgba(37, 99, 235, 1)',
-        borderWidth: 2,
-      },
-      {
-        label: 'Job Requirement',
-        data: [9, 8, 7, 9],
-        backgroundColor: 'rgba(156, 163, 175, 0.1)',
-        borderColor: 'rgba(156, 163, 175, 0.5)',
-        borderDash: [5, 5],
-      }
-    ],
-  } : null;
-
-  // Doughnut Chart Configuration
-  const scoreConfig = data ? {
-    labels: ['Match', 'Gap'],
-    datasets: [{
-      data: [data.matchScore, 100 - data.matchScore],
-      backgroundColor: ['#16a34a', '#e5e7eb'],
-      borderWidth: 0,
-    }]
-  } : null;
+  // If no form shown and no data, don't render anything (removes blank space)
+  if (!showForm && !data) {
+    return (
+      <div className="bg-white py-8">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-xl transition-all inline-flex items-center gap-3 shadow-lg"
+          >
+            <BrainCircuit className="w-6 h-6" />
+            Analyze My Skills with AI
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white py-16">
-      <div className="max-w-[1200px] mx-auto px-5">
-        {/* Section Header */}
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-4 text-dark">{t?.title || '📊 AI Skill Analysis'}</h2>
-          <p className="text-lg text-gray-500 max-w-[600px] mx-auto">
-            {t?.description || 'Analyze your skills with AI and see how you match with job requirements'}
-          </p>
+    <div className="bg-gray-50 py-10 px-4">
+      <div className="max-w-4xl mx-auto space-y-8">
+
+        {/* HEADER */}
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-extrabold text-gray-900 flex justify-center items-center gap-3">
+            <BrainCircuit className="w-10 h-10 text-blue-600" />
+            Skill Gap Analyzer
+          </h1>
+          <p className="text-gray-500">Focus: Readiness Percentage & Critical Gaps</p>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-            <div>
-              <p className="text-red-800 font-medium">{error}</p>
-              <p className="text-red-600 text-sm mt-1">Check browser console for detailed error logs</p>
-            </div>
-          </div>
-        )}
-
-        {/* Analyze Button */}
+        {/* INPUT SECTION - Only show if no data */}
         {!data && (
-          <div className="bg-gray-50 rounded-lg p-8 shadow-sm text-center">
-            <TrendingUp className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-            <p className="text-gray-600 mb-6">
-              {userSkills && userSkills.length > 0
-                ? `Ready to analyze ${userSkills.length} skills for ${jobRole}`
-                : 'Add skills to your profile to get started'}
-            </p>
+          <div className="bg-white p-8 rounded-2xl shadow-md border grid md:grid-cols-3 gap-6 items-end">
+
+            <div className="space-y-2">
+              <label className="font-semibold text-gray-700">Desired Job Role</label>
+              <div className="relative">
+                <Target className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="e.g. Data Scientist"
+                  className="w-full pl-10 p-3 bg-gray-50 border rounded-xl"
+                  value={jobRole}
+                  onChange={(e) => setJobRole(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="font-semibold text-gray-700">Your Current Skills</label>
+              <input
+                type="text"
+                placeholder="e.g. Python, SQL, Excel"
+                className="w-full p-3 bg-gray-50 border rounded-xl"
+                value={userSkills}
+                onChange={(e) => setUserSkills(e.target.value)}
+              />
+            </div>
+
             <button
               onClick={handleAnalyze}
-              disabled={loading || !userSkills || userSkills.length === 0}
-              className="bg-primary text-white hover:bg-blue-600 px-8 py-3 rounded-md font-semibold cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-xl transition-all flex items-center justify-center gap-2"
             >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                t?.analyzeBtn || 'Analyze My Skills'
-              )}
+              {loading ? <Loader2 className="animate-spin" /> : "Run Analysis"}
             </button>
           </div>
         )}
 
-        {/* Results */}
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5" /> {error}
+          </div>
+        )}
+
+        {/* RESULTS SECTION */}
         {data && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="animate-fade-in space-y-6">
 
-              {/* Match Score Chart */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-100">
-                <h3 className="text-gray-700 mb-4 font-semibold text-center">Overall Match Score</h3>
-                <div className="w-48 h-48 mx-auto relative">
-                  <Doughnut data={scoreConfig} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-gray-800">{data.matchScore}%</span>
-                  </div>
-                </div>
-                <p className="mt-6 text-sm text-gray-600 italic text-center">{data.oneLineAdvice}</p>
+            {/* READINESS PERCENTAGE CARD */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 flex justify-between items-center">
+
+              <div className="flex items-center gap-4">
+                <Zap
+                  className={`w-8 h-8 ${data.readinessScore > 70
+                      ? 'text-green-600'
+                      : data.readinessScore > 40
+                        ? 'text-yellow-600'
+                        : 'text-red-600'
+                    }`}
+                />
+                <h3 className="text-2xl font-semibold text-gray-800">
+                  Your Readiness for {jobRole}:
+                </h3>
               </div>
 
-              {/* Skill Radar Chart */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-100">
-                <h3 className="text-gray-700 mb-4 font-semibold text-center">Category Breakdown</h3>
-                <div className="h-64">
-                  <Radar
-                    data={radarConfig}
-                    options={{
-                      scales: { r: { min: 0, max: 10 } },
-                      maintainAspectRatio: false
-                    }}
-                  />
-                </div>
+              <div className="text-right">
+                <span
+                  className={`text-5xl font-extrabold ${data.readinessScore > 70
+                      ? 'text-green-600'
+                      : data.readinessScore > 40
+                        ? 'text-yellow-600'
+                        : 'text-red-600'
+                    }`}
+                >
+                  {data.readinessScore}%
+                </span>
+                <p className="text-sm text-gray-500 mt-1">Ready</p>
               </div>
+
             </div>
 
-            {/* Missing Skills */}
-            {data.missingSkills && data.missingSkills.length > 0 && (
-              <div className="bg-red-50 p-6 rounded-lg border border-red-100">
-                <h3 className="text-red-800 font-bold mb-4 text-lg">⚠️ Missing Skills (Critical Gaps)</h3>
-                <div className="flex flex-wrap gap-2">
-                  {data.missingSkills.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="bg-white text-red-600 px-4 py-2 rounded-full text-sm border border-red-200 font-medium"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* MISSING SKILLS */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-6 h-6 text-red-500" /> Missing Skills (Skill Gap)
+              </h3>
 
-            {/* Action Button */}
+              <div className="flex flex-wrap gap-3 mb-5">
+                {data.skillGapAnalysis.missingSkills.map((skill, i) => (
+                  <span
+                    key={i}
+                    className="px-4 py-1.5 bg-red-100 text-red-800 border border-red-200 rounded-full font-medium text-sm"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+
+              <p className="text-gray-600 mt-4 border-l-4 border-red-300 pl-3 italic text-sm">
+                "{data.skillGapAnalysis.criticalGaps}"
+              </p>
+            </div>
+
+            {/* ADVICE */}
+            <div className="bg-blue-50 p-4 rounded-xl text-blue-800 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5" />
+              <p className="font-medium">
+                {data.learningRoadmap[0]?.action || "Review your current skills."}
+              </p>
+            </div>
+
+            {/* Back Button */}
             <div className="text-center">
               <button
                 onClick={() => {
                   setData(null);
-                  setError(null);
+                  setShowForm(false);
                 }}
-                className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition"
+                className="text-gray-600 hover:text-blue-600 font-medium transition"
               >
-                Analyze Again
+                ← Back
               </button>
             </div>
+
           </div>
         )}
       </div>
@@ -227,4 +205,5 @@ const SkillAnalysis = ({ t }) => {
   );
 };
 
-export default SkillAnalysis;
+export default SkillAnalysisDashboard;
+
