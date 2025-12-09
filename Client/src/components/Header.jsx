@@ -83,12 +83,12 @@ const Header = ({ setShowLogin }) => {
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-3 cursor-pointer"
+          className="flex items-center gap-3 cursor-pointer mr-2"
         >
           <img
             src={jobgatiLogo}
             alt="JobGati Logo"
-            className="h-12 w-12 object-cover rounded-full p-1 bg-white shadow-md border-2 border-blue-100 dark:border-blue-900"
+            className="h-11 w-11 object-cover rounded-full p-1 bg-white shadow-md border-2 border-blue-100 dark:border-blue-900"
           />
           <span className="text-2xl font-bold text-primary dark:text-blue-400">JobGati</span>
         </Link>
@@ -98,7 +98,7 @@ const Header = ({ setShowLogin }) => {
           {/* Home - Always visible */}
           <button
             onClick={() => handleNavClick('/')}
-            className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+            className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap cursor-pointer ${isActive('/') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
               }`}
           >
             {t?.nav?.home || 'Home'}
@@ -107,7 +107,7 @@ const Header = ({ setShowLogin }) => {
           {/* About - Always visible */}
           <button
             onClick={() => handleNavClick('/about')}
-            className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/about') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+            className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap cursor-pointer ${isActive('/about') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
               }`}
           >
             About
@@ -117,7 +117,7 @@ const Header = ({ setShowLogin }) => {
           {isLoggedIn && (
             <button
               onClick={() => handleNavClick('/service-seeker')}
-              className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+              className={`text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400 whitespace-nowrap cursor-pointer ${isActive('/service-seeker') ? 'text-primary dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
                 }`}
             >
               Service Seeker

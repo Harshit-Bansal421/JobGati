@@ -57,7 +57,7 @@ const TrainingBridge = ({ t }) => {
   };
 
   return (
-    <div className="bg-white py-16">
+    <section id="training-bridge" className="bg-white py-16">
       <div className="max-w-[1200px] mx-auto px-5">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold mb-4 text-dark">{t?.title || 'Training & Education'}</h2>
@@ -66,7 +66,7 @@ const TrainingBridge = ({ t }) => {
           </p>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-8 shadow-sm">
+        <div className="bg-white rounded-lg p-8 shadow-sm">
           {/* Centered Button */}
           <div className="text-center mb-6">
             <button
@@ -262,7 +262,7 @@ const TrainingBridge = ({ t }) => {
       `}</style>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

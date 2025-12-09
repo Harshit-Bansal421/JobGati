@@ -51,10 +51,10 @@ const SkillAnalysisDashboard = () => {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <button
             onClick={() => setShowForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-xl transition-all inline-flex items-center gap-3 shadow-lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-xl transition-all inline-flex items-center gap-3 shadow-lg cursor-pointer"
           >
             <BrainCircuit className="w-6 h-6" />
-            Analyze My Skills with AI
+            Generate Learning Path
           </button>
         </div>
       </div>

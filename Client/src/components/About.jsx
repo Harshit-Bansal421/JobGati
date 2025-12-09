@@ -1,166 +1,117 @@
-import React, { useState } from 'react';
-import { Menu, X, Users, Store, ShieldCheck, Megaphone, Share2, MapPin, UserCheck } from 'lucide-react';
+import React from 'react';
 
-const JobGatiAbout = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+export default function AboutUs() {
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-800">
+    <div className="min-h-screen font-sans selection:bg-blue-500 selection:text-white">
 
-      {/* Hero Image Section - Overlapping with Text Overlay */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 mb-20 relative z-20">
-        <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-[16/9] sm:aspect-[2.4/1] bg-slate-200">
-          <img
-            src="https://images.unsplash.com/photo-1556740714-a8395b3bf3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-            alt="Young Indian men at a local shop"
-            className="w-full h-full object-cover"
-          />
-          {/* Overlay Gradient & Text */}
-          <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center p-4">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white max-w-4xl mb-3 drop-shadow-lg leading-tight">
-              Democratizing Employment<br className="hidden sm:block" /> for the Real India
-            </h2>
-            <p className="text-blue-100 text-sm sm:text-lg font-medium drop-shadow-md tracking-wide">
-              Local Indian youth in index & shopkeepers.
-            </p>
+      {/* 1. HERO SECTION (Dark Blue/Slate) */}
+      <div className="relative overflow-hidden bg-slate-950 py-20 sm:py-32 text-white">
+        {/* Background Blur Effect */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+            We Don't Just Find Jobs. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+              We Build Careers.
+            </span>
+          </h1>
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            JobGati is the first <strong>AI-Agentic Career Platform</strong> that talks to you like a mentor, assesses your true potential, and builds a hyper-personalized roadmap to get you hired.
+          </p>
+        </div>
+      </div>
+
+      {/* 2. THE PROBLEM VS SOLUTION (Dark Section) */}
+      <div className="bg-slate-900 py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Text Content */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-white">The Problem with "Generic" Roadmaps</h2>
+              <p className="text-slate-300 text-lg">
+                Most career sites give you a generic checklist: <em>"Learn Python, then SQL."</em>
+                But they don't know <strong>YOU</strong>. They don't know if you prefer videos over books, if you have 2 hours or 10 hours a day, or if you're a visual learner.
+              </p>
+              <div className="pl-6 border-l-4 border-blue-500 bg-slate-800/50 py-4 pr-4 rounded-r-lg">
+                <p className="text-lg italic text-slate-200">
+                  "Finding a roadmap is easy. Finding <strong>your</strong> roadmap is hard."
+                </p>
+              </div>
+            </div>
+
+            {/* Feature Card Visual - Dark Mode Style */}
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 shadow-2xl relative">
+              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg animate-bounce">
+                The JobGati Way
+              </div>
+              <ul className="space-y-6">
+                <li className="flex items-start gap-4">
+                  <div className="bg-green-100 text-green-600 p-3 rounded-lg text-xl">🤖</div>
+                  <div>
+                    <h4 className="text-white font-bold">Interactive Interview</h4>
+                    <p className="text-slate-300 text-sm">Our AI Agent chats with you to understand your real depth, not just your resume keywords.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="bg-blue-100 text-blue-600 p-3 rounded-lg text-xl">🎯</div>
+                  <div>
+                    <h4 className="text-white font-bold">Skill Gap Analysis</h4>
+                    <p className="text-slate-300 text-sm">We don't guess. We verify your skills and pinpoint exactly what is missing for your dream role.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="bg-purple-100 text-purple-600 p-3 rounded-lg text-xl">🗺️</div>
+                  <div>
+                    <h4 className="text-white font-bold">Dynamic Roadmaps</h4>
+                    <p className="text-slate-300 text-sm">A week-by-week plan tailored to <em>your</em> schedule, learning style, and budget.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* "More Than Just a Job Portal" Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-
-          {/* Blue Pill Badge */}
-          <div className="inline-block bg-blue-600 text-white px-8 py-2.5 rounded-full font-bold text-lg mb-8 shadow-md">
-            More Than Just a Job Portal
+      {/* 3. HOW IT WORKS (Blue Section) */}
+      <div className="bg-blue-600 py-20 border-y border-blue-700">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4 text-white">Powered by Agentic AI</h2>
+            <p className="text-blue-100">Built for the Smart India Hackathon using cutting-edge technology.</p>
           </div>
 
-          <p className="max-w-3xl mx-auto text-slate-600 text-base sm:text-lg leading-relaxed mb-16 px-4">
-            We aren't just a database; we are a community-driven ecosystem designed specifically
-            for Tier-2 and Tier-3 cities, connecting daily wagers and skilled youth with
-            hyperlocal opportunities.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8 px-4">
-            {/* Card 1: Job Seekers */}
-            <div className="bg-white rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.05)] hover:shadow-xl transition-shadow border border-slate-50">
-              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-5">
-                <UserCheck className="w-7 h-7 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3">Job Seekers</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-2">
-                We give local youth access to interesting opportunities near them, verifying their skills.
-              </p>
-            </div>
-
-            {/* Card 2: Local Businesses */}
-            <div className="bg-white rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.05)] hover:shadow-xl transition-shadow border border-slate-50">
-              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-5">
-                <Store className="w-7 h-7 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3">Local Businesses</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-2">
-                Local shops and SMEs get security and speed, allowing them to hire trusted staff instantly.
-              </p>
-            </div>
-
-            {/* Card 3: Communities */}
-            <div className="bg-white rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.05)] hover:shadow-xl transition-shadow border border-slate-50">
-              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-5">
-                <Users className="w-7 h-7 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3">Communities</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-2">
-                We foster community growth, ensuring money stays within the local ecosystem.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <FeatureCard
+              icon="🧠"
+              title="Grok & Llama 3.3"
+              desc="Leveraging 70B parameter models to conduct human-like interviews and understand context better than any static form."
+            />
+            <FeatureCard
+              icon="⚡"
+              title="Real-time Analysis"
+              desc="No waiting. Our Agentic Workflow analyzes your responses instantly to adapt the next question dynamically."
+            />
+            <FeatureCard
+              icon="🌍"
+              title="Universal Fit"
+              desc="Whether you want to be a Coder, a Chef, or a Pilot—our logic adapts to ANY industry requirements seamlessly."
+            />
           </div>
         </div>
-      </section>
-
-      {/* Why We Built This Section */}
-      <section className="py-24 bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center gap-16 lg:gap-24">
-            <div className="md:w-1/2 text-left">
-              <h2 className="text-3xl font-extrabold text-slate-900 mb-6">
-                Why We Built This
-              </h2>
-              <p className="text-slate-600 text-base leading-relaxed mb-6">
-                We realized that the current job market ignores the "Real India." Most platforms
-                cater to corporate white-collar jobs in metros, leaving behind millions of
-                talented workers in smaller towns.
-              </p>
-              <p className="text-slate-600 text-base leading-relaxed">
-                JobGati leverages the power of hyperlocal connectivity. We built this to
-                remove the friction of middlemen, giving dignity and direct access to
-                shuttering carpenters, retail staff, and delivery partners across the country.
-              </p>
-            </div>
-
-            <div className="md:w-1/2 w-full flex justify-center">
-              <div className="relative w-full max-w-lg">
-                <img
-                  src="./wa"
-                  alt="Isometric Map"
-                  className="w-full drop-shadow-xl"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/600x450/3b82f6/ffffff?text=Hyperlocal+Map+Illustration";
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-extrabold text-slate-900 mb-16">
-            Core Values
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-10">
-            {/* Value 1 */}
-            <div className="flex flex-col items-center group cursor-default">
-              <div className="w-40 h-40 rounded-full bg-blue-600 flex items-center justify-center mb-6 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <ShieldCheck className="w-20 h-20 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Trust First</h3>
-              <p className="text-slate-500 max-w-xs mx-auto text-sm leading-relaxed px-8">
-                Trust inherent in verification and reliable conduct.
-              </p>
-            </div>
-
-            {/* Value 2 */}
-            <div className="flex flex-col items-center group cursor-default">
-              <div className="w-40 h-40 rounded-full bg-blue-600 flex items-center justify-center mb-6 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <Megaphone className="w-20 h-20 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Voice for All</h3>
-              <p className="text-slate-500 max-w-xs mx-auto text-sm leading-relaxed px-8">
-                Voice has directed noticing and voice for all.
-              </p>
-            </div>
-
-            {/* Value 3 */}
-            <div className="flex flex-col items-center group cursor-default">
-              <div className="w-40 h-40 rounded-full bg-blue-600 flex items-center justify-center mb-6 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <Share2 className="w-20 h-20 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Hyperlocal Impact</h3>
-              <p className="text-slate-500 max-w-xs mx-auto text-sm leading-relaxed px-8">
-                Hyperlocal impact to shecrols or local business.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
-};
+}
 
-export default JobGatiAbout;
+// --- SUB-COMPONENTS ---
+
+function FeatureCard({ icon, title, desc }) {
+  return (
+    <div className="bg-white p-8 rounded-xl border border-blue-100 hover:border-blue-400 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/20 cursor-pointer">
+      <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">{icon}</div>
+      <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
+      <p className="text-slate-600 text-sm leading-relaxed">{desc}</p>
+    </div>
+  );
+}

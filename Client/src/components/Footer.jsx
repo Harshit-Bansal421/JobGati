@@ -27,7 +27,7 @@ const Footer = () => {
             - Each column minimum 200px wide
             - Columns grow to fill available space evenly */}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-10 mb-10">
-          
+
           {/* Column 1: Company branding and tagline */}
           <div className="footer-column">
             {/* Company name/logo */}
@@ -35,7 +35,7 @@ const Footer = () => {
             {/* Company tagline/description */}
             <p>AI-Powered Hyperlocal Skill-to-Job Match Platform</p>
           </div>
-          
+
           {/* Column 2: Quick navigation links */}
           <div className="footer-column">
             {/* Column heading */}
@@ -48,7 +48,7 @@ const Footer = () => {
                   Home
                 </Link>
               </li>
-              
+
               {/* Job Seekers page link */}
               <li className="mb-2.5">
                 <Link
@@ -58,7 +58,7 @@ const Footer = () => {
                   For Job Seekers
                 </Link>
               </li>
-              
+
               {/* Businesses page link */}
               <li className="mb-2.5">
                 <Link
@@ -68,14 +68,14 @@ const Footer = () => {
                   For Businesses
                 </Link>
               </li>
-              
+
               {/* About Us link - placeholder (#) for future implementation */}
               <li className="mb-2.5">
                 <Link to="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white">
                   About Us
                 </Link>
               </li>
-              
+
               {/* Contact link - placeholder (#) for future implementation */}
               <li className="mb-2.5">
                 <Link to="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white">
@@ -84,7 +84,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           {/* Column 3: Contact information */}
           <div className="footer-column">
             {/* Column heading */}
@@ -93,17 +93,17 @@ const Footer = () => {
             <ul className="list-none">
               {/* Email address */}
               <li className="mb-2.5 text-gray-400">Email: info@jobgati.com</li>
-              
+
               {/* Phone number - Indian format */}
               <li className="mb-2.5 text-gray-400">Phone: +91 9876543210</li>
-              
+
               {/* Physical address */}
               <li className="mb-2.5 text-gray-400">
                 Address: Skill Development Center, New Delhi, India
               </li>
             </ul>
           </div>
-          
+
           {/* Column 4: Social media links */}
           <div className="footer-column">
             {/* Column heading */}
@@ -112,27 +112,27 @@ const Footer = () => {
             <ul className="list-none">
               {/* Facebook link - placeholder (#) for future implementation */}
               <li className="mb-2.5">
-                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white">Facebook</a>
+                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white cursor-pointer">Facebook</a>
               </li>
-              
+
               {/* Twitter link - placeholder (#) for future implementation */}
               <li className="mb-2.5">
-                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white">Twitter</a>
+                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white cursor-pointer">Twitter</a>
               </li>
-              
+
               {/* LinkedIn link - placeholder (#) for future implementation */}
               <li className="mb-2.5">
-                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white">LinkedIn</a>
+                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white cursor-pointer">LinkedIn</a>
               </li>
-              
+
               {/* Instagram link - placeholder (#) for future implementation */}
               <li className="mb-2.5">
-                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white">Instagram</a>
+                <a href="#" className="text-gray-400 no-underline transition-colors duration-300 hover:text-white cursor-pointer">Instagram</a>
               </li>
             </ul>
           </div>
         </div>
-        
+
         {/* Copyright section - bottom of footer with top border */}
         <div className="text-center pt-5 border-t border-gray-700 text-gray-400 text-sm">
           {/* Copyright notice - using HTML entity &copy; for © symbol */}
