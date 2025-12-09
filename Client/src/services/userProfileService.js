@@ -1,4 +1,4 @@
-const API_URL = 'https://jobgati-1.onrender.com';
+const API_URL = 'http://localhost:5000';
 
 // Save user profile to database
 export const saveUserProfile = async (profileData) => {

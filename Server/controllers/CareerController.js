@@ -37,7 +37,14 @@ export const startCareer = async (req, res) => {
     if (content.startsWith('```json')) content = content.replace(/^```json/, '').replace(/```$/, '');
     else if (content.startsWith('```')) content = content.replace(/^```/, '').replace(/```$/, '');
     
-    const questions = JSON.parse(content);
+    // Parse response
+    let questions;
+    try {
+        questions = JSON.parse(content);
+    } catch (e) {
+        throw new Error("AI returned invalid JSON: " + content);
+    }
+    
     if (!Array.isArray(questions)) throw new Error("AI did not return an array");
 
     res.json({ success: true, questions });
@@ -52,44 +59,40 @@ export const evaluate = async (req, res) => {
     const { aim, answers, userData } = req.body;
 
     const prompt = `
-      You are an expert Career Path AI with strict evaluation standards.
-      The user's aim: ${aim}
+      You are a Senior Career Architect & Tech Lead.
+      User Aim: "${aim}"
       
-      User's answers to mandatory questions:
+      User's Assessment Data:
       ${JSON.stringify(answers, null, 2)}
       
-      Additional user dashboard data (may be null):
-      ${JSON.stringify(userData || {}, null, 2)}
-      
-      Task: Perform a rigorous assessment.
-      1. Calculate 'market_success_rate' based on real-world difficulty and user's profile match. 
-         (e.g., If aiming for Google with 0 exp, probability should be very low).
-      2. If mandatory criteria (Age/Degree) are failing, probability MUST be near 0.
-      
-      Output Schema:
+      CRITICAL INSTRUCTIONS:
+      1. **NO FLUFF**: Avoid generic advice like "Stay motivated" or "Keep learning".
+      2. **BE TECHNICAL & SPECIFIC**: If the user needs to learn React, specify "React Hooks, Redux Toolkit, and performance optimization".
+      3. **DEEP ROADMAP**: The roadmap must cover **6 Months** in distinct phases (e.g., "Months 1-2: Core Foundations", "Months 3-6: Advanced Specialization").
+      4. **REALITY CHECK**: Calculate 'market_success_rate' strictly based on the gap between current skills and market demands.
 
-      Based on this, generate a detailed JSON output:
+      GENERATE THIS EXACT JSON STRUCTURE (Return ONLY JSON):
       {
-        "skills_required": [...],
-        "skills_user_has": [...],
-        "skill_gaps": [...],
-        "market_success_rate": number, // Percentage of people with similar skills who successfully secured this role
+        "market_success_rate": 75,
+        "success_ratio": "850 people qualify from 1000 applicants",
+        "skills_user_has": ["Skill A", "Skill B"],
+        "skill_gaps": ["Missing Skill X", "Missing Skill Y"],
         "roadmap": {
-          "next_1_month": "...",
-          "next_3_months": "...",
-          "next_6_months": "...",
-          "next_1_year": "..."
+           "Phase 1: Foundations (Months 1-2)": "• Specific Task 1\n• Specific Task 2\n• Build Project X",
+           "Phase 2: Advanced & Professional (Months 3-6)": "• Specific Task 3\n• specific Task 4"
         },
         "real_world_examples": [
-          { "name": "Name/Profile", "how_they_succeeded": "Brief story of someone with similar background who made it." }
+          { "name": "Role Model Name", "how_they_succeeded": "Specific actionable path they took." }
         ],
-        "final_advice": "...",
-        "training_bridge": [
+        "final_advice": "One punchy, high-impact sentence.",
+        "weak_skills_courses": [
           {
-            "skill": "Name of the missing skill",
-            "course_name": "Recommended Course Name",
-            "platform": "Udemy/Coursera/Youtube/etc",
-            "url": "Valid URL to the course or search query URL"
+            "id": "u1",
+            "skill_title": "Weak Skill Name",
+            "description": "Technical reason for importance",
+            "courses": [
+               { "title": "Course Name", "link": "https://...", "platform": "Udemy/Coursera" }
+            ]
           }
         ]
       }
@@ -100,6 +103,7 @@ export const evaluate = async (req, res) => {
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
+      response_format: { type: "json_object" }
     });
 
     let content = completion.choices[0].message.content.trim();
@@ -112,13 +116,39 @@ export const evaluate = async (req, res) => {
     
     content = jsonMatch[0];
 
-    let report;
-    try {
-      report = JSON.parse(content);
-    } catch (parseError) {
-      console.error("JSON Parse Error:", parseError, "Content:", content);
-      throw new Error("Failed to parse AI response");
-    }
+    const report = JSON.parse(content);
+
+      // --- SAVE TO DB (UserProfile) ---
+      if (userData?.clerkUserId && Array.isArray(report.weak_skills_courses)) {
+        try {
+             const UserProfile = (await import('../models/UserProfile.js')).default;
+             
+             const flatCourses = [];
+             report.weak_skills_courses.forEach(skillGroup => {
+                if (Array.isArray(skillGroup.courses)) {
+                    skillGroup.courses.forEach(c => {
+                        flatCourses.push({
+                            skill: skillGroup.skill_title || "General",
+                            courseTitle: c.title || "Unknown Course",
+                            link: c.link || "#",
+                            platform: c.platform || "Online",
+                            description: skillGroup.description || ""
+                        });
+                    });
+                }
+             });
+
+             await UserProfile.findOneAndUpdate(
+                 { clerkUserId: userData.clerkUserId },
+                 { $set: { trainingRecommendations: flatCourses, desiredPosition: aim } },
+                 { new: true }
+             );
+             console.log("✅ Saved training recommendations to DB");
+        } catch (dbErr) {
+             console.error("❌ Failed to save to DB:", dbErr);
+             // Do not throw here, allow the report to be returned even if DB save fails
+        }
+      }
 
     res.json({ report });
   } catch (err) {
