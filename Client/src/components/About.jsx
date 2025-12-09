@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, Users, Store, ShieldCheck, Megaphone, Share2, MapPin, UserCheck } from 'lucide-react';
+import heroImage from '../assets/WhatsApp Image 2025-12-08 at 11.58.43.jpeg';
 
 const JobGatiAbout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,7 +12,7 @@ const JobGatiAbout = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 mb-20 relative z-20">
         <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-[16/9] sm:aspect-[2.4/1] bg-slate-200">
           <img
-            src="https://images.unsplash.com/photo-1556740714-a8395b3bf3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+            src={heroImage}
             alt="Young Indian men at a local shop"
             className="w-full h-full object-cover"
           />
