@@ -1,43 +1,75 @@
-/**
- * Dashboard Component - User Dashboard
- * 
- * This is the main dashboard container that routes to the specific dashboard
- * view based on the user's type (Job Seeker, Business, or Normal User).
- */
+import React, { useEffect, useState } from "react";
 
-import React from 'react';
-import { useSelector } from 'react-redux';
-import JobSeekerDashboard from './JobSeekerDashboard';
-import BusinessDashboard from './BusinessDashboard';
-import ShortTermDashboard from './ShortTermDashboard';
+const Dashboard = ({ userId }) => {
+  const [dashboard, setDashboard] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-/**
- * Dashboard functional component
- * Routes to the appropriate dashboard based on user type
- */
-const Dashboard = () => {
-  // Access authenticated user data and type from Redux auth state
-  const { user, type } = useSelector((state) => state.auth);
+  useEffect(() => {
+    let isMounted = true;
 
-  // Determine which dashboard to render based on user type
-  // Note: Adjust the type string checks ('jobseeker', 'business', 'user') 
-  // to match exactly what your backend/redux store uses.
+    async function loadDashboard() {
+      try {
+        const res = await fetch(
+          `https://jobgati-1.onrender.com/api/dashboard/get/${userId}`
+        );
 
-  if (type === 'jobseeker' || user?.role === 'jobseeker') {
-    return <JobSeekerDashboard />;
-  }
+        const data = await res.json();
 
-  if (type === 'business' || user?.role === 'business') {
-    return <BusinessDashboard />;
-  }
+        if (!isMounted) return;
 
-  if (type === 'user' || user?.role === 'user') {
-    return <ShortTermDashboard />;
-  }
+        if (data.error) {
+          setDashboard({
+            jobs: [],
+            applications: [],
+            messages: []
+          });
+        } else {
+          setDashboard(data);
+        }
+      } catch (err) {
+        console.error("Dashboard Fetch Error:", err);
 
-  // Fallback or default view if type is not defined (e.g., for testing or new users)
-  // For now, defaulting to JobSeekerDashboard or a generic view
-  return <JobSeekerDashboard />;
+        if (isMounted) {
+          setDashboard({
+            jobs: [],
+            applications: [],
+            messages: []
+          });
+        }
+      }
+
+      if (isMounted) setLoading(false);
+    }
+
+    if (userId) loadDashboard();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId]);
+
+  if (loading) return <p>Loading dashboard...</p>;
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Your Dashboard</h2>
+
+      <h3>Jobs</h3>
+      {(dashboard?.jobs ?? []).map((job, index) => (
+        <div key={index}>{job.title || "Untitled Job"}</div>
+      ))}
+
+      <h3>Applications</h3>
+      {(dashboard?.applications ?? []).map((app, index) => (
+        <div key={index}>{app.position || "Unknown"}</div>
+      ))}
+
+      <h3>Messages</h3>
+      {(dashboard?.messages ?? []).map((msg, index) => (
+        <div key={index}>{msg.text || "Empty"}</div>
+      ))}
+    </div>
+  );
 };
 
 export default Dashboard;
