@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2, Sparkles, XCircle, ArrowRight, CheckCircle, BookOpen, Briefcase } from 'lucide-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { updateProfileData } from '../store/slices/clerkSlice';
 
 const CareerInterview = ({ onBack }) => {
+    const { profileData } = useSelector(state => state.clerk);
     // Stages: 'AIM' -> 'FETCHING_QUESTIONS' -> 'INTERVIEW' -> 'ANALYZING' -> 'REPORT'
     const [stage, setStage] = useState('AIM');
     const [aim, setAim] = useState('');
@@ -12,22 +13,10 @@ const CareerInterview = ({ onBack }) => {
     const [currentQIndex, setCurrentQIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const [currentAnswer, setCurrentAnswer] = useState('');
-    const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [report, setReport] = useState(null);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-    const handleFindResources = () => {
-        dispatch(updateProfileData({ desiredPosition: aim }));
-        navigate('/', { state: { targetSection: 'training-bridge' } });
-
-        setTimeout(() => {
-            const element = document.getElementById('training-bridge');
-            if (element) element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-    };
 
     const handleFindJobs = () => {
         dispatch(updateProfileData({ desiredPosition: aim }));
@@ -35,6 +24,20 @@ const CareerInterview = ({ onBack }) => {
 
         setTimeout(() => {
             const element = document.getElementById('job-matching');
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    };
+
+    const handleFindResources = () => {
+        const courses = report?.weak_skills_courses || [];
+        dispatch(updateProfileData({
+            desiredPosition: aim,
+            recommendedCourses: courses
+        }));
+        navigate('/', { state: { targetSection: 'training-bridge' } });
+
+        setTimeout(() => {
+            const element = document.getElementById('training-bridge');
             if (element) element.scrollIntoView({ behavior: 'smooth' });
         }, 100);
     };
@@ -114,7 +117,10 @@ const CareerInterview = ({ onBack }) => {
             const payload = {
                 aim,
                 answers: finalAnswers,
-                userData: {} // Add any extra user context if needed
+                userData: {
+                    clerkUserId: profileData?.clerkUserId,
+                    name: profileData?.fullName
+                }
             };
 
             const res = await fetch('http://localhost:5000/career/evaluate', {
@@ -274,21 +280,7 @@ const CareerInterview = ({ onBack }) => {
                     </button>
                 </div>
 
-                <div className="p-8 space-y-8">
-                    {/* Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 text-center">
-                            <div className="text-5xl font-extrabold text-blue-600 mb-2">{report.market_success_rate || report.success_probability_percent}</div>
-                            <div className="text-xs text-gray-600 font-bold uppercase tracking-wide">Peer Success Probability</div>
-                            <p className="text-xs text-gray-500 mt-1">People with your skill set achieving this role</p>
-                        </div>
-                        <div className="bg-purple-50 p-6 rounded-xl border border-purple-100">
-                            <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2"><Bot className="w-5 h-5" /> AI Verdict</h4>
-                            <p className="text-gray-700 leading-relaxed">{report.final_advice}</p>
-                        </div>
-                    </div>
-
-                    {/* Skills */}
+                <div className="p-8 space-y-8 overflow-y-auto max-h-[80vh]">
                     <div className="grid md:grid-cols-2 gap-8">
                         <div>
                             <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2"><CheckCircle className="text-green-500 w-5 h-5" /> Your Strengths</h4>
@@ -334,11 +326,20 @@ const CareerInterview = ({ onBack }) => {
                                         {idx + 1}
                                     </div>
                                     <div>
-                                        <div className="font-bold text-gray-900 uppercase text-xs tracking-wider mb-1">
+                                        <div className="font-bold text-gray-900 uppercase text-xs tracking-wider mb-2">
                                             {period.replace(/_/g, ' ')}
                                         </div>
-                                        <div className="text-gray-700 leading-relaxed">
-                                            {action}
+                                        <div className="text-gray-700 leading-relaxed text-sm">
+                                            <ul className="space-y-2 list-none">
+                                                {action.split('\n').map((line, i) => (
+                                                    <li key={i} className="flex gap-2 items-start">
+                                                        {['•', '-', '*'].some(char => line.trim().startsWith(char)) && (
+                                                            <span className="text-blue-500 mt-1.5 w-1.5 h-1.5 rounded-full bg-current flex-shrink-0" />
+                                                        )}
+                                                        <span>{line.replace(/^[•\-*]\s*/, '')}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -346,9 +347,11 @@ const CareerInterview = ({ onBack }) => {
                         </div>
                     </div>
                 </div>
+
+
             </div>
         );
-    };
+    }
 
     return null;
 };

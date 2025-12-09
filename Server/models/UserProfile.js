@@ -40,10 +40,20 @@ const userProfileSchema = new mongoose.Schema({
   profileImage: {
     type: String
   },
+  age: {
+    type: Number
+  },
   profileCompleted: {
     type: Boolean,
     default: false
-  }
+  },
+  trainingRecommendations: [{
+    skill: String,
+    courseTitle: String,
+    link: String,
+    platform: String,
+    description: String
+  }]
 }, {
   timestamps: true
 });

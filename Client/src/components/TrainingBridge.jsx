@@ -4,11 +4,10 @@
  * This component helps users find relevant training courses.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BookOpen, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import coursesData from '../data/coursesData.json';
-
 import { useLocation } from 'react-router-dom';
 
 const TrainingBridge = ({ t }) => {
@@ -16,7 +15,7 @@ const TrainingBridge = ({ t }) => {
   const location = useLocation();
 
   // Auto-open if coming from Chatbot
-  React.useEffect(() => {
+  useEffect(() => {
     if (location.state?.targetSection === 'training-bridge') {
       setShowCourses(true);
     }
@@ -101,38 +100,62 @@ const TrainingBridge = ({ t }) => {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {profileData.recommendedCourses.map((course, idx) => (
-                      <a
-                        key={idx}
-                        href={course.url || course.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-xl hover:border-indigo-400 transition-all duration-300 group flex flex-col h-full"
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="p-2 bg-indigo-100 rounded-lg">
-                            <BookOpen className="w-5 h-5 text-indigo-600" />
+                  <div className="space-y-8">
+                    {profileData.recommendedCourses.map((skillGroup, groupIdx) => (
+                      skillGroup.courses ? (
+                        <div key={groupIdx} className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                          <h4 className="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                            <span className="w-2 h-8 bg-red-400 rounded-full inline-block"></span>
+                            Fix Weakness: {skillGroup.skill_title}
+                          </h4>
+                          <p className="text-gray-600 mb-4 text-sm">{skillGroup.description}</p>
+
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {skillGroup.courses.map((course, idx) => (
+                              <a
+                                key={idx}
+                                href={course.link || course.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg hover:border-indigo-400 transition-all duration-300 group flex items-start gap-3"
+                              >
+                                <div className="p-2 bg-indigo-50 rounded-lg flex-shrink-0">
+                                  <BookOpen className="w-5 h-5 text-indigo-600" />
+                                </div>
+                                <div>
+                                  <h5 className="font-bold text-gray-900 line-clamp-1">{course.title || course.course_name}</h5>
+                                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full mt-1 inline-block">{course.platform}</span>
+                                </div>
+                                <ExternalLink className="w-4 h-4 text-gray-400 ml-auto group-hover:text-indigo-600" />
+                              </a>
+                            ))}
                           </div>
-                          <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition" />
                         </div>
-
-                        <h4 className="font-bold text-gray-900 mb-2 line-clamp-2">
-                          {course.course_name || course.title}
-                        </h4>
-
-                        <div className="flex items-center gap-2 mt-auto">
-                          <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                            {course.platform}
-                          </span>
-                        </div>
-
-                        <div className="mt-4 pt-4 border-t border-gray-100">
-                          <span className="text-indigo-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                            Start Learning <ExternalLink className="w-4 h-4" />
-                          </span>
-                        </div>
-                      </a>
+                      ) : (
+                        // Fallback logic for when structure might be flatter or different
+                        <a
+                          key={groupIdx}
+                          href={skillGroup.url || skillGroup.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-xl hover:border-indigo-400 transition-all duration-300 group flex flex-col"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="p-2 bg-indigo-100 rounded-lg">
+                              <BookOpen className="w-5 h-5 text-indigo-600" />
+                            </div>
+                            <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition" />
+                          </div>
+                          <h4 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                            {skillGroup.course_name || skillGroup.title}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-auto">
+                            <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                              {skillGroup.platform}
+                            </span>
+                          </div>
+                        </a>
+                      )
                     ))}
                   </div>
 
