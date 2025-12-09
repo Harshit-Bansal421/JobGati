@@ -2,7 +2,7 @@
  * HomePage Component - Landing Page
  * 
  * This is the main landing page of the JobGati application.
- * It combines all feature sections: Hero, Skill Analysis, Gap Identification,
+ * It combines all feature sections: Hero, Skill Analysis,
  * Training Bridge, and Job Matching into a single scrollable page.
  */
 
@@ -12,7 +12,6 @@ import React from 'react';
 // Import feature section components
 import Hero from './Hero';                         // Hero banner with CTA buttons
 import SkillAnalysis from './SkillAnalysis';       // Skill assessment section
-import GapIdentification from './GapIdentification'; // Skill gap analysis section
 import TrainingBridge from './TrainingBridge';     // Training recommendations section
 import JobMatching from './JobMatching';           // Job matching section
 
@@ -68,11 +67,7 @@ const HomePage = () => {
         <SkillAnalysis t={t.interactive?.skillAnalysis} />
       </div>
 
-      {/* Gap Identification section - analyzes skill gaps */}
-      <div id="gap-identification">
-        {/* Pass translation object and user skills as props */}
-        <GapIdentification t={t.interactive?.gapIdentification} userSkills={skills} />
-      </div>
+
 
       {/* Training Bridge section - recommends training courses */}
       <div id="training-bridge">

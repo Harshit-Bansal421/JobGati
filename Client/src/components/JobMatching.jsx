@@ -8,8 +8,9 @@ import {
   Calendar,
   Loader2,
   AlertCircle,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
-let data;
 
 const JOOBLE_API_KEY = "ed6fa15d-6d03-4eea-b8bb-79a949c4c611";
 const JOOBLE_BASE_URL = "https://jooble.org/api/";
@@ -31,11 +32,16 @@ const fetchJoobleJobs = async (keywords, location) => {
       }),
     });
 
-    const data1 = await response.json();
-    data= data1.jobs || [];
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ API Response:", data);
+    return data.jobs || [];
   } catch (error) {
-    console.error("Jooble API Error:", error);
-    return [];
+    console.error("❌ Jooble API Error:", error);
+    throw error;
   }
 };
 
@@ -44,6 +50,7 @@ const JobMatching = ({ t }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [expandedJobIndex, setExpandedJobIndex] = useState(null);
 
   // User Data from Redux
   const { profileData } = useSelector((state) => state.clerk);
@@ -56,6 +63,7 @@ const JobMatching = ({ t }) => {
 
   // ---------- FORMAT DATE ----------
   const formatDate = (dateString) => {
+    if (!dateString) return "Recently";
     const date = new Date(dateString);
     const now = new Date();
     const diff = (now - date) / (1000 * 60 * 60 * 24);
@@ -67,6 +75,11 @@ const JobMatching = ({ t }) => {
     return `${Math.floor(diff / 30)} months ago`;
   };
 
+  // Toggle job details
+  const toggleJobDetails = (index) => {
+    setExpandedJobIndex(expandedJobIndex === index ? null : index);
+  };
+
   // ==================================================
   //            🔥 FIND JOBS HANDLER
   // ==================================================
@@ -75,12 +88,14 @@ const JobMatching = ({ t }) => {
 
     if (!desiredPosition) {
       setError("Please set your desired job position in your profile.");
+      setShowJobs(true);
       return;
     }
 
     setLoading(true);
     setError(null);
     setShowJobs(true);
+    setExpandedJobIndex(null);
 
     try {
       console.log("📡 Fetching jobs from Jooble...");
@@ -88,14 +103,17 @@ const JobMatching = ({ t }) => {
 
       console.log("🎯 Jooble Results:", jobListings);
 
-      setJobs(jobListings);
-
-      if (jobListings.length === 0) {
+      if (jobListings && jobListings.length > 0) {
+        setJobs(jobListings);
+        setError(null);
+      } else {
+        setJobs([]);
         setError("No jobs found. Try different keywords or location.");
       }
     } catch (err) {
       console.error("❌ Error fetching jobs:", err);
-      setError("Failed to fetch jobs.");
+      setJobs([]);
+      setError("Failed to fetch jobs. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -147,11 +165,13 @@ const JobMatching = ({ t }) => {
               {error && !loading && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 mb-6">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-red-800 text-sm">{error}</p>
+                  <div className="flex-1">
+                    <p className="text-red-800 text-sm">{error}</p>
+                  </div>
                 </div>
               )}
 
-              {/* JOB LISTS */}
+              {/* JOB LISTS - VERTICAL SCROLLABLE WITH EXPANDABLE DETAILS */}
               {!loading && jobs.length > 0 && (
                 <>
                   <div className="flex justify-between items-center mb-6">
@@ -166,61 +186,122 @@ const JobMatching = ({ t }) => {
                     </button>
                   </div>
 
-                  <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                  {/* Vertical Scrollable Job List */}
+                  <div className="bg-white rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
                     {jobs.map((job, index) => (
                       <div
                         key={index}
-                        className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md border border-gray-200 transition-all"
+                        className="border-b border-gray-200 last:border-b-0"
                       >
-                        <h4 className="text-lg font-bold">{job.title}</h4>
-                        <p className="text-gray-600">{job.company}</p>
-
-                        <div className="flex flex-wrap gap-3 text-sm text-gray-600 mt-2">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            {job.location}
-                          </span>
-
-                          {job.salary && (
-                            <span className="flex items-center gap-1">
-                              <DollarSign className="w-4 h-4" />
-                              {job.salary}
-                            </span>
-                          )}
-
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {formatDate(job.updated)}
-                          </span>
+                        {/* Job Header - Always Visible */}
+                        <div
+                          onClick={() => toggleJobDetails(index)}
+                          className="p-4 hover:bg-gray-50 cursor-pointer transition-colors flex justify-between items-center"
+                        >
+                          <div className="flex-1">
+                            <h4 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition">
+                              {job.title}
+                            </h4>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {job.company} • {job.location}
+                            </p>
+                          </div>
+                          <div className="ml-4">
+                            {expandedJobIndex === index ? (
+                              <ChevronUp className="w-5 h-5 text-gray-500" />
+                            ) : (
+                              <ChevronDown className="w-5 h-5 text-gray-500" />
+                            )}
+                          </div>
                         </div>
 
-                        <p className="text-gray-600 text-sm mt-3 line-clamp-2">
-                          {job.description}
-                        </p>
+                        {/* Job Details - Expandable */}
+                        {expandedJobIndex === index && (
+                          <div className="px-4 pb-4 bg-gray-50 border-t border-gray-200">
+                            <div className="pt-4 space-y-3">
+                              {/* Company Info */}
+                              <div>
+                                <p className="text-sm font-semibold text-gray-700">Company</p>
+                                <p className="text-sm text-gray-600">{job.company}</p>
+                              </div>
 
-                        <a
-                          href={job.link || job.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 mt-4 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md font-semibold text-sm"
-                        >
-                          Apply Now <ExternalLink className="w-4 h-4" />
-                        </a>
+                              {/* Location & Date */}
+                              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4" />
+                                  {job.location}
+                                </span>
+
+                                {job.salary && (
+                                  <span className="flex items-center gap-1">
+                                    <DollarSign className="w-4 h-4" />
+                                    {job.salary}
+                                  </span>
+                                )}
+
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4" />
+                                  {formatDate(job.updated)}
+                                </span>
+                              </div>
+
+                              {/* Description */}
+                              {job.description && (
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-700 mb-1">Description</p>
+                                  <p className="text-sm text-gray-600 leading-relaxed">
+                                    {job.description}
+                                  </p>
+                                </div>
+                              )}
+
+                              {/* Apply Button */}
+                              <div className="pt-2">
+                                <a
+                                  href={job.link || job.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md font-semibold text-sm transition-colors"
+                                >
+                                  Apply Now <ExternalLink className="w-4 h-4" />
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
+
+                  {/* Helper Text */}
+                  <p className="text-xs text-gray-500 mt-3 text-center">
+                    Click on any job to view details
+                  </p>
                 </>
               )}
 
               {/* NO JOBS FOUND */}
               {!loading && jobs.length === 0 && !error && (
                 <div className="text-center py-12">
-                  <Briefcase className="w-12 h-12 text-gray-400 mx-auto" />
-                  <h3 className="text-lg font-semibold mt-2">No Jobs Found</h3>
+                  <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-gray-700">No Jobs Found</h3>
+                  <p className="text-sm text-gray-500 mt-1">Try adjusting your search criteria</p>
 
                   <button
                     onClick={() => setShowJobs(false)}
-                    className="text-blue-600 hover:text-blue-700 mt-3 font-medium"
+                    className="text-blue-600 hover:text-blue-700 mt-4 font-medium"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              )}
+
+              {/* Back Button for Error State */}
+              {error && !loading && (
+                <div className="text-center mt-4">
+                  <button
+                    onClick={() => setShowJobs(false)}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
                   >
                     ← Back
                   </button>
