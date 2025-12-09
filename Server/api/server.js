@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { Groq } from "groq-sdk";
+
 
 // Load base .env
 dotenv.config();
@@ -31,7 +31,7 @@ import profilerouter from "../routes/userProfileRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 
 // Connect to MongoDB
 await connectDB();
@@ -63,7 +63,7 @@ app.use("/api/skills", skillrouter);
 app.use("/api/profile", profilerouter);
 
 // ✅ ADD THIS — enables /career/start and /career/evaluate routes
-app.use("/", chatRoutes);
+app.use("/", ChatRoutes);
 
 // MATCH API (Gemini)
 app.post("/api/match", async (req, res) => {
@@ -78,52 +78,7 @@ app.post("/api/match", async (req, res) => {
   }
 });
 
-// Groq Career Evaluation
-app.post("/career/evaluate", async (req, res) => {
-  try {
-    const { aim, answers, userData } = req.body;
 
-    const prompt = `
-      You are a professional Career Path AI.
-      The user's aim: ${aim}
-
-      User's answers to mandatory questions:
-      ${JSON.stringify(answers, null, 2)}
-
-      Additional user dashboard data (may be null):
-      ${JSON.stringify(userData || {}, null, 2)}
-
-      Based on this, generate a detailed JSON output:
-      {
-        "skills_required": [...],
-        "skills_user_has": [...],
-        "skill_gaps": [...],
-        "success_probability_percent": number,
-        "roadmap": {
-          "next_1_month": "...",
-          "next_3_months": "...",
-          "next_6_months": "...",
-          "next_1_year": "..."
-        },
-        "real_world_examples": [
-          { "name": "Person", "how_they_succeeded": "..." }
-        ],
-        "final_advice": "..."
-      }
-    `;
-
-    const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.3,
-    });
-
-    const report = JSON.parse(completion.choices[0].message.content);
-    res.json({ report });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // Start server
 app.listen(PORT, () => {

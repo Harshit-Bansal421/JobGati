@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Target, BrainCircuit, AlertTriangle, CheckCircle2, Loader2, Zap } from 'lucide-react';
+import CareerInterview from './CareerInterview';
 
 const SkillAnalysisDashboard = () => {
   const [jobRole, setJobRole] = useState('');
@@ -75,40 +76,8 @@ const SkillAnalysisDashboard = () => {
 
         {/* INPUT SECTION - Only show if no data */}
         {!data && (
-          <div className="bg-white p-8 rounded-2xl shadow-md border grid md:grid-cols-3 gap-6 items-end">
-
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Desired Job Role</label>
-              <div className="relative">
-                <Target className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="e.g. Data Scientist"
-                  className="w-full pl-10 p-3 bg-gray-50 border rounded-xl"
-                  value={jobRole}
-                  onChange={(e) => setJobRole(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Your Current Skills</label>
-              <input
-                type="text"
-                placeholder="e.g. Python, SQL, Excel"
-                className="w-full p-3 bg-gray-50 border rounded-xl"
-                value={userSkills}
-                onChange={(e) => setUserSkills(e.target.value)}
-              />
-            </div>
-
-            <button
-              onClick={handleAnalyze}
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-xl transition-all flex items-center justify-center gap-2"
-            >
-              {loading ? <Loader2 className="animate-spin" /> : "Run Analysis"}
-            </button>
+          <div className="animate-fade-in">
+            <CareerInterview onBack={() => setShowForm(false)} />
           </div>
         )}
 
@@ -128,10 +97,10 @@ const SkillAnalysisDashboard = () => {
               <div className="flex items-center gap-4">
                 <Zap
                   className={`w-8 h-8 ${data.readinessScore > 70
-                      ? 'text-green-600'
-                      : data.readinessScore > 40
-                        ? 'text-yellow-600'
-                        : 'text-red-600'
+                    ? 'text-green-600'
+                    : data.readinessScore > 40
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
                     }`}
                 />
                 <h3 className="text-2xl font-semibold text-gray-800">
@@ -142,10 +111,10 @@ const SkillAnalysisDashboard = () => {
               <div className="text-right">
                 <span
                   className={`text-5xl font-extrabold ${data.readinessScore > 70
-                      ? 'text-green-600'
-                      : data.readinessScore > 40
-                        ? 'text-yellow-600'
-                        : 'text-red-600'
+                    ? 'text-green-600'
+                    : data.readinessScore > 40
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
                     }`}
                 >
                   {data.readinessScore}%
@@ -204,6 +173,5 @@ const SkillAnalysisDashboard = () => {
     </div>
   );
 };
-
 export default SkillAnalysisDashboard;
 

@@ -12,7 +12,8 @@ const initialState = {
     desiredPosition: '',
     skills: [],
     education: '',
-    bio: ''
+    bio: '',
+    recommendedCourses: [] // AI generated courses
   }
 };
 
