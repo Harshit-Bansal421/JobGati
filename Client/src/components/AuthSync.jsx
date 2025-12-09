@@ -25,17 +25,7 @@ const AuthSync = () => {
                 console.log("📧 Email extracted:", email);
 
                 // Save Clerk user data to Redux
-                const serializableUser = {
-                    id: user.id,
-                    fullName: user.fullName,
-                    primaryEmailAddress: {
-                        emailAddress: user.primaryEmailAddress?.emailAddress
-                    },
-                    imageUrl: user.imageUrl,
-                    firstName: user.firstName,
-                    lastName: user.lastName
-                };
-                dispatch(setClerkUser(serializableUser));
+                dispatch(setClerkUser(user));
                 console.log("✅ Clerk user saved to Redux");
 
                 if (email) {

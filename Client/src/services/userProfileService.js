@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = 'https://jobgati-1.onrender.com';
 
 // Save user profile to database
 export const saveUserProfile = async (profileData) => {
