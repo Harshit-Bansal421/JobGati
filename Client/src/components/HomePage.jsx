@@ -67,6 +67,8 @@ const HomePage = () => {
         <SkillAnalysis t={t.interactive?.skillAnalysis} />
       </div>
 
+
+
       {/* Training Bridge section - recommends training courses */}
       <div id="training-bridge">
         {/* Pass translation object as props */}

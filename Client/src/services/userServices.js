@@ -1,4 +1,4 @@
-const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users`;
+const API_URL = "https://jobgati-1.onrender.com/api/users";
 
 export const createUser = async (userData) => {
   try {
@@ -61,24 +61,14 @@ export const getUserByEmail = async (email) => {
       body: JSON.stringify({ email }),
     });
 
-    // Check if response is ok before trying to parse JSON
+    const data = await res.json();
+    
     if (!res.ok) {
         // If 404, we return null to indicate user not found (not an error)
         if (res.status === 404) return null;
-        
-        // Try to parse error message, but handle cases where response is HTML
-        let errorMessage = "Failed to fetch user";
-        try {
-          const data = await res.json();
-          errorMessage = data.message || errorMessage;
-        } catch (parseError) {
-          // Response is not JSON (likely HTML error page)
-          console.warn("Server returned non-JSON response");
-        }
-        throw new Error(errorMessage);
+        throw new Error(data.message || "Failed to fetch user");
     }
 
-    const data = await res.json();
     return data;
   } catch (error) {
     console.error("Get user by email error:", error.message);
