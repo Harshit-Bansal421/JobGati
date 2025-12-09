@@ -1,25 +1,16 @@
-export const saveDashboardData = async ({
-  clerkUserId,
-  phone,
-  location,
-  desiredJobPosition,
-  skills,
-  educationLevel,
-  aboutYou
-}) => {
-  const response = await fetch("http://localhost:5000/api/dashboard/save", {
+const API_URL = "http://localhost:5000/api/dashboard";
+
+export const saveDashboardData = async (payload) => {
+  const response = await fetch(`${API_URL}/save`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      clerkUserId,
-      phone,
-      location,
-      desiredJobPosition,
-      skills,
-      educationLevel,
-      aboutYou,
-    }),
+    body: JSON.stringify(payload)
   });
 
-  return await response.json();
+  return response.json();
+};
+
+export const getDashboardData = async (clerkUserId) => {
+  const res = await fetch(`${API_URL}/get/${clerkUserId}`);
+  return res.json();
 };

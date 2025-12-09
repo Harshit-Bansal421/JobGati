@@ -96,7 +96,7 @@ const SkillAnalysisDashboard = () => {
 
         {/* RESULTS */}
         {data && (
-          <div className="space-y-6">
+          <div className="space-y-6 ">
             <div className="bg-white p-8 rounded-2xl shadow-lg border flex justify-between items-center">
               <div className="flex items-center gap-4">
                 <Zap
