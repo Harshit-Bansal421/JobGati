@@ -12,6 +12,9 @@
 // Import React and useState for mobile menu toggle
 import React, { useState } from 'react';
 
+// Import logo
+import jobgatiLogo from '../assets/jobgati_logo.jpeg';
+
 // Import routing hooks and components
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -19,13 +22,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Import Redux actions
-import { setLanguage } from '../store/slices/languageSlice';    // Change app language
 import { logout } from '../store/slices/authSlice';              // Log user out
 import { toggleTheme } from '../store/slices/themeSlice';        // Toggle dark mode
 
 // Import icons from lucide-react library
-// Import icons from lucide-react library
-import { Menu, X, Globe, LayoutDashboard, Moon, Sun } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Moon, Sun } from 'lucide-react';
 import { SignInButton, UserButton, useUser } from "@clerk/clerk-react";
 
 /**
@@ -82,9 +83,14 @@ const Header = ({ setShowLogin }) => {
         {/* Logo */}
         <Link
           to="/"
-          className="text-2xl font-bold text-primary dark:text-blue-400 cursor-pointer flex items-center gap-2"
+          className="flex items-center gap-3 cursor-pointer"
         >
-          <span>JobGati</span>
+          <img
+            src={jobgatiLogo}
+            alt="JobGati Logo"
+            className="h-12 w-12 object-cover rounded-full p-1 bg-white shadow-md border-2 border-blue-100 dark:border-blue-900"
+          />
+          <span className="text-2xl font-bold text-primary dark:text-blue-400">JobGati</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -133,18 +139,6 @@ const Header = ({ setShowLogin }) => {
               <Moon size={18} className="text-gray-600" />
             )}
           </button>
-
-          <div className="flex items-center gap-2 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1">
-            <Globe size={16} className="text-gray-500 dark:text-gray-400" />
-            <select
-              value={currentLanguage}
-              onChange={(e) => dispatch(setLanguage(e.target.value))}
-              className="text-sm focus:outline-none bg-transparent dark:text-gray-200"
-            >
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-            </select>
-          </div>
 
           {isClerkSignedIn ? (
             <div className="flex items-center gap-4">
@@ -201,19 +195,6 @@ const Header = ({ setShowLogin }) => {
           </button>
 
           <div className="border-t border-gray-100 pt-4 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600 text-sm flex items-center gap-2">
-                <Globe size={16} /> Language
-              </span>
-              <select
-                value={currentLanguage}
-                onChange={(e) => dispatch(setLanguage(e.target.value))}
-                className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="en">English</option>
-                <option value="hi">हिंदी</option>
-              </select>
-            </div>
 
             {isClerkSignedIn ? (
               <>
@@ -244,7 +225,7 @@ const Header = ({ setShowLogin }) => {
           </div>
         </div>
       )}
-    </header>
+    </header >
   );
 };
 

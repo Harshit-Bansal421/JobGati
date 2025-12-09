@@ -101,16 +101,16 @@ const TrainingBridge = ({ t }) => {
                     {/* Left Scroll Button */}
                     <button
                       onClick={() => handleScroll('left')}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 md:p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
                       aria-label="Scroll left"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-700" />
+                      <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
                     </button>
 
                     {/* Courses Container */}
                     <div
                       id="courses-container"
-                      className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+                      className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 px-2 md:px-0"
                       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
                       {matchedCategory.courses.map((course, idx) => (
@@ -119,7 +119,7 @@ const TrainingBridge = ({ t }) => {
                           href={course.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-shrink-0 w-80 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-5 hover:shadow-xl hover:border-green-400 transition-all duration-300 transform hover:-translate-y-1 group/card"
+                          className="flex-shrink-0 w-72 md:w-80 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-4 md:p-5 hover:shadow-xl hover:border-green-400 transition-all duration-300 transform hover:-translate-y-1 group/card cursor-pointer"
                         >
                           {/* Course Icon */}
                           <div className="flex items-start justify-between mb-3">
@@ -155,10 +155,10 @@ const TrainingBridge = ({ t }) => {
                     {/* Right Scroll Button */}
                     <button
                       onClick={() => handleScroll('right')}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 md:p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
                       aria-label="Scroll right"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-700" />
+                      <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
                     </button>
                   </div>
 
@@ -209,4 +209,4 @@ const TrainingBridge = ({ t }) => {
   );
 };
 
-export default TrainingBridge;
+export default TrainingBridge;
